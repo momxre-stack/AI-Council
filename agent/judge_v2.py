@@ -41,6 +41,16 @@ Rules:
 - Do not include explanations outside JSON.
 """
 
-    raw_response = ask_gemini(prompt)
+    raw_response = ask_gemini(prompt).strip()
 
-    return json.loads(raw_response)
+    start = raw_response.find("{")
+    end = raw_response.rfind("}")
+
+    if start == -1 or end == -1:
+        raise ValueError(
+            f"Judge did not return JSON: {raw_response}"
+        )
+
+    json_text = raw_response[start:end + 1]
+
+    return json.loads(json_text)
