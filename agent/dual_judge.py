@@ -1,3 +1,5 @@
+import json
+
 from agent.providers.gemini import ask_gemini
 from agent.providers.deepseek import ask_deepseek
 from agent.judge_v2 import judge_responses_v2
@@ -6,29 +8,70 @@ from agent.judge_v2 import judge_responses_v2
 SIGNIFICANT_SCORE_GAP = 30
 
 
-def _judge_with_provider(
+def _build_judge_prompt(
     question: str,
     gemini_response: str,
     deepseek_response: str,
-    provider_name: str,
+) -> str:
+    return f"""
+You are the judge in a multi-model AI council.
+
+Question:
+{question}
+
+Gemini response:
+{gemini_response}
+
+DeepSeek response:
+{deepseek_response}
+
+Return ONLY valid JSON with this exact structure:
+{{
+  "agreement_score": 0,
+  "needs_debate": true,
+  "agreements": [],
+  "differences": [],
+  "more_complete_response": "",
+  "final_answer": ""
+}}
+
+Rules:
+- agreement_score must be an integer from 0 to 100.
+- needs_debate must be true if agreement_score is below 70.
+- agreements must be a list of short strings.
+- differences must be a list of short strings.
+- more_complete_response must be "gemini", "deepseek", or "tie".
+- final_answer must combine the strongest parts of both responses.
+- Do not include markdown.
+- Do not include explanations outside JSON.
+"""
+
+
+def _parse_judge_json(raw_response: str) -> dict:
+    raw_response = raw_response.strip()
+
+    start = raw_response.find("{")
+    end = raw_response.rfind("}")
+
+    if start == -1 or end == -1:
+        raise ValueError(f"Judge did not return JSON: {raw_response}")
+
+    json_text = raw_response[start:end + 1]
+    return json.loads(json_text)
+
+
+def _judge_with_deepseek(
+    question: str,
+    gemini_response: str,
+    deepseek_response: str,
 ) -> dict:
-    if provider_name == "gemini":
-        return judge_responses_v2(
-            question=question,
-            gemini_response=gemini_response,
-            deepseek_response=deepseek_response,
-        )
+    prompt = _build_judge_prompt(
+        question=question,
+        gemini_response=gemini_response,
+        deepseek_response=deepseek_response,
+    )
 
-    if provider_name == "deepseek":
-        # DeepSeek judge will be implemented in a later integration step.
-        # For now keep the same structured output contract.
-        return judge_responses_v2(
-            question=question,
-            gemini_response=gemini_response,
-            deepseek_response=deepseek_response,
-        )
-
-    raise ValueError(f"Unknown provider: {provider_name}")
+    return _parse_judge_json(ask_deepseek(prompt))
 
 
 def _winner_disagreement(
@@ -56,31 +99,23 @@ def run_dual_judgment(
     gemini_response: str,
     deepseek_response: str,
 ) -> dict:
-    gemini_judgment = _judge_with_provider(
+    gemini_judgment = judge_responses_v2(
         question=question,
         gemini_response=gemini_response,
         deepseek_response=deepseek_response,
-        provider_name="gemini",
     )
 
-    deepseek_judgment = _judge_with_provider(
+    deepseek_judgment = _judge_with_deepseek(
         question=question,
         gemini_response=gemini_response,
         deepseek_response=deepseek_response,
-        provider_name="deepseek",
     )
 
     final_needs_debate = (
         gemini_judgment.get("needs_debate", False)
         or deepseek_judgment.get("needs_debate", False)
-        or _winner_disagreement(
-            gemini_judgment,
-            deepseek_judgment,
-        )
-        or _score_disagreement(
-            gemini_judgment,
-            deepseek_judgment,
-        )
+        or _winner_disagreement(gemini_judgment, deepseek_judgment)
+        or _score_disagreement(gemini_judgment, deepseek_judgment)
     )
 
     return {
