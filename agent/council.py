@@ -11,7 +11,6 @@ def _ask_provider(provider_name: str, provider, question: str) -> dict:
             "response": provider(question),
             "error": None,
         }
-
     except Exception as error:
         return {
             "provider": provider_name,
@@ -45,23 +44,46 @@ def ask_council(question: str) -> dict:
             "provider_errors": provider_errors,
             "status": "degraded",
             "judgment": None,
+            "judgment_error": None,
             "debate": None,
+            "debate_error": None,
         }
 
-    judgment = run_dual_judgment(
-        question=question,
-        gemini_response=gemini_response,
-        deepseek_response=deepseek_response,
-    )
-
-    debate = None
-
-    if judgment["final_needs_debate"]:
-        debate = run_debate(
+    try:
+        judgment = run_dual_judgment(
             question=question,
             gemini_response=gemini_response,
             deepseek_response=deepseek_response,
         )
+    except Exception as error:
+        return {
+            "question": question,
+            "responses": {
+                "gemini": gemini_response,
+                "deepseek": deepseek_response,
+            },
+            "provider_errors": provider_errors,
+            "status": "degraded",
+            "judgment": None,
+            "judgment_error": str(error),
+            "debate": None,
+            "debate_error": None,
+        }
+
+    debate = None
+    debate_error = None
+
+    if judgment["final_needs_debate"]:
+        try:
+            debate = run_debate(
+                question=question,
+                gemini_response=gemini_response,
+                deepseek_response=deepseek_response,
+            )
+        except Exception as error:
+            debate_error = str(error)
+
+    status = "degraded" if debate_error else "ok"
 
     return {
         "question": question,
@@ -70,7 +92,9 @@ def ask_council(question: str) -> dict:
             "deepseek": deepseek_response,
         },
         "provider_errors": provider_errors,
-        "status": "ok",
+        "status": status,
         "judgment": judgment,
+        "judgment_error": None,
         "debate": debate,
+        "debate_error": debate_error,
     }
