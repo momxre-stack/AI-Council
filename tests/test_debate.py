@@ -4,8 +4,15 @@ from agent.debate import run_debate
 
 
 @patch("agent.debate.ask_gemini")
-def test_run_debate_returns_debate_result(mock_gemini):
-    mock_gemini.return_value = "debate result"
+def test_run_debate_returns_structured_result(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": "Gemini strength",
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": "Both missed details",
+      "consensus_answer": "Final answer"
+    }
+    """
 
     result = run_debate(
         question="question",
@@ -14,7 +21,10 @@ def test_run_debate_returns_debate_result(mock_gemini):
     )
 
     assert result == {
-        "debate": "debate result",
+        "gemini_strengths": "Gemini strength",
+        "deepseek_strengths": "DeepSeek strength",
+        "criticisms": "Both missed details",
+        "consensus_answer": "Final answer",
     }
 
     mock_gemini.assert_called_once()
