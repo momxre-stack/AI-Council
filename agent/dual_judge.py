@@ -3,6 +3,7 @@ import json
 from agent.providers.gemini import ask_gemini
 from agent.providers.deepseek import ask_deepseek
 from agent.judge_v2 import judge_responses_v2
+from agent.independent_judge import independent_judge_responses
 
 
 SIGNIFICANT_SCORE_GAP = 30
@@ -111,6 +112,12 @@ def run_dual_judgment(
         deepseek_response=deepseek_response,
     )
 
+    independent_judgment = independent_judge_responses(
+        question=question,
+        gemini_response=gemini_response,
+        deepseek_response=deepseek_response,
+    )
+
     final_needs_debate = (
         gemini_judgment.get("needs_debate", False)
         or deepseek_judgment.get("needs_debate", False)
@@ -121,5 +128,6 @@ def run_dual_judgment(
     return {
         "gemini_judge": gemini_judgment,
         "deepseek_judge": deepseek_judgment,
+        "independent_judge": independent_judgment,
         "final_needs_debate": final_needs_debate,
     }
