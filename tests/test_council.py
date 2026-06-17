@@ -119,6 +119,31 @@ def test_council_degraded_when_judge_fails(
 
 @patch("agent.council.ask_gemini")
 @patch("agent.council.ask_deepseek")
+@patch("agent.council.run_dual_judgment")
+def test_council_degraded_when_judge_returns_malformed_json(
+    mock_judge,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+    mock_judge.side_effect = ValueError(
+        "Judge did not return JSON: malformed judge output"
+    )
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["judgment"] is None
+    assert (
+        result["judgment_error"]
+        == "Judge did not return JSON: malformed judge output"
+    )
+    assert result["debate"] is None
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
 @patch("agent.council.run_debate")
 @patch("agent.council.run_dual_judgment")
 def test_council_degraded_when_debate_fails(
