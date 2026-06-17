@@ -1,12 +1,12 @@
 import json
 
-from agent.providers.gemini import ask_gemini
 from agent.providers.deepseek import ask_deepseek
 from agent.judge_v2 import judge_responses_v2
 from agent.independent_judge import independent_judge_responses
 
 
 SIGNIFICANT_SCORE_GAP = 30
+DEBATE_VOTE_THRESHOLD = 2
 
 
 def _build_judge_prompt(
@@ -95,6 +95,20 @@ def _score_disagreement(
     return abs(score_a - score_b) >= SIGNIFICANT_SCORE_GAP
 
 
+def _debate_vote_count(
+    gemini_judgment: dict,
+    deepseek_judgment: dict,
+    independent_judgment: dict,
+) -> int:
+    return sum(
+        [
+            bool(gemini_judgment.get("needs_debate", False)),
+            bool(deepseek_judgment.get("needs_debate", False)),
+            bool(independent_judgment.get("needs_debate", False)),
+        ]
+    )
+
+
 def run_dual_judgment(
     question: str,
     gemini_response: str,
@@ -118,9 +132,14 @@ def run_dual_judgment(
         deepseek_response=deepseek_response,
     )
 
+    debate_vote_count = _debate_vote_count(
+        gemini_judgment,
+        deepseek_judgment,
+        independent_judgment,
+    )
+
     final_needs_debate = (
-        gemini_judgment.get("needs_debate", False)
-        or deepseek_judgment.get("needs_debate", False)
+        debate_vote_count >= DEBATE_VOTE_THRESHOLD
         or _winner_disagreement(gemini_judgment, deepseek_judgment)
         or _score_disagreement(gemini_judgment, deepseek_judgment)
     )
@@ -129,5 +148,6 @@ def run_dual_judgment(
         "gemini_judge": gemini_judgment,
         "deepseek_judge": deepseek_judgment,
         "independent_judge": independent_judgment,
+        "debate_vote_count": debate_vote_count,
         "final_needs_debate": final_needs_debate,
     }
