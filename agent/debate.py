@@ -41,12 +41,17 @@ Return ONLY valid JSON with this exact structure:
 }}
 
 Rules:
+- Return a single JSON object only.
+- All values must be strings.
+- Escape all quotation marks inside string values.
+- Do not use unescaped newlines inside string values.
+- Do not include markdown.
+- Do not include code fences.
+- Do not include explanations outside JSON.
 - gemini_strengths must explain where Gemini's answer is stronger.
 - deepseek_strengths must explain where DeepSeek's answer is stronger.
 - criticisms must explain what each answer misses or gets wrong.
 - consensus_answer must combine the strongest parts into one final answer.
-- Do not include markdown.
-- Do not include explanations outside JSON.
 """
 
     result = ask_gemini(prompt)
