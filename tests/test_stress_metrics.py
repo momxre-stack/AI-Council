@@ -1,4 +1,4 @@
-from agent.stress_metrics import count_statuses
+from agent.stress_metrics import calculate_rates, count_statuses
 
 
 def test_counts_stress_result_statuses():
@@ -73,4 +73,40 @@ def test_counts_fifty_simulated_requests():
         "degraded_count": 7,
         "failure_count": 2,
         "debate_count": 1,
+    }
+
+
+def test_calculates_stress_rates():
+    metrics = {
+        "success_count": 16,
+        "degraded_count": 3,
+        "failure_count": 1,
+        "debate_count": 1,
+    }
+
+    rates = calculate_rates(metrics, total_count=20)
+
+    assert rates == {
+        "success_rate": 0.8,
+        "degraded_rate": 0.15,
+        "failure_rate": 0.05,
+        "debate_rate": 0.05,
+    }
+
+
+def test_calculates_zero_rates_for_empty_results():
+    metrics = {
+        "success_count": 0,
+        "degraded_count": 0,
+        "failure_count": 0,
+        "debate_count": 0,
+    }
+
+    rates = calculate_rates(metrics, total_count=0)
+
+    assert rates == {
+        "success_rate": 0,
+        "degraded_rate": 0,
+        "failure_rate": 0,
+        "debate_rate": 0,
     }
