@@ -16,11 +16,12 @@ Stable baseline:
 * GitHub Actions CI
 * Stress testing foundation
 * Stress metrics utilities
-* 37 passing tests
+* Stress runner summary module
+* 39 passing tests
 
 Latest stable commit:
 
-ca4f869
+a39e7c0
 
 ---
 
@@ -103,16 +104,17 @@ Completed:
 * Stress metrics counting test
 * 20 request stress simulation
 * 50 request stress simulation
+* 100 request stress simulation
 * Success-rate reporting
 * Degraded-rate reporting
 * Failure-rate reporting
 * Debate-rate reporting
 * Stress report builder
 * Human-readable stress report formatting
+* Stress runner summary module
 
 Remaining:
 
-* 100 request stress simulation
 * Real stress runner
 * Real-world reliability measurements
 
@@ -141,17 +143,17 @@ Do not expand model count until the core architecture is highly stable.
 ## Long-Term Vision
 
 Question
-↓
+→
 Multiple Providers
-↓
+→
 Multiple Judges
-↓
+→
 Majority Vote
-↓
+→
 Debate
-↓
+→
 Consensus Answer
-↓
+→
 Reliable AI Council
 
 Goal:
