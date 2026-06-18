@@ -26,3 +26,5 @@ def test_multiple_council_requests(
         result = ask_council("test")
 
         assert result["status"] == "ok"
+
+    assert mock_judge.call_count == 5
