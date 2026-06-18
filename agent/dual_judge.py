@@ -1,5 +1,4 @@
-import json
-
+from agent.json_utils import parse_json_object
 from agent.providers.deepseek import ask_deepseek
 from agent.judge_v2 import judge_responses_v2
 from agent.independent_judge import independent_judge_responses
@@ -49,16 +48,7 @@ Rules:
 
 
 def _parse_judge_json(raw_response: str) -> dict:
-    raw_response = raw_response.strip()
-
-    start = raw_response.find("{")
-    end = raw_response.rfind("}")
-
-    if start == -1 or end == -1:
-        raise ValueError(f"Judge did not return JSON: {raw_response}")
-
-    json_text = raw_response[start:end + 1]
-    return json.loads(json_text)
+    return parse_json_object(raw_response, "Judge did not return JSON")
 
 
 def _judge_with_deepseek(

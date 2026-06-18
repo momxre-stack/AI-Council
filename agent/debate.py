@@ -1,19 +1,9 @@
-import json
-
+from agent.json_utils import parse_json_object
 from agent.providers.gemini import ask_gemini
 
 
 def _parse_debate_json(raw_response: str) -> dict:
-    raw_response = raw_response.strip()
-
-    start = raw_response.find("{")
-    end = raw_response.rfind("}")
-
-    if start == -1 or end == -1:
-        raise ValueError(f"Debate did not return JSON: {raw_response}")
-
-    json_text = raw_response[start:end + 1]
-    return json.loads(json_text)
+    return parse_json_object(raw_response, "Debate did not return JSON")
 
 
 def run_debate(
