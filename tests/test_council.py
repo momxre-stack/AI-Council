@@ -1,3 +1,4 @@
+import pytest
 from unittest.mock import patch
 
 from agent.council import ask_council
@@ -186,3 +187,16 @@ def test_council_marks_provider_quota_errors(
     assert result["provider_errors"]["gemini"] == "429 RESOURCE_EXHAUSTED"
     assert result["quota_errors"]["gemini"] is True
     assert result["quota_errors"]["deepseek"] is False
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_raises_when_both_providers_fail(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED")
+    mock_deepseek.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED")
+
+    with pytest.raises(RuntimeError, match="Both providers failed"):
+        ask_council("test")
