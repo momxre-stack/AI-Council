@@ -156,3 +156,32 @@ def test_formats_stress_report():
         "Failure rate: 4.0%\n"
         "Debate rate: 2.0%"
     )
+
+def test_counts_one_hundred_simulated_requests():
+    results = []
+
+    for _ in range(82):
+        results.append({"status": "ok", "debate": None})
+
+    for _ in range(12):
+        results.append({"status": "degraded", "debate": None})
+
+    for _ in range(4):
+        results.append({"status": "failed", "debate": None})
+
+    for _ in range(2):
+        results.append(
+            {"status": "ok", "debate": {"consensus_answer": "final"}}
+        )
+
+    report = build_stress_report(results)
+
+    assert report["total_count"] == 100
+    assert report["success_count"] == 84
+    assert report["degraded_count"] == 12
+    assert report["failure_count"] == 4
+    assert report["debate_count"] == 2
+    assert report["success_rate"] == 0.84
+    assert report["degraded_rate"] == 0.12
+    assert report["failure_rate"] == 0.04
+    assert report["debate_rate"] == 0.02
