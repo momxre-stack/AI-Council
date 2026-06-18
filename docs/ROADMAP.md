@@ -11,12 +11,15 @@ Stable baseline:
 * Provider failure handling
 * Judge failure handling
 * Debate failure handling
+* JSON recovery layer
+* Quota-aware handling
 * GitHub Actions CI
-* 17 passing tests
+* Stress testing foundation
+* 31 passing tests
 
 Latest stable commit:
 
-ae6076f
+bef2aa6
 
 ---
 
@@ -28,7 +31,7 @@ Goal:
 
 Add tests for malformed judge output.
 
-Expected result:
+Result:
 
 * Judge malformed JSON is detected.
 * Failure path is tested.
@@ -36,7 +39,7 @@ Expected result:
 
 Status:
 
-Planned.
+Completed.
 
 ---
 
@@ -48,34 +51,16 @@ Goal:
 
 Recover from partially malformed LLM JSON.
 
-Examples:
+Implemented:
 
-Current:
-
-LLM returns invalid JSON
-↓
-Exception
-
-Future:
-
-LLM returns almost-valid JSON
-↓
-Recovery attempt
-↓
-Parse
-↓
-Continue
-
-Potential techniques:
-
-* Remove markdown fences
-* Extract JSON blocks
-* Strip wrapper text
-* Normalize output before parsing
+* Markdown fence removal
+* JSON extraction from wrapper text
+* Shared JSON parsing utility
+* Recovery tests
 
 Status:
 
-Planned.
+Completed.
 
 ---
 
@@ -87,19 +72,16 @@ Goal:
 
 Handle provider quota exhaustion more gracefully.
 
-Observed issue:
+Implemented:
 
-429 RESOURCE_EXHAUSTED
-
-Future behavior:
-
-* Detect quota errors
-* Return degraded mode
-* Avoid hard failures
+* Quota error detection
+* Quota metadata in council results
+* Provider failure coverage
+* Both-provider failure coverage
 
 Status:
 
-Planned.
+Completed.
 
 ---
 
@@ -109,25 +91,29 @@ Planned.
 
 Goal:
 
-Measure real-world reliability.
+Measure system reliability.
 
-Targets:
+Completed:
 
-* 20 requests
-* 50 requests
-* 100 requests
+* Stress test baseline
+* Repeated council execution test
+* Judge execution verification
+* Stress metrics foundation
+* Stress metrics counting test
 
-Metrics:
+Planned:
 
-* Success rate
-* Degraded rate
-* Failure rate
-* Debate rate
-* Average response time
+* 20 request stress run
+* 50 request stress run
+* 100 request stress run
+* Success-rate reporting
+* Degraded-rate reporting
+* Failure-rate reporting
+* Debate-rate reporting
 
 Status:
 
-Planned.
+In Progress.
 
 ---
 
