@@ -33,3 +33,25 @@ def run_stress_test(
             )
 
     return summarize_stress_results(results)
+
+
+def run_stress_questions(
+    questions: list[str],
+    council_runner=ask_council,
+) -> dict:
+    results = []
+
+    for question in questions:
+        try:
+            results.append(council_runner(question))
+        except Exception as error:
+            results.append(
+                {
+                    "question": question,
+                    "status": "failed",
+                    "error": str(error),
+                    "debate": None,
+                }
+            )
+
+    return summarize_stress_results(results)

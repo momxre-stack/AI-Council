@@ -1,4 +1,8 @@
-from agent.stress_runner import run_stress_test, summarize_stress_results
+from agent.stress_runner import (
+    run_stress_questions,
+    run_stress_test,
+    summarize_stress_results,
+)
 
 
 def test_summarizes_stress_results():
@@ -131,3 +135,24 @@ def test_runs_stress_test_records_runner_failures():
         "Failure rate: 100.0%\n"
         "Debate rate: 0.0%"
     )
+
+def test_runs_stress_questions_with_multiple_questions():
+    calls = []
+
+    def fake_council_runner(question: str) -> dict:
+        calls.append(question)
+        return {
+            "question": question,
+            "status": "ok",
+            "debate": None,
+        }
+
+    summary = run_stress_questions(
+        questions=["question one", "question two"],
+        council_runner=fake_council_runner,
+    )
+
+    assert calls == ["question one", "question two"]
+    assert summary["report"]["total_count"] == 2
+    assert summary["report"]["success_count"] == 2
+    assert summary["report"]["failure_count"] == 0
