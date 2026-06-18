@@ -15,11 +15,12 @@ Stable baseline:
 * Quota-aware handling
 * GitHub Actions CI
 * Stress testing foundation
-* 31 passing tests
+* Stress metrics utilities
+* 37 passing tests
 
 Latest stable commit:
 
-bef2aa6
+ca4f869
 
 ---
 
@@ -100,16 +101,20 @@ Completed:
 * Judge execution verification
 * Stress metrics foundation
 * Stress metrics counting test
-
-Planned:
-
-* 20 request stress run
-* 50 request stress run
-* 100 request stress run
+* 20 request stress simulation
+* 50 request stress simulation
 * Success-rate reporting
 * Degraded-rate reporting
 * Failure-rate reporting
 * Debate-rate reporting
+* Stress report builder
+* Human-readable stress report formatting
+
+Remaining:
+
+* 100 request stress simulation
+* Real stress runner
+* Real-world reliability measurements
 
 Status:
 
