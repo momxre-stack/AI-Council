@@ -2,6 +2,7 @@ from agent.stress_metrics import (
     build_stress_report,
     calculate_rates,
     count_statuses,
+    format_stress_report,
 )
 
 
@@ -36,9 +37,7 @@ def test_counts_twenty_simulated_requests():
         {"status": "ok", "debate": {"consensus_answer": "final"}}
     )
 
-    results.append(
-        {"status": "failed", "debate": None}
-    )
+    results.append({"status": "failed", "debate": None})
 
     metrics = count_statuses(results)
 
@@ -137,3 +136,23 @@ def test_builds_stress_report():
         "failure_rate": 0.25,
         "debate_rate": 0.25,
     }
+
+
+def test_formats_stress_report():
+    report = {
+        "total_count": 50,
+        "success_rate": 0.82,
+        "degraded_rate": 0.14,
+        "failure_rate": 0.04,
+        "debate_rate": 0.02,
+    }
+
+    formatted = format_stress_report(report)
+
+    assert formatted == (
+        "Total requests: 50\n"
+        "Success rate: 82.0%\n"
+        "Degraded rate: 14.0%\n"
+        "Failure rate: 4.0%\n"
+        "Debate rate: 2.0%"
+    )

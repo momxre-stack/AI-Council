@@ -47,3 +47,15 @@ def build_stress_report(results: list[dict]) -> dict:
         **metrics,
         **rates,
     }
+
+
+def format_stress_report(report: dict) -> str:
+    return "\n".join(
+        [
+            f"Total requests: {report['total_count']}",
+            f"Success rate: {report['success_rate'] * 100:.1f}%",
+            f"Degraded rate: {report['degraded_rate'] * 100:.1f}%",
+            f"Failure rate: {report['failure_rate'] * 100:.1f}%",
+            f"Debate rate: {report['debate_rate'] * 100:.1f}%",
+        ]
+    )
