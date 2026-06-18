@@ -1,4 +1,8 @@
-from agent.stress_metrics import calculate_rates, count_statuses
+from agent.stress_metrics import (
+    build_stress_report,
+    calculate_rates,
+    count_statuses,
+)
 
 
 def test_counts_stress_result_statuses():
@@ -109,4 +113,27 @@ def test_calculates_zero_rates_for_empty_results():
         "degraded_rate": 0,
         "failure_rate": 0,
         "debate_rate": 0,
+    }
+
+
+def test_builds_stress_report():
+    results = [
+        {"status": "ok", "debate": None},
+        {"status": "ok", "debate": {"consensus_answer": "final"}},
+        {"status": "degraded", "debate": None},
+        {"status": "failed", "debate": None},
+    ]
+
+    report = build_stress_report(results)
+
+    assert report == {
+        "total_count": 4,
+        "success_count": 2,
+        "degraded_count": 1,
+        "failure_count": 1,
+        "debate_count": 1,
+        "success_rate": 0.5,
+        "degraded_rate": 0.25,
+        "failure_rate": 0.25,
+        "debate_rate": 0.25,
     }

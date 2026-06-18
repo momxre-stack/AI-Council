@@ -35,3 +35,15 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
         "failure_rate": metrics["failure_count"] / total_count,
         "debate_rate": metrics["debate_count"] / total_count,
     }
+
+
+def build_stress_report(results: list[dict]) -> dict:
+    metrics = count_statuses(results)
+    total_count = len(results)
+    rates = calculate_rates(metrics, total_count)
+
+    return {
+        "total_count": total_count,
+        **metrics,
+        **rates,
+    }
