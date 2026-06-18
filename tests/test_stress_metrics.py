@@ -65,3 +65,31 @@ def test_counts_twenty_simulated_requests():
         "failure_count": 1,
         "debate_count": 1,
     }
+
+
+def test_counts_fifty_simulated_requests():
+    results = []
+
+    for _ in range(40):
+        results.append({"status": "ok", "debate": None})
+
+    for _ in range(7):
+        results.append({"status": "degraded", "debate": None})
+
+    results.append(
+        {"status": "ok", "debate": {"consensus_answer": "final"}}
+    )
+
+    for _ in range(2):
+        results.append({"status": "failed", "debate": None})
+
+    metrics = _count_statuses(results)
+
+    assert len(results) == 50
+
+    assert metrics == {
+        "success_count": 41,
+        "degraded_count": 7,
+        "failure_count": 2,
+        "debate_count": 1,
+    }
