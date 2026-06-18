@@ -169,3 +169,20 @@ def test_council_degraded_when_debate_fails(
     assert result["judgment"] is not None
     assert result["debate"] is None
     assert result["debate_error"] == "Debate failed"
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_marks_provider_quota_errors(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED")
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["provider_errors"]["gemini"] == "429 RESOURCE_EXHAUSTED"
+    assert result["quota_errors"]["gemini"] is True
+    assert result["quota_errors"]["deepseek"] is False
