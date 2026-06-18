@@ -36,3 +36,32 @@ def test_counts_stress_result_statuses():
         "failure_count": 1,
         "debate_count": 1,
     }
+
+
+def test_counts_twenty_simulated_requests():
+    results = []
+
+    for _ in range(15):
+        results.append({"status": "ok", "debate": None})
+
+    for _ in range(3):
+        results.append({"status": "degraded", "debate": None})
+
+    results.append(
+        {"status": "ok", "debate": {"consensus_answer": "final"}}
+    )
+
+    results.append(
+        {"status": "failed", "debate": None}
+    )
+
+    metrics = _count_statuses(results)
+
+    assert len(results) == 20
+
+    assert metrics == {
+        "success_count": 16,
+        "degraded_count": 3,
+        "failure_count": 1,
+        "debate_count": 1,
+    }
