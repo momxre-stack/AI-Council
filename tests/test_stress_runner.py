@@ -220,3 +220,29 @@ def test_runs_default_stress_test_with_default_questions():
     assert summary["report"]["total_count"] == 3
     assert summary["report"]["success_count"] == 3
     assert summary["report"]["failure_count"] == 0
+
+def test_runs_default_stress_test_with_custom_questions():
+    times = iter([1.0, 1.5, 2.0, 2.5])
+    calls = []
+
+    def fake_timer():
+        return next(times)
+
+    def fake_council_runner(question: str) -> dict:
+        calls.append(question)
+        return {
+            "question": question,
+            "status": "ok",
+            "debate": None,
+        }
+
+    summary = run_default_stress_test(
+        questions=["custom one", "custom two"],
+        council_runner=fake_council_runner,
+        timer=fake_timer,
+    )
+
+    assert calls == ["custom one", "custom two"]
+    assert summary["report"]["total_count"] == 2
+    assert summary["report"]["success_count"] == 2
+    assert summary["report"]["failure_count"] == 0

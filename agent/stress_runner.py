@@ -97,11 +97,12 @@ def run_stress_questions(
 
 
 def run_default_stress_test(
+    questions: list[str] | None = None,
     council_runner=ask_council,
     timer=perf_counter,
 ) -> dict:
     return run_stress_questions(
-        questions=DEFAULT_STRESS_QUESTIONS,
+        questions=questions or DEFAULT_STRESS_QUESTIONS,
         council_runner=council_runner,
         timer=timer,
     )
