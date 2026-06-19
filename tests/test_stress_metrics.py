@@ -1,4 +1,5 @@
 from agent.stress_metrics import (
+    build_reliability_summary,
     build_stress_report,
     calculate_rates,
     count_statuses,
@@ -212,3 +213,58 @@ def test_counts_one_hundred_simulated_requests():
     assert report["degraded_rate"] == 0.12
     assert report["failure_rate"] == 0.04
     assert report["debate_rate"] == 0.02
+
+def test_builds_excellent_reliability_summary():
+    summary = build_reliability_summary(
+        {
+            "success_rate": 0.98,
+            "degraded_rate": 0.0,
+        }
+    )
+
+    assert summary == {
+        "reliability_score": 0.98,
+        "status": "excellent",
+    }
+
+
+def test_builds_good_reliability_summary():
+    summary = build_reliability_summary(
+        {
+            "success_rate": 0.85,
+            "degraded_rate": 0.0,
+        }
+    )
+
+    assert summary == {
+        "reliability_score": 0.85,
+        "status": "good",
+    }
+
+
+def test_builds_fair_reliability_summary():
+    summary = build_reliability_summary(
+        {
+            "success_rate": 0.50,
+            "degraded_rate": 0.20,
+        }
+    )
+
+    assert summary == {
+        "reliability_score": 0.60,
+        "status": "fair",
+    }
+
+
+def test_builds_poor_reliability_summary():
+    summary = build_reliability_summary(
+        {
+            "success_rate": 0.20,
+            "degraded_rate": 0.20,
+        }
+    )
+
+    assert summary == {
+        "reliability_score": 0.30,
+        "status": "poor",
+    }

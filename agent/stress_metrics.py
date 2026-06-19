@@ -71,3 +71,24 @@ def format_stress_report(report: dict) -> str:
         )
 
     return "\n".join(lines)
+
+def build_reliability_summary(report: dict) -> dict:
+    reliability_score = round(
+    report["success_rate"]
+    + report["degraded_rate"] * 0.5,
+    4,
+)
+
+    if reliability_score >= 0.95:
+        status = "excellent"
+    elif reliability_score >= 0.80:
+        status = "good"
+    elif reliability_score >= 0.60:
+        status = "fair"
+    else:
+        status = "poor"
+
+    return {
+        "reliability_score": reliability_score,
+        "status": status,
+    }
