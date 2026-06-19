@@ -52,7 +52,14 @@ def summarize_stress_results(results: list[dict]) -> dict:
 
 
 def export_stress_summary(summary: dict) -> str:
-    return summary["summary"]
+    reliability = summary["reliability"]
+
+    return (
+        f"Reliability status: {reliability['status']}\n"
+        f"Reliability score: "
+        f"{reliability['reliability_score']:.3f}\n\n"
+        f"{summary['summary']}"
+    )
 
 
 def _run_stress_request(question: str, council_runner, timer=perf_counter) -> dict:

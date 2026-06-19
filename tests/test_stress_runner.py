@@ -185,6 +185,10 @@ def test_runs_stress_questions_counts_debate_results():
 
 def test_exports_stress_summary_text():
     summary = {
+        "reliability": {
+            "reliability_score": 0.625,
+            "status": "fair",
+        },
         "summary": (
             "Total requests: 2\n"
             "Success rate: 100.0%\n"
@@ -196,7 +200,15 @@ def test_exports_stress_summary_text():
 
     exported = export_stress_summary(summary)
 
-    assert exported == summary["summary"]
+    assert exported == (
+        "Reliability status: fair\n"
+        "Reliability score: 0.625\n\n"
+        "Total requests: 2\n"
+        "Success rate: 100.0%\n"
+        "Degraded rate: 0.0%\n"
+        "Failure rate: 0.0%\n"
+        "Debate rate: 0.0%"
+    )
 
 def test_runs_default_stress_test_with_default_questions():
     times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])
