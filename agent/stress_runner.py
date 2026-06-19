@@ -4,6 +4,13 @@ from agent.council import ask_council
 from agent.stress_metrics import build_stress_report, format_stress_report
 
 
+DEFAULT_STRESS_QUESTIONS = [
+    "Explain AI Council in one sentence.",
+    "Compare reliability and speed in software systems.",
+    "List three risks of malformed JSON outputs.",
+]
+
+
 def _build_timing_report(results: list[dict]) -> dict:
     durations = [
         result["duration_seconds"]
@@ -87,3 +94,14 @@ def run_stress_questions(
     ]
 
     return summarize_stress_results(results)
+
+
+def run_default_stress_test(
+    council_runner=ask_council,
+    timer=perf_counter,
+) -> dict:
+    return run_stress_questions(
+        questions=DEFAULT_STRESS_QUESTIONS,
+        council_runner=council_runner,
+        timer=timer,
+    )

@@ -1,5 +1,6 @@
 from agent.stress_runner import (
     export_stress_summary,
+    run_default_stress_test,
     run_stress_questions,
     run_stress_test,
     summarize_stress_results,
@@ -190,3 +191,32 @@ def test_exports_stress_summary_text():
     exported = export_stress_summary(summary)
 
     assert exported == summary["summary"]
+
+def test_runs_default_stress_test_with_default_questions():
+    times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])
+    calls = []
+
+    def fake_timer():
+        return next(times)
+
+    def fake_council_runner(question: str) -> dict:
+        calls.append(question)
+        return {
+            "question": question,
+            "status": "ok",
+            "debate": None,
+        }
+
+    summary = run_default_stress_test(
+        council_runner=fake_council_runner,
+        timer=fake_timer,
+    )
+
+    assert calls == [
+        "Explain AI Council in one sentence.",
+        "Compare reliability and speed in software systems.",
+        "List three risks of malformed JSON outputs.",
+    ]
+    assert summary["report"]["total_count"] == 3
+    assert summary["report"]["success_count"] == 3
+    assert summary["report"]["failure_count"] == 0
