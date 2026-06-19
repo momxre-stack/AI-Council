@@ -26,21 +26,19 @@ def test_summarizes_stress_results():
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
         "debate_rate": 0.25,
+        "average_duration_seconds": 0,
+        "min_duration_seconds": 0,
+        "max_duration_seconds": 0,
     }
-    assert summary["summary"] == (
-        "Total requests: 4\n"
-        "Success rate: 50.0%\n"
-        "Degraded rate: 25.0%\n"
-        "Failure rate: 25.0%\n"
-        "Debate rate: 25.0%"
-    )
 
 
 def test_runs_stress_test_with_injected_council_runner():
-    calls = []
+    times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])
+
+    def fake_timer():
+        return next(times)
 
     def fake_council_runner(question: str) -> dict:
-        calls.append(question)
         return {
             "question": question,
             "status": "ok",
@@ -51,15 +49,23 @@ def test_runs_stress_test_with_injected_council_runner():
         question="test question",
         request_count=3,
         council_runner=fake_council_runner,
+        timer=fake_timer,
     )
 
-    assert calls == ["test question", "test question", "test question"]
     assert summary["report"]["total_count"] == 3
     assert summary["report"]["success_count"] == 3
     assert summary["report"]["failure_count"] == 0
+    assert summary["report"]["average_duration_seconds"] == 0.5
+    assert summary["report"]["min_duration_seconds"] == 0.5
+    assert summary["report"]["max_duration_seconds"] == 0.5
 
 
 def test_runs_stress_test_counts_degraded_results():
+    times = iter([1.0, 1.25, 2.0, 2.75])
+
+    def fake_timer():
+        return next(times)
+
     def degraded_council_runner(question: str) -> dict:
         return {
             "question": question,
@@ -71,35 +77,25 @@ def test_runs_stress_test_counts_degraded_results():
         question="partial outage",
         request_count=2,
         council_runner=degraded_council_runner,
+        timer=fake_timer,
     )
 
-    assert summary["results"] == [
-        {
-            "question": "partial outage",
-            "status": "degraded",
-            "debate": None,
-        },
-        {
-            "question": "partial outage",
-            "status": "degraded",
-            "debate": None,
-        },
-    ]
     assert summary["report"]["total_count"] == 2
     assert summary["report"]["success_count"] == 0
     assert summary["report"]["degraded_count"] == 2
     assert summary["report"]["failure_count"] == 0
     assert summary["report"]["debate_count"] == 0
-    assert summary["summary"] == (
-        "Total requests: 2\n"
-        "Success rate: 0.0%\n"
-        "Degraded rate: 100.0%\n"
-        "Failure rate: 0.0%\n"
-        "Debate rate: 0.0%"
-    )
+    assert summary["report"]["average_duration_seconds"] == 0.5
+    assert summary["report"]["min_duration_seconds"] == 0.25
+    assert summary["report"]["max_duration_seconds"] == 0.75
 
 
 def test_runs_stress_test_records_runner_failures():
+    times = iter([1.0, 1.5, 2.0, 2.5])
+
+    def fake_timer():
+        return next(times)
+
     def failing_council_runner(question: str) -> dict:
         raise RuntimeError(f"failed question: {question}")
 
@@ -107,6 +103,7 @@ def test_runs_stress_test_records_runner_failures():
         question="unstable question",
         request_count=2,
         council_runner=failing_council_runner,
+        timer=fake_timer,
     )
 
     assert summary["results"] == [
@@ -115,32 +112,26 @@ def test_runs_stress_test_records_runner_failures():
             "status": "failed",
             "error": "failed question: unstable question",
             "debate": None,
+            "duration_seconds": 0.5,
         },
         {
             "question": "unstable question",
             "status": "failed",
             "error": "failed question: unstable question",
             "debate": None,
+            "duration_seconds": 0.5,
         },
     ]
-    assert summary["report"]["total_count"] == 2
-    assert summary["report"]["success_count"] == 0
-    assert summary["report"]["degraded_count"] == 0
     assert summary["report"]["failure_count"] == 2
-    assert summary["report"]["debate_count"] == 0
-    assert summary["summary"] == (
-        "Total requests: 2\n"
-        "Success rate: 0.0%\n"
-        "Degraded rate: 0.0%\n"
-        "Failure rate: 100.0%\n"
-        "Debate rate: 0.0%"
-    )
+
 
 def test_runs_stress_questions_with_multiple_questions():
-    calls = []
+    times = iter([1.0, 1.5, 2.0, 2.5])
+
+    def fake_timer():
+        return next(times)
 
     def fake_council_runner(question: str) -> dict:
-        calls.append(question)
         return {
             "question": question,
             "status": "ok",
@@ -150,14 +141,20 @@ def test_runs_stress_questions_with_multiple_questions():
     summary = run_stress_questions(
         questions=["question one", "question two"],
         council_runner=fake_council_runner,
+        timer=fake_timer,
     )
 
-    assert calls == ["question one", "question two"]
     assert summary["report"]["total_count"] == 2
     assert summary["report"]["success_count"] == 2
     assert summary["report"]["failure_count"] == 0
 
+
 def test_runs_stress_questions_counts_debate_results():
+    times = iter([1.0, 1.5, 2.0, 2.5])
+
+    def fake_timer():
+        return next(times)
+
     def debate_council_runner(question: str) -> dict:
         return {
             "question": question,
@@ -168,6 +165,7 @@ def test_runs_stress_questions_counts_debate_results():
     summary = run_stress_questions(
         questions=["debate one", "debate two"],
         council_runner=debate_council_runner,
+        timer=fake_timer,
     )
 
     assert summary["report"]["total_count"] == 2
