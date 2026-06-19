@@ -19,14 +19,20 @@ Stable baseline:
 * Stress runner summary module
 * Stress runner execution helper
 * Multi-question stress runner
+* Configurable default stress questions
+* Real stress runner entrypoint
 * Stress timing metrics
+* Timing metrics in formatted stress reports
 * Stress report export helper
-* Default stress runner entrypoint
-* 47 passing tests
+* Reliability scoring
+* Reliability reporting
+* Reliability details in exported stress summaries
+* Reliability information in formatted stress reports
+* 54 passing tests
 
 Latest stable commit:
 
-d2a13a1
+b95204c
 
 ---
 
@@ -94,11 +100,11 @@ Completed.
 
 ## Priority 4
 
-### Stress Testing
+### Stress Testing and Reliability Reporting
 
 Goal:
 
-Measure system reliability.
+Measure system reliability and expose reliability information.
 
 Completed:
 
@@ -123,16 +129,22 @@ Completed:
 * Debate-path stress runner coverage
 * Multi-question stress runner helper
 * Stress runner request helper
+* Configurable default stress questions
+* Real stress runner entrypoint
 * Stress timing metrics
 * Timing metrics in formatted stress reports
 * Stress report export helper
-* Default stress runner entrypoint
+* Reliability summary helper
+* Reliability summary integration in stress runner
+* Reliability details in exported stress summaries
+* Reliability information in formatted stress reports
 
 Remaining:
 
 * Real-world reliability measurements
 * Optional stress runner CLI
 * Optional stress report persistence
+* Optional historical reliability tracking
 
 Status:
 
@@ -169,6 +181,8 @@ Majority Vote
 Debate
 ->
 Consensus Answer
+->
+Reliability Reporting
 ->
 Reliable AI Council
 
