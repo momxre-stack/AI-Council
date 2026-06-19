@@ -1,6 +1,7 @@
 from agent.stress_runner import (
     export_stress_summary,
     run_default_stress_test,
+    run_real_stress_test,
     run_stress_questions,
     run_stress_test,
     summarize_stress_results,
@@ -245,4 +246,11 @@ def test_runs_default_stress_test_with_custom_questions():
     assert calls == ["custom one", "custom two"]
     assert summary["report"]["total_count"] == 2
     assert summary["report"]["success_count"] == 2
+    assert summary["report"]["failure_count"] == 0
+
+def test_real_stress_test_uses_default_question():
+    summary = run_real_stress_test(request_count=0)
+
+    assert summary["report"]["total_count"] == 0
+    assert summary["report"]["success_count"] == 0
     assert summary["report"]["failure_count"] == 0
