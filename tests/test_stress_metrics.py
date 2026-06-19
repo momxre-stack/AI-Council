@@ -157,6 +157,33 @@ def test_formats_stress_report():
         "Debate rate: 2.0%"
     )
 
+
+def test_formats_stress_report_with_timing_metrics():
+    report = {
+        "total_count": 50,
+        "success_rate": 0.82,
+        "degraded_rate": 0.14,
+        "failure_rate": 0.04,
+        "debate_rate": 0.02,
+        "average_duration_seconds": 1.23456,
+        "min_duration_seconds": 0.5,
+        "max_duration_seconds": 2.75,
+    }
+
+    formatted = format_stress_report(report)
+
+    assert formatted == (
+        "Total requests: 50\n"
+        "Success rate: 82.0%\n"
+        "Degraded rate: 14.0%\n"
+        "Failure rate: 4.0%\n"
+        "Debate rate: 2.0%\n"
+        "Average duration: 1.235s\n"
+        "Min duration: 0.500s\n"
+        "Max duration: 2.750s"
+    )
+
+
 def test_counts_one_hundred_simulated_requests():
     results = []
 
