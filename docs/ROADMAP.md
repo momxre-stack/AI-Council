@@ -17,11 +17,16 @@ Stable baseline:
 * Stress testing foundation
 * Stress metrics utilities
 * Stress runner summary module
-* 39 passing tests
+* Stress runner execution helper
+* Multi-question stress runner
+* Stress timing metrics
+* Stress report export helper
+* Default stress runner entrypoint
+* 47 passing tests
 
 Latest stable commit:
 
-a39e7c0
+d2a13a1
 
 ---
 
@@ -112,11 +117,22 @@ Completed:
 * Stress report builder
 * Human-readable stress report formatting
 * Stress runner summary module
+* Reusable stress execution helper
+* Failure-path stress runner coverage
+* Degraded-path stress runner coverage
+* Debate-path stress runner coverage
+* Multi-question stress runner helper
+* Stress runner request helper
+* Stress timing metrics
+* Timing metrics in formatted stress reports
+* Stress report export helper
+* Default stress runner entrypoint
 
 Remaining:
 
-* Real stress runner
 * Real-world reliability measurements
+* Optional stress runner CLI
+* Optional stress report persistence
 
 Status:
 
@@ -143,17 +159,17 @@ Do not expand model count until the core architecture is highly stable.
 ## Long-Term Vision
 
 Question
-→
+->
 Multiple Providers
-→
+->
 Multiple Judges
-→
+->
 Majority Vote
-→
+->
 Debate
-→
+->
 Consensus Answer
-→
+->
 Reliable AI Council
 
 Goal:
