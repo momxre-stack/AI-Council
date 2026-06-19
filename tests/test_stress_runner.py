@@ -156,3 +156,23 @@ def test_runs_stress_questions_with_multiple_questions():
     assert summary["report"]["total_count"] == 2
     assert summary["report"]["success_count"] == 2
     assert summary["report"]["failure_count"] == 0
+
+def test_runs_stress_questions_counts_debate_results():
+    def debate_council_runner(question: str) -> dict:
+        return {
+            "question": question,
+            "status": "ok",
+            "debate": {"consensus_answer": f"final answer for {question}"},
+        }
+
+    summary = run_stress_questions(
+        questions=["debate one", "debate two"],
+        council_runner=debate_council_runner,
+    )
+
+    assert summary["report"]["total_count"] == 2
+    assert summary["report"]["success_count"] == 2
+    assert summary["report"]["degraded_count"] == 0
+    assert summary["report"]["failure_count"] == 0
+    assert summary["report"]["debate_count"] == 2
+    assert summary["report"]["debate_rate"] == 1.0
