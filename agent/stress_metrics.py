@@ -50,13 +50,26 @@ def build_stress_report(results: list[dict]) -> dict:
 
 
 def format_stress_report(report: dict) -> str:
-    lines = [
-        f"Total requests: {report['total_count']}",
-        f"Success rate: {report['success_rate'] * 100:.1f}%",
-        f"Degraded rate: {report['degraded_rate'] * 100:.1f}%",
-        f"Failure rate: {report['failure_rate'] * 100:.1f}%",
-        f"Debate rate: {report['debate_rate'] * 100:.1f}%",
-    ]
+    lines = []
+
+    if "reliability_score" in report:
+        lines.extend(
+            [
+                f"Reliability status: {report['reliability_status']}",
+                f"Reliability score: {report['reliability_score']:.3f}",
+                "",
+            ]
+        )
+
+    lines.extend(
+        [
+            f"Total requests: {report['total_count']}",
+            f"Success rate: {report['success_rate'] * 100:.1f}%",
+            f"Degraded rate: {report['degraded_rate'] * 100:.1f}%",
+            f"Failure rate: {report['failure_rate'] * 100:.1f}%",
+            f"Debate rate: {report['debate_rate'] * 100:.1f}%",
+        ]
+    )
 
     if "average_duration_seconds" in report:
         lines.extend(

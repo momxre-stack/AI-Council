@@ -184,6 +184,30 @@ def test_formats_stress_report_with_timing_metrics():
         "Max duration: 2.750s"
     )
 
+def test_formats_stress_report_with_reliability_metrics():
+    report = {
+        "total_count": 50,
+        "success_rate": 0.82,
+        "degraded_rate": 0.14,
+        "failure_rate": 0.04,
+        "debate_rate": 0.02,
+        "reliability_score": 0.89,
+        "reliability_status": "good",
+    }
+
+    formatted = format_stress_report(report)
+
+    assert formatted == (
+        "Reliability status: good\n"
+        "Reliability score: 0.890\n"
+        "\n"
+        "Total requests: 50\n"
+        "Success rate: 82.0%\n"
+        "Degraded rate: 14.0%\n"
+        "Failure rate: 4.0%\n"
+        "Debate rate: 2.0%"
+    )
+
 
 def test_counts_one_hundred_simulated_requests():
     results = []
