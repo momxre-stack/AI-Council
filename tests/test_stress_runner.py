@@ -1,4 +1,5 @@
 from agent.stress_runner import (
+    export_stress_summary,
     run_stress_questions,
     run_stress_test,
     summarize_stress_results,
@@ -174,3 +175,18 @@ def test_runs_stress_questions_counts_debate_results():
     assert summary["report"]["failure_count"] == 0
     assert summary["report"]["debate_count"] == 2
     assert summary["report"]["debate_rate"] == 1.0
+
+def test_exports_stress_summary_text():
+    summary = {
+        "summary": (
+            "Total requests: 2\n"
+            "Success rate: 100.0%\n"
+            "Degraded rate: 0.0%\n"
+            "Failure rate: 0.0%\n"
+            "Debate rate: 0.0%"
+        )
+    }
+
+    exported = export_stress_summary(summary)
+
+    assert exported == summary["summary"]

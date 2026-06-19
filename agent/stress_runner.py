@@ -38,6 +38,10 @@ def summarize_stress_results(results: list[dict]) -> dict:
     }
 
 
+def export_stress_summary(summary: dict) -> str:
+    return summary["summary"]
+
+
 def _run_stress_request(question: str, council_runner, timer=perf_counter) -> dict:
     start_time = timer()
 
