@@ -34,6 +34,11 @@ def test_summarizes_stress_results():
         "max_duration_seconds": 0,
     }
 
+    assert summary["reliability"] == {
+        "reliability_score": 0.625,
+        "status": "fair",
+    }
+
 
 def test_runs_stress_test_with_injected_council_runner():
     times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])

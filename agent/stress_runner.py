@@ -1,8 +1,11 @@
 from time import perf_counter
 
 from agent.council import ask_council
-from agent.stress_metrics import build_stress_report, format_stress_report
-
+from agent.stress_metrics import (
+    build_reliability_summary,
+    build_stress_report,
+    format_stress_report,
+)
 
 DEFAULT_STRESS_QUESTIONS = [
     "Explain AI Council in one sentence.",
@@ -38,9 +41,12 @@ def summarize_stress_results(results: list[dict]) -> dict:
         **_build_timing_report(results),
     }
 
+    reliability = build_reliability_summary(report)
+
     return {
         "results": results,
         "report": report,
+        "reliability": reliability,
         "summary": format_stress_report(report),
     }
 
