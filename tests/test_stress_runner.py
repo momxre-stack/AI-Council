@@ -265,9 +265,31 @@ def test_runs_default_stress_test_with_custom_questions():
     assert summary["report"]["success_count"] == 2
     assert summary["report"]["failure_count"] == 0
 
-def test_real_stress_test_uses_default_question():
-    summary = run_real_stress_test(request_count=0)
+def test_real_stress_test_uses_default_questions(monkeypatch):
+    captured_questions = []
 
-    assert summary["report"]["total_count"] == 0
-    assert summary["report"]["success_count"] == 0
+    def fake_run_stress_questions(questions):
+        captured_questions.extend(questions)
+        return {
+            "report": {
+                "total_count": len(questions),
+                "success_count": len(questions),
+                "failure_count": 0,
+            }
+        }
+
+    monkeypatch.setattr(
+        "agent.stress_runner.run_stress_questions",
+        fake_run_stress_questions,
+    )
+
+    summary = run_real_stress_test(request_count=1)
+
+    assert captured_questions == [
+        "Explain AI Council in one sentence.",
+        "Compare reliability and speed in software systems.",
+        "List three risks of malformed JSON outputs.",
+    ]
+    assert summary["report"]["total_count"] == 3
+    assert summary["report"]["success_count"] == 3
     assert summary["report"]["failure_count"] == 0

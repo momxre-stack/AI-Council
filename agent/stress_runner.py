@@ -123,7 +123,8 @@ def run_default_stress_test(
 def run_real_stress_test(
     request_count: int,
 ) -> dict:
-    return run_stress_test(
-        question="Explain AI Council in one sentence.",
-        request_count=request_count,
+    questions = DEFAULT_STRESS_QUESTIONS * request_count
+
+    return run_stress_questions(
+        questions=questions,
     )
