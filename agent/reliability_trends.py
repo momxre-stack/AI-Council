@@ -63,6 +63,33 @@ def build_reliability_history_from_directory(directory: str) -> list[dict]:
     reports = load_stress_reports(directory)
     return build_reliability_history(reports)
 
+def summarize_reliability_history(history: list[dict]) -> dict:
+    """Return counts of reliability directions across history entries."""
+    summary = {
+        "total_comparisons": len(history),
+        "improving_count": 0,
+        "declining_count": 0,
+        "unchanged_count": 0,
+        "unknown_count": 0,
+    }
+
+    for entry in history:
+        trend = summarize_reliability_trend(entry.get("deltas", {}))
+        direction = trend["direction"]
+
+        if direction == "improving":
+            summary["improving_count"] += 1
+        elif direction == "declining":
+            summary["declining_count"] += 1
+        elif direction == "unchanged":
+            summary["unchanged_count"] += 1
+        else:
+            summary["unknown_count"] += 1
+
+    return summary
+
+
+
 
 def summarize_reliability_trend(deltas: dict) -> dict:
     """Return a simple trend summary from reliability metric deltas."""

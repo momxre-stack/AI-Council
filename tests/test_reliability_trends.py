@@ -3,6 +3,7 @@ from agent.reliability_trends import (
     build_reliability_history_from_directory,
     compare_reliability_reports,
     format_reliability_trend_summary,
+    summarize_reliability_history,
     summarize_reliability_trend,
 )
 
@@ -157,6 +158,45 @@ def test_build_reliability_history_from_directory_loads_saved_reports(tmp_path):
             },
         },
     ]
+
+def test_summarize_reliability_history_counts_trend_directions():
+    history = [
+        {
+            "index": 1,
+            "deltas": {
+                "reliability_score_delta": 0.1,
+            },
+        },
+        {
+            "index": 2,
+            "deltas": {
+                "reliability_score_delta": -0.1,
+            },
+        },
+        {
+            "index": 3,
+            "deltas": {
+                "reliability_score_delta": 0,
+            },
+        },
+        {
+            "index": 4,
+            "deltas": {
+                "success_rate_delta": 0.1,
+            },
+        },
+    ]
+
+    result = summarize_reliability_history(history)
+
+    assert result == {
+        "total_comparisons": 4,
+        "improving_count": 1,
+        "declining_count": 1,
+        "unchanged_count": 1,
+        "unknown_count": 1,
+    }
+
 
 
 def test_summarize_reliability_trend_marks_improving():
