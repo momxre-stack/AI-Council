@@ -4,9 +4,12 @@
 
 Stable baseline:
 
-* Triple Judge architecture
-* Majority Vote
-* Structured Debate
+* Gemini provider
+* DeepSeek provider
+* Council engine
+* Dual Judge architecture
+* Independent Judge
+* Debate engine
 * Provider retries
 * Provider failure handling
 * Judge failure handling
@@ -28,11 +31,14 @@ Stable baseline:
 * Reliability reporting
 * Reliability details in exported stress summaries
 * Reliability information in formatted stress reports
-* 54 passing tests
+* Reliability trend comparison helper
+* Reliability trend summary helper
+* Reliability trend summary formatting
+* 64 passing tests
 
 Latest stable commit:
 
-b95204c
+cbb4d55
 
 ---
 
@@ -40,19 +46,15 @@ b95204c
 
 ### Malformed Judge JSON Test
 
-Goal:
-
-Add tests for malformed judge output.
-
-Result:
-
-* Judge malformed JSON is detected.
-* Failure path is tested.
-* Council remains stable.
-
 Status:
 
 Completed.
+
+Implemented:
+
+* Judge malformed JSON detection
+* Failure-path coverage
+* Council stability verification
 
 ---
 
@@ -60,9 +62,9 @@ Completed.
 
 ### JSON Recovery Layer
 
-Goal:
+Status:
 
-Recover from partially malformed LLM JSON.
+Completed.
 
 Implemented:
 
@@ -71,19 +73,15 @@ Implemented:
 * Shared JSON parsing utility
 * Recovery tests
 
-Status:
-
-Completed.
-
 ---
 
 ## Priority 3
 
 ### Quota-Aware Handling
 
-Goal:
+Status:
 
-Handle provider quota exhaustion more gracefully.
+Completed.
 
 Implemented:
 
@@ -92,30 +90,22 @@ Implemented:
 * Provider failure coverage
 * Both-provider failure coverage
 
-Status:
-
-Completed.
-
 ---
 
 ## Priority 4
 
 ### Stress Testing and Reliability Reporting
 
-Goal:
+Status:
 
-Measure system reliability and expose reliability information.
+Completed.
 
-Completed:
+Implemented:
 
 * Stress test baseline
 * Repeated council execution test
 * Judge execution verification
 * Stress metrics foundation
-* Stress metrics counting test
-* 20 request stress simulation
-* 50 request stress simulation
-* 100 request stress simulation
 * Success-rate reporting
 * Degraded-rate reporting
 * Failure-rate reporting
@@ -139,22 +129,84 @@ Completed:
 * Reliability details in exported stress summaries
 * Reliability information in formatted stress reports
 
-Remaining:
+---
 
-* Real-world reliability measurements
-* Optional stress runner CLI
-* Optional stress report persistence
-* Optional historical reliability tracking
+## Priority 5
+
+### Reliability Trend Tracking Foundation
 
 Status:
 
-In Progress.
+Completed.
+
+Implemented:
+
+* Reliability report comparison helper
+* Reliability metric delta calculation
+* Reliability trend direction detection
+* Human-readable trend formatting
+* Trend helper test coverage
+
+Implemented commits:
+
+* 39ddb0c - Add reliability trend comparison helper
+* 700921e - Add reliability trend summary helper
+* cbb4d55 - Add reliability trend summary formatting
+
+---
+
+## Next Milestone
+
+### Optional Stress Report Persistence
+
+Goal:
+
+Allow stress and reliability reports to be saved for later comparison.
+
+Planned scope:
+
+* Persistence helpers only
+* No dashboards
+* No databases
+* No provider changes
+* No council architecture changes
+
+Status:
+
+Planned.
+
+---
+
+## Future Milestones
+
+### Historical Reliability Reporting
+
+Potential capabilities:
+
+* Multi-run comparisons
+* Long-term reliability history
+* Historical summaries
+
+Status:
+
+Planned.
+
+### Optional Stress Runner CLI
+
+Potential capabilities:
+
+* Manual execution commands
+* Human-friendly report output
+
+Status:
+
+Planned.
 
 ---
 
 ## Future Council Expansion
 
-Only after stability work is complete.
+Only after reliability and observability work is mature.
 
 Potential additions:
 
@@ -164,7 +216,7 @@ Potential additions:
 
 Strategy:
 
-Do not expand model count until the core architecture is highly stable.
+Do not expand provider count until reliability and observability foundations are complete.
 
 ---
 
@@ -176,16 +228,16 @@ Multiple Providers
 ->
 Multiple Judges
 ->
-Majority Vote
-->
 Debate
 ->
 Consensus Answer
 ->
-Reliability Reporting
+Reliability Measurement
+->
+Reliability Trends
 ->
 Reliable AI Council
 
 Goal:
 
-Create a robust multi-model decision system rather than a simple wrapper around a single LLM.
+Create a robust multi-model decision system that helps produce safer, more reliable decisions than a single-model workflow.
