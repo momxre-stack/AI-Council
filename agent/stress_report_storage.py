@@ -25,3 +25,23 @@ def load_stress_report(path: str) -> dict:
     """Load a stress report summary from JSON."""
     with open(path, encoding="utf-8") as file:
         return json.load(file)
+
+
+def load_stress_reports(directory: str) -> list[dict]:
+    """Load all stress report JSON files from a directory."""
+    if not os.path.isdir(directory):
+        return []
+
+    reports = []
+
+    for filename in sorted(os.listdir(directory)):
+        if not filename.startswith("stress-report-"):
+            continue
+
+        if not filename.endswith(".json"):
+            continue
+
+        path = os.path.join(directory, filename)
+        reports.append(load_stress_report(path))
+
+    return reports
