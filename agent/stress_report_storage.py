@@ -45,3 +45,23 @@ def load_stress_reports(directory: str) -> list[dict]:
         reports.append(load_stress_report(path))
 
     return reports
+
+def compare_saved_stress_reports(previous_report: dict, current_report: dict) -> dict:
+    """Compare numeric metrics from two loaded stress reports."""
+    deltas = {}
+
+    for key, previous_value in previous_report.items():
+        if key not in current_report:
+            continue
+
+        current_value = current_report[key]
+
+        if not isinstance(previous_value, (int, float)):
+            continue
+
+        if not isinstance(current_value, (int, float)):
+            continue
+
+        deltas[f"{key}_delta"] = round(current_value - previous_value, 4)
+
+    return deltas
