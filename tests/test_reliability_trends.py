@@ -3,6 +3,7 @@ from agent.reliability_trends import (
     build_reliability_history_from_directory,
     compare_reliability_reports,
     format_reliability_trend_summary,
+    generate_reliability_history_report,
     summarize_reliability_history,
     summarize_reliability_trend,
 )
@@ -158,6 +159,49 @@ def test_build_reliability_history_from_directory_loads_saved_reports(tmp_path):
             },
         },
     ]
+
+def test_generate_reliability_history_report_builds_history_and_summary(tmp_path):
+    from agent.stress_report_storage import save_stress_report
+
+    save_stress_report(
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+            "reliability_score": 0.75,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+
+    save_stress_report(
+        {
+            "success_rate": 0.9,
+            "failure_rate": 0.1,
+            "reliability_score": 0.8,
+        },
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = generate_reliability_history_report(str(tmp_path))
+
+    assert result == {
+        "history": [
+            {
+                "index": 1,
+                "deltas": {
+                    "success_rate_delta": 0.1,
+                    "failure_rate_delta": -0.1,
+                    "reliability_score_delta": 0.05,
+                },
+            },
+        ],
+        "summary": {
+            "total_comparisons": 1,
+            "improving_count": 1,
+            "declining_count": 0,
+            "unchanged_count": 0,
+            "unknown_count": 0,
+        },
+    }
 
 def test_summarize_reliability_history_counts_trend_directions():
     history = [

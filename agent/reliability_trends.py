@@ -89,6 +89,14 @@ def summarize_reliability_history(history: list[dict]) -> dict:
     return summary
 
 
+def generate_reliability_history_report(directory: str) -> dict:
+    """Build a reliability history report from saved reports."""
+    history = build_reliability_history_from_directory(directory)
+
+    return {
+        "history": history,
+        "summary": summarize_reliability_history(history),
+    }
 
 
 def summarize_reliability_trend(deltas: dict) -> dict:
