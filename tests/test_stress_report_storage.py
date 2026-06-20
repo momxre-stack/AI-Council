@@ -1,4 +1,5 @@
 from agent.stress_report_storage import (
+    build_stress_report_path,
     load_stress_report,
     save_stress_report,
 )
@@ -31,3 +32,15 @@ def test_save_stress_report_creates_parent_directory(tmp_path):
 
     assert report_file.exists()
     assert load_stress_report(str(report_file)) == report
+
+
+def test_build_stress_report_path_returns_deterministic_json_path():
+    result = build_stress_report_path("reports", "nightly-001")
+
+    assert result == os_path("reports", "stress-report-nightly-001.json")
+
+
+def os_path(*parts):
+    import os
+
+    return os.path.join(*parts)
