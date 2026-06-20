@@ -33,3 +33,22 @@ def compare_reliability_reports(
         deltas[f"{metric}_delta"] = round(current_value - previous_value, 4)
 
     return deltas
+
+
+def summarize_reliability_trend(deltas: dict) -> dict:
+    """Return a simple trend summary from reliability metric deltas."""
+    reliability_score_delta = deltas.get("reliability_score_delta")
+
+    if reliability_score_delta is None:
+        direction = "unknown"
+    elif reliability_score_delta > 0:
+        direction = "improving"
+    elif reliability_score_delta < 0:
+        direction = "declining"
+    else:
+        direction = "unchanged"
+
+    return {
+        "direction": direction,
+        "deltas": deltas,
+    }

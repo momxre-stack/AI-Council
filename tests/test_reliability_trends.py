@@ -1,4 +1,7 @@
-from agent.reliability_trends import compare_reliability_reports
+from agent.reliability_trends import (
+    compare_reliability_reports,
+    summarize_reliability_trend,
+)
 
 
 def test_compare_reliability_reports_returns_metric_deltas():
@@ -72,3 +75,55 @@ def test_compare_reliability_reports_returns_empty_dict_without_comparable_metri
     result = compare_reliability_reports(previous_report, current_report)
 
     assert result == {}
+
+
+def test_summarize_reliability_trend_marks_improving():
+    deltas = {
+        "reliability_score_delta": 0.05,
+    }
+
+    result = summarize_reliability_trend(deltas)
+
+    assert result == {
+        "direction": "improving",
+        "deltas": deltas,
+    }
+
+
+def test_summarize_reliability_trend_marks_declining():
+    deltas = {
+        "reliability_score_delta": -0.05,
+    }
+
+    result = summarize_reliability_trend(deltas)
+
+    assert result == {
+        "direction": "declining",
+        "deltas": deltas,
+    }
+
+
+def test_summarize_reliability_trend_marks_unchanged():
+    deltas = {
+        "reliability_score_delta": 0,
+    }
+
+    result = summarize_reliability_trend(deltas)
+
+    assert result == {
+        "direction": "unchanged",
+        "deltas": deltas,
+    }
+
+
+def test_summarize_reliability_trend_marks_unknown_without_reliability_score():
+    deltas = {
+        "success_rate_delta": 0.1,
+    }
+
+    result = summarize_reliability_trend(deltas)
+
+    assert result == {
+        "direction": "unknown",
+        "deltas": deltas,
+    }
