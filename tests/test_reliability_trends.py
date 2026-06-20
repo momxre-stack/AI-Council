@@ -2,6 +2,7 @@ from agent.reliability_trends import (
     build_reliability_history,
     build_reliability_history_from_directory,
     compare_reliability_reports,
+    format_reliability_history_report,
     format_reliability_trend_summary,
     generate_reliability_history_report,
     summarize_reliability_history,
@@ -293,6 +294,44 @@ def test_summarize_reliability_trend_marks_unknown_without_reliability_score():
         "direction": "unknown",
         "deltas": deltas,
     }
+
+def test_format_reliability_history_report_returns_human_readable_text():
+    report = {
+        "summary": {
+            "total_comparisons": 4,
+            "improving_count": 2,
+            "declining_count": 1,
+            "unchanged_count": 1,
+            "unknown_count": 0,
+        },
+    }
+
+    result = format_reliability_history_report(report)
+
+    assert result == (
+        "Reliability History Report\n"
+        "\n"
+        "Total comparisons: 4\n"
+        "Improving: 2\n"
+        "Declining: 1\n"
+        "Unchanged: 1\n"
+        "Unknown: 0"
+    )
+
+
+def test_format_reliability_history_report_handles_empty_summary():
+    result = format_reliability_history_report({})
+
+    assert result == (
+        "Reliability History Report\n"
+        "\n"
+        "Total comparisons: 0\n"
+        "Improving: 0\n"
+        "Declining: 0\n"
+        "Unchanged: 0\n"
+        "Unknown: 0"
+    )
+
 
 
 def test_format_reliability_trend_summary_returns_human_readable_text():

@@ -117,6 +117,23 @@ def summarize_reliability_trend(deltas: dict) -> dict:
         "deltas": deltas,
     }
 
+def format_reliability_history_report(report: dict) -> str:
+    """Return a human-readable reliability history report."""
+    summary = report.get("summary", {})
+
+    lines = [
+        "Reliability History Report",
+        "",
+        f"Total comparisons: {summary.get('total_comparisons', 0)}",
+        f"Improving: {summary.get('improving_count', 0)}",
+        f"Declining: {summary.get('declining_count', 0)}",
+        f"Unchanged: {summary.get('unchanged_count', 0)}",
+        f"Unknown: {summary.get('unknown_count', 0)}",
+    ]
+
+    return "\n".join(lines)
+
+
 
 def format_reliability_trend_summary(summary: dict) -> str:
     """Return a human-readable reliability trend summary."""
