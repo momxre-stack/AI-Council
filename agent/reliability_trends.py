@@ -52,3 +52,30 @@ def summarize_reliability_trend(deltas: dict) -> dict:
         "direction": direction,
         "deltas": deltas,
     }
+
+
+def format_reliability_trend_summary(summary: dict) -> str:
+    """Return a human-readable reliability trend summary."""
+    deltas = summary.get("deltas", {})
+
+    lines = [
+        f"Reliability trend: {summary['direction']}",
+    ]
+
+    if "reliability_score_delta" in deltas:
+        lines.append(
+            "Reliability score delta: "
+            f"{deltas['reliability_score_delta']:+.3f}"
+        )
+
+    for metric in [
+        "success_rate_delta",
+        "degraded_rate_delta",
+        "failure_rate_delta",
+        "debate_rate_delta",
+    ]:
+        if metric in deltas:
+            label = metric.replace("_", " ").replace(" delta", " delta")
+            lines.append(f"{label.capitalize()}: {deltas[metric] * 100:+.1f}%")
+
+    return "\n".join(lines)

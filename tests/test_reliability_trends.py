@@ -1,5 +1,6 @@
 from agent.reliability_trends import (
     compare_reliability_reports,
+    format_reliability_trend_summary,
     summarize_reliability_trend,
 )
 
@@ -127,3 +128,33 @@ def test_summarize_reliability_trend_marks_unknown_without_reliability_score():
         "direction": "unknown",
         "deltas": deltas,
     }
+
+
+def test_format_reliability_trend_summary_returns_human_readable_text():
+    summary = {
+        "direction": "improving",
+        "deltas": {
+            "reliability_score_delta": 0.05,
+            "success_rate_delta": 0.10,
+            "failure_rate_delta": -0.05,
+        },
+    }
+
+    result = format_reliability_trend_summary(summary)
+
+    assert result == (
+        "Reliability trend: improving\n"
+        "Reliability score delta: +0.050\n"
+        "Success rate delta: +10.0%\n"
+        "Failure rate delta: -5.0%"
+    )
+
+
+def test_format_reliability_trend_summary_handles_missing_deltas():
+    summary = {
+        "direction": "unknown",
+    }
+
+    result = format_reliability_trend_summary(summary)
+
+    assert result == "Reliability trend: unknown"
