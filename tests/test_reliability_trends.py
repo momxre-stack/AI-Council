@@ -1,5 +1,6 @@
 from agent.reliability_trends import (
     build_reliability_history,
+    build_reliability_history_from_directory,
     compare_reliability_reports,
     format_reliability_trend_summary,
     summarize_reliability_trend,
@@ -122,6 +123,40 @@ def test_build_reliability_history_returns_consecutive_report_deltas():
 def test_build_reliability_history_returns_empty_list_for_fewer_than_two_reports():
     assert build_reliability_history([]) == []
     assert build_reliability_history([{"success_rate": 0.8}]) == []
+
+
+def test_build_reliability_history_from_directory_loads_saved_reports(tmp_path):
+    from agent.stress_report_storage import save_stress_report
+
+    save_stress_report(
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+            "reliability_score": 0.75,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+    save_stress_report(
+        {
+            "success_rate": 0.9,
+            "failure_rate": 0.1,
+            "reliability_score": 0.8,
+        },
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = build_reliability_history_from_directory(str(tmp_path))
+
+    assert result == [
+        {
+            "index": 1,
+            "deltas": {
+                "success_rate_delta": 0.1,
+                "failure_rate_delta": -0.1,
+                "reliability_score_delta": 0.05,
+            },
+        },
+    ]
 
 
 def test_summarize_reliability_trend_marks_improving():

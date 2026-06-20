@@ -1,5 +1,7 @@
 """Helpers for comparing reliability reports across runs."""
 
+from agent.stress_report_storage import load_stress_reports
+
 
 TREND_METRICS = [
     "success_rate",
@@ -54,6 +56,12 @@ def build_reliability_history(reports: list[dict]) -> list[dict]:
         )
 
     return history
+
+
+def build_reliability_history_from_directory(directory: str) -> list[dict]:
+    """Load saved stress reports and return reliability trend history."""
+    reports = load_stress_reports(directory)
+    return build_reliability_history(reports)
 
 
 def summarize_reliability_trend(deltas: dict) -> dict:
