@@ -1,4 +1,5 @@
 from agent.reliability_trends import (
+    build_reliability_history,
     compare_reliability_reports,
     format_reliability_trend_summary,
     summarize_reliability_trend,
@@ -76,6 +77,51 @@ def test_compare_reliability_reports_returns_empty_dict_without_comparable_metri
     result = compare_reliability_reports(previous_report, current_report)
 
     assert result == {}
+
+def test_build_reliability_history_returns_consecutive_report_deltas():
+    reports = [
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+            "reliability_score": 0.75,
+        },
+        {
+            "success_rate": 0.9,
+            "failure_rate": 0.1,
+            "reliability_score": 0.8,
+        },
+        {
+            "success_rate": 0.85,
+            "failure_rate": 0.15,
+            "reliability_score": 0.78,
+        },
+    ]
+
+    result = build_reliability_history(reports)
+
+    assert result == [
+        {
+            "index": 1,
+            "deltas": {
+                "success_rate_delta": 0.1,
+                "failure_rate_delta": -0.1,
+                "reliability_score_delta": 0.05,
+            },
+        },
+        {
+            "index": 2,
+            "deltas": {
+                "success_rate_delta": -0.05,
+                "failure_rate_delta": 0.05,
+                "reliability_score_delta": -0.02,
+            },
+        },
+    ]
+
+
+def test_build_reliability_history_returns_empty_list_for_fewer_than_two_reports():
+    assert build_reliability_history([]) == []
+    assert build_reliability_history([{"success_rate": 0.8}]) == []
 
 
 def test_summarize_reliability_trend_marks_improving():

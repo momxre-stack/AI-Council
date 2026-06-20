@@ -35,6 +35,27 @@ def compare_reliability_reports(
     return deltas
 
 
+def build_reliability_history(reports: list[dict]) -> list[dict]:
+    """Return reliability trend history for consecutive reports."""
+    history = []
+
+    for index in range(1, len(reports)):
+        previous_report = reports[index - 1]
+        current_report = reports[index]
+
+        history.append(
+            {
+                "index": index,
+                "deltas": compare_reliability_reports(
+                    previous_report,
+                    current_report,
+                ),
+            }
+        )
+
+    return history
+
+
 def summarize_reliability_trend(deltas: dict) -> dict:
     """Return a simple trend summary from reliability metric deltas."""
     reliability_score_delta = deltas.get("reliability_score_delta")
