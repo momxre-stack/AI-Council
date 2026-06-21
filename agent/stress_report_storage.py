@@ -3,7 +3,10 @@
 import json
 import os
 
-from agent.stress_report_summary import format_latest_stress_report_changes
+from agent.stress_report_summary import (
+    format_latest_stress_report_changes,
+    generate_latest_stress_report_summary as generate_summary_text,
+)
 
 
 def build_stress_report_path(directory: str, run_id: str) -> str:
@@ -99,7 +102,7 @@ def summarize_latest_stress_report_changes(directory: str) -> dict:
 def generate_latest_stress_report_summary(directory: str) -> str:
     """Generate a human-readable summary for the latest stress report changes."""
     summary = summarize_latest_stress_report_changes(directory)
-    return format_latest_stress_report_changes(summary)
+    return generate_summary_text(summary)
 
 def save_latest_stress_report_summary(
     directory: str,
