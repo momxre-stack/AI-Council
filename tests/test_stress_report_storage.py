@@ -2,6 +2,7 @@ from agent.stress_report_storage import (
     build_stress_report_path,
     compare_latest_stress_reports,
     compare_saved_stress_reports,
+    format_latest_stress_report_changes,
     get_latest_stress_report_path,
     load_latest_stress_report,
     load_stress_report,
@@ -215,6 +216,34 @@ def test_summarize_latest_stress_report_changes_handles_missing_comparison(tmp_p
 
 
 
+
+def test_format_latest_stress_report_changes_returns_text():
+    summary = {
+        "has_changes": True,
+        "deltas": {
+            "success_rate_delta": 0.3,
+            "failure_rate_delta": -0.3,
+        },
+    }
+
+    result = format_latest_stress_report_changes(summary)
+
+    assert result == (
+        "Changes detected: yes\n"
+        "Success rate delta: +0.3000\n"
+        "Failure rate delta: -0.3000"
+    )
+
+
+def test_format_latest_stress_report_changes_handles_empty_summary():
+    summary = {
+        "has_changes": False,
+        "deltas": {},
+    }
+
+    result = format_latest_stress_report_changes(summary)
+
+    assert result == "Changes detected: no"
 
 def test_compare_saved_stress_reports_returns_numeric_deltas():
     previous_report = {

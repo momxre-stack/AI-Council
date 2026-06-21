@@ -92,6 +92,20 @@ def summarize_latest_stress_report_changes(directory: str) -> dict:
     }
 
 
+def format_latest_stress_report_changes(summary: dict) -> str:
+    """Return a human-readable latest stress report summary."""
+    lines = [
+        f"Changes detected: {'yes' if summary['has_changes'] else 'no'}",
+    ]
+
+    for metric, value in summary["deltas"].items():
+        label = metric.replace("_", " ").replace(" delta", " delta")
+        lines.append(f"{label.capitalize()}: {value:+.4f}")
+
+    return "\n".join(lines)
+
+
+
 
 
 
