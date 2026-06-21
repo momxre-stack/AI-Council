@@ -110,6 +110,16 @@ def generate_latest_stress_report_summary(directory: str) -> str:
     summary = summarize_latest_stress_report_changes(directory)
     return format_latest_stress_report_changes(summary)
 
+def save_latest_stress_report_summary(
+    directory: str,
+    path: str,
+) -> None:
+    """Save the latest stress report summary to a text file."""
+    summary = generate_latest_stress_report_summary(directory)
+
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(summary)
+
 
 
 
