@@ -6,6 +6,7 @@ from agent.stress_report_storage import (
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     load_latest_stress_report,
+    load_latest_stress_report_summary,
     load_stress_report,
     load_stress_reports,
     save_latest_stress_report_summary,
@@ -301,6 +302,26 @@ def test_save_latest_stress_report_summary_writes_file(tmp_path):
     )
 
     assert output_file.read_text(encoding="utf-8") == (
+        "Changes detected: yes\n"
+        "Failure rate delta: -0.3000\n"
+        "Success rate delta: +0.3000"
+    )
+
+def test_load_latest_stress_report_summary_reads_file(tmp_path):
+    summary_file = tmp_path / "latest-summary.txt"
+
+    summary_file.write_text(
+        "Changes detected: yes\n"
+        "Failure rate delta: -0.3000\n"
+        "Success rate delta: +0.3000",
+        encoding="utf-8",
+    )
+
+    result = load_latest_stress_report_summary(
+        str(summary_file),
+    )
+
+    assert result == (
         "Changes detected: yes\n"
         "Failure rate delta: -0.3000\n"
         "Success rate delta: +0.3000"

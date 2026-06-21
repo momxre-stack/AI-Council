@@ -121,6 +121,13 @@ def save_latest_stress_report_summary(
         file.write(summary)
 
 
+def load_latest_stress_report_summary(path: str) -> str:
+    """Load a previously saved stress report summary."""
+    with open(path, encoding="utf-8") as file:
+        return file.read()
+
+
+
 
 
 
