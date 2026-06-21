@@ -7,6 +7,7 @@ from agent.stress_report_storage import (
     load_stress_report,
     load_stress_reports,
     save_stress_report,
+    summarize_latest_stress_report_changes,
 )
 
 
@@ -176,6 +177,41 @@ def test_compare_latest_stress_reports_returns_empty_dict_without_two_reports(tm
     )
 
     assert compare_latest_stress_reports(str(tmp_path)) == {}
+
+def test_summarize_latest_stress_report_changes_returns_deltas(tmp_path):
+    save_stress_report(
+        {
+            "success_rate": 0.5,
+            "failure_rate": 0.5,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+    save_stress_report(
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+        },
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = summarize_latest_stress_report_changes(str(tmp_path))
+
+    assert result == {
+        "has_changes": True,
+        "deltas": {
+            "success_rate_delta": 0.3,
+            "failure_rate_delta": -0.3,
+        },
+    }
+
+
+def test_summarize_latest_stress_report_changes_handles_missing_comparison(tmp_path):
+    assert summarize_latest_stress_report_changes(str(tmp_path)) == {
+        "has_changes": False,
+        "deltas": {},
+    }
+
+
 
 
 

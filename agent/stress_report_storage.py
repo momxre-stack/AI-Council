@@ -82,6 +82,17 @@ def compare_latest_stress_reports(directory: str) -> dict:
 
     return compare_saved_stress_reports(reports[-2], reports[-1])
 
+def summarize_latest_stress_report_changes(directory: str) -> dict:
+    """Summarize changes between the two latest saved stress reports."""
+    deltas = compare_latest_stress_reports(directory)
+
+    return {
+        "has_changes": bool(deltas),
+        "deltas": deltas,
+    }
+
+
+
 
 
 
