@@ -34,11 +34,22 @@ Stable baseline:
 * Reliability trend comparison helper
 * Reliability trend summary helper
 * Reliability trend summary formatting
-* 64 passing tests
+* Stress report persistence
+* Latest report path helper
+* Latest report loading
+* Latest report comparison
+* Latest report summaries
+* Summary formatting
+* Summary generation
+* Summary save helper
+* Summary load helper
+* Summary existence checks
+* Stress report summary module
+* 94 passing tests
 
 Latest stable commit:
 
-cbb4d55
+381b0e1
 
 ---
 
@@ -50,12 +61,6 @@ Status:
 
 Completed.
 
-Implemented:
-
-* Judge malformed JSON detection
-* Failure-path coverage
-* Council stability verification
-
 ---
 
 ## Priority 2
@@ -65,13 +70,6 @@ Implemented:
 Status:
 
 Completed.
-
-Implemented:
-
-* Markdown fence removal
-* JSON extraction from wrapper text
-* Shared JSON parsing utility
-* Recovery tests
 
 ---
 
@@ -83,13 +81,6 @@ Status:
 
 Completed.
 
-Implemented:
-
-* Quota error detection
-* Quota metadata in council results
-* Provider failure coverage
-* Both-provider failure coverage
-
 ---
 
 ## Priority 4
@@ -99,35 +90,6 @@ Implemented:
 Status:
 
 Completed.
-
-Implemented:
-
-* Stress test baseline
-* Repeated council execution test
-* Judge execution verification
-* Stress metrics foundation
-* Success-rate reporting
-* Degraded-rate reporting
-* Failure-rate reporting
-* Debate-rate reporting
-* Stress report builder
-* Human-readable stress report formatting
-* Stress runner summary module
-* Reusable stress execution helper
-* Failure-path stress runner coverage
-* Degraded-path stress runner coverage
-* Debate-path stress runner coverage
-* Multi-question stress runner helper
-* Stress runner request helper
-* Configurable default stress questions
-* Real stress runner entrypoint
-* Stress timing metrics
-* Timing metrics in formatted stress reports
-* Stress report export helper
-* Reliability summary helper
-* Reliability summary integration in stress runner
-* Reliability details in exported stress summaries
-* Reliability information in formatted stress reports
 
 ---
 
@@ -147,76 +109,58 @@ Implemented:
 * Human-readable trend formatting
 * Trend helper test coverage
 
-Implemented commits:
-
-* 39ddb0c - Add reliability trend comparison helper
-* 700921e - Add reliability trend summary helper
-* cbb4d55 - Add reliability trend summary formatting
-
 ---
 
-## Next Milestone
+## Priority 6
 
-### Optional Stress Report Persistence
-
-Goal:
-
-Allow stress and reliability reports to be saved for later comparison.
-
-Planned scope:
-
-* Persistence helpers only
-* No dashboards
-* No databases
-* No provider changes
-* No council architecture changes
+### Real-World Long-Run Measurements
 
 Status:
 
-Planned.
+Completed.
+
+Implemented:
+
+* Stress report persistence
+* Latest report path helper
+* Latest report loading
+* Latest report comparison
+* Latest report summaries
+* Summary formatting
+* Summary generation
+* Summary save helper
+* Summary load helper
+* Summary existence checks
+* Summary module extraction
+* Cleanup duplicated tests
 
 ---
 
 ## Future Milestones
 
-### Historical Reliability Reporting
-
-Potential capabilities:
-
-* Multi-run comparisons
-* Long-term reliability history
-* Historical summaries
-
-Status:
-
-Planned.
-
 ### Optional Stress Runner CLI
 
-Potential capabilities:
+Status:
 
-* Manual execution commands
-* Human-friendly report output
+Planned.
+
+### Reliability Quality Improvements
 
 Status:
 
 Planned.
 
----
+### Debate Quality Improvements
 
-## Future Council Expansion
+Status:
 
-Only after reliability and observability work is mature.
+Planned.
 
-Potential additions:
+### Provider Expansion
 
-* GPT
-* Claude
-* Grok
+Status:
 
-Strategy:
-
-Do not expand provider count until reliability and observability foundations are complete.
+Planned.
 
 ---
 
