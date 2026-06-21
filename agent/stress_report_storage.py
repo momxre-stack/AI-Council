@@ -3,6 +3,8 @@
 import json
 import os
 
+from agent.stress_report_summary import format_latest_stress_report_changes
+
 
 def build_stress_report_path(directory: str, run_id: str) -> str:
     """Return a deterministic JSON path for a stress report run."""
@@ -92,18 +94,7 @@ def summarize_latest_stress_report_changes(directory: str) -> dict:
     }
 
 
-def format_latest_stress_report_changes(summary: dict) -> str:
-    """Return a human-readable latest stress report summary."""
-    lines = [
-        f"Changes detected: {'yes' if summary['has_changes'] else 'no'}",
-    ]
 
-    for metric in sorted(summary["deltas"]):
-        value = summary["deltas"][metric]
-        label = metric.replace("_", " ").replace(" delta", " delta")
-        lines.append(f"{label.capitalize()}: {value:+.4f}")
-
-    return "\n".join(lines)
 
 def generate_latest_stress_report_summary(directory: str) -> str:
     """Generate a human-readable summary for the latest stress report changes."""
