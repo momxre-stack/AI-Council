@@ -26,6 +26,7 @@ def load_stress_report(path: str) -> dict:
     with open(path, encoding="utf-8") as file:
         return json.load(file)
 
+
 def get_latest_stress_report_path(directory: str) -> str | None:
     """Return the latest stress report path from a directory."""
     if not os.path.isdir(directory):
@@ -42,6 +43,15 @@ def get_latest_stress_report_path(directory: str) -> str | None:
 
     return os.path.join(directory, sorted(filenames)[-1])
 
+
+def load_latest_stress_report(directory: str) -> dict | None:
+    """Load the latest stress report from a directory."""
+    path = get_latest_stress_report_path(directory)
+
+    if path is None:
+        return None
+
+    return load_stress_report(path)
 
 
 def load_stress_reports(directory: str) -> list[dict]:
@@ -62,6 +72,7 @@ def load_stress_reports(directory: str) -> list[dict]:
         reports.append(load_stress_report(path))
 
     return reports
+
 
 def compare_saved_stress_reports(previous_report: dict, current_report: dict) -> dict:
     """Compare numeric metrics from two loaded stress reports."""

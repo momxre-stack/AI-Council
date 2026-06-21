@@ -2,6 +2,7 @@ from agent.stress_report_storage import (
     build_stress_report_path,
     compare_saved_stress_reports,
     get_latest_stress_report_path,
+    load_latest_stress_report,
     load_stress_report,
     load_stress_reports,
     save_stress_report,
@@ -69,6 +70,38 @@ def test_get_latest_stress_report_path_returns_none_without_reports(tmp_path):
 
     assert get_latest_stress_report_path(str(tmp_path)) is None
     assert get_latest_stress_report_path(str(tmp_path / "missing")) is None
+
+
+def test_load_latest_stress_report_returns_latest_report(tmp_path):
+    old_report = {
+        "success_rate": 0.5,
+    }
+    latest_report = {
+        "success_rate": 0.9,
+    }
+
+    save_stress_report(
+        old_report,
+        str(tmp_path / "stress-report-001.json"),
+    )
+    save_stress_report(
+        latest_report,
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = load_latest_stress_report(str(tmp_path))
+
+    assert result == latest_report
+
+
+def test_load_latest_stress_report_returns_none_without_reports(tmp_path):
+    save_stress_report(
+        {"ignored": True},
+        str(tmp_path / "notes.json"),
+    )
+
+    assert load_latest_stress_report(str(tmp_path)) is None
+    assert load_latest_stress_report(str(tmp_path / "missing")) is None
 
 
 
