@@ -13,3 +13,8 @@ def format_latest_stress_report_changes(summary: dict) -> str:
         lines.append(f"{label.capitalize()}: {value:+.4f}")
 
     return "\n".join(lines)
+
+
+def generate_latest_stress_report_summary(summary: dict) -> str:
+    """Generate a human-readable latest stress report summary."""
+    return format_latest_stress_report_changes(summary)
