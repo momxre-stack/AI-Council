@@ -2,7 +2,6 @@ from agent.stress_report_storage import (
     build_stress_report_path,
     compare_latest_stress_reports,
     compare_saved_stress_reports,
-    format_latest_stress_report_changes,
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     load_latest_stress_report,
@@ -49,6 +48,7 @@ def test_build_stress_report_path_returns_deterministic_json_path():
     result = build_stress_report_path("reports", "nightly-001")
 
     assert result == os_path("reports", "stress-report-nightly-001.json")
+
 
 def test_get_latest_stress_report_path_returns_latest_report_path(tmp_path):
     save_stress_report(
@@ -111,8 +111,6 @@ def test_load_latest_stress_report_returns_none_without_reports(tmp_path):
     assert load_latest_stress_report(str(tmp_path / "missing")) is None
 
 
-
-
 def test_load_stress_reports_returns_reports_from_directory(tmp_path):
     report_one = {
         "success_rate": 1.0,
@@ -146,6 +144,7 @@ def test_load_stress_reports_returns_empty_list_for_missing_directory(tmp_path):
     result = load_stress_reports(str(tmp_path / "missing"))
 
     assert result == []
+
 
 def test_compare_latest_stress_reports_returns_latest_report_deltas(tmp_path):
     save_stress_report(
@@ -183,6 +182,7 @@ def test_compare_latest_stress_reports_returns_empty_dict_without_two_reports(tm
 
     assert compare_latest_stress_reports(str(tmp_path)) == {}
 
+
 def test_summarize_latest_stress_report_changes_returns_deltas(tmp_path):
     save_stress_report(
         {
@@ -217,38 +217,6 @@ def test_summarize_latest_stress_report_changes_handles_missing_comparison(tmp_p
     }
 
 
-
-
-
-
-def test_format_latest_stress_report_changes_returns_text():
-    summary = {
-        "has_changes": True,
-        "deltas": {
-            "success_rate_delta": 0.3,
-            "failure_rate_delta": -0.3,
-        },
-    }
-
-    result = format_latest_stress_report_changes(summary)
-
-    assert result == (
-        "Changes detected: yes\n"
-        "Failure rate delta: -0.3000\n"
-        "Success rate delta: +0.3000"
-    )
-
-
-def test_format_latest_stress_report_changes_handles_empty_summary():
-    summary = {
-        "has_changes": False,
-        "deltas": {},
-    }
-
-    result = format_latest_stress_report_changes(summary)
-
-    assert result == "Changes detected: no"
-
 def test_generate_latest_stress_report_summary_returns_text(tmp_path):
     save_stress_report(
         {
@@ -279,6 +247,7 @@ def test_generate_latest_stress_report_summary_handles_missing_reports(tmp_path)
 
     assert result == "Changes detected: no"
 
+
 def test_save_latest_stress_report_summary_writes_file(tmp_path):
     save_stress_report(
         {
@@ -308,6 +277,7 @@ def test_save_latest_stress_report_summary_writes_file(tmp_path):
         "Success rate delta: +0.3000"
     )
 
+
 def test_load_latest_stress_report_summary_reads_file(tmp_path):
     summary_file = tmp_path / "latest-summary.txt"
 
@@ -328,6 +298,7 @@ def test_load_latest_stress_report_summary_reads_file(tmp_path):
         "Success rate delta: +0.3000"
     )
 
+
 def test_latest_stress_report_summary_exists(tmp_path):
     summary_file = tmp_path / "latest-summary.txt"
 
@@ -343,6 +314,7 @@ def test_latest_stress_report_summary_exists(tmp_path):
     assert latest_stress_report_summary_exists(
         str(summary_file)
     ) is True
+
 
 def test_compare_saved_stress_reports_returns_numeric_deltas():
     previous_report = {
