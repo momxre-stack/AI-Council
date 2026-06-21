@@ -87,10 +87,9 @@ def format_stress_report(report: dict) -> str:
 
 def build_reliability_summary(report: dict) -> dict:
     reliability_score = round(
-    report["success_rate"]
-    + report["degraded_rate"] * 0.5,
-    4,
-)
+        report["success_rate"] + report["degraded_rate"] * 0.5,
+        4,
+    )
 
     if reliability_score >= 0.95:
         status = "excellent"
