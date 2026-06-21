@@ -73,6 +73,17 @@ def load_stress_reports(directory: str) -> list[dict]:
 
     return reports
 
+def compare_latest_stress_reports(directory: str) -> dict:
+    """Compare the two latest saved stress reports from a directory."""
+    reports = load_stress_reports(directory)
+
+    if len(reports) < 2:
+        return {}
+
+    return compare_saved_stress_reports(reports[-2], reports[-1])
+
+
+
 
 def compare_saved_stress_reports(previous_report: dict, current_report: dict) -> dict:
     """Compare numeric metrics from two loaded stress reports."""

@@ -1,5 +1,6 @@
 from agent.stress_report_storage import (
     build_stress_report_path,
+    compare_latest_stress_reports,
     compare_saved_stress_reports,
     get_latest_stress_report_path,
     load_latest_stress_report,
@@ -139,6 +140,44 @@ def test_load_stress_reports_returns_empty_list_for_missing_directory(tmp_path):
     result = load_stress_reports(str(tmp_path / "missing"))
 
     assert result == []
+
+def test_compare_latest_stress_reports_returns_latest_report_deltas(tmp_path):
+    save_stress_report(
+        {
+            "success_rate": 0.5,
+            "failure_rate": 0.5,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+    save_stress_report(
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+        },
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = compare_latest_stress_reports(str(tmp_path))
+
+    assert result == {
+        "success_rate_delta": 0.3,
+        "failure_rate_delta": -0.3,
+    }
+
+
+def test_compare_latest_stress_reports_returns_empty_dict_without_two_reports(tmp_path):
+    assert compare_latest_stress_reports(str(tmp_path)) == {}
+
+    save_stress_report(
+        {
+            "success_rate": 0.5,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+
+    assert compare_latest_stress_reports(str(tmp_path)) == {}
+
+
 
 
 def test_compare_saved_stress_reports_returns_numeric_deltas():
