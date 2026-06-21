@@ -126,6 +126,10 @@ def load_latest_stress_report_summary(path: str) -> str:
     with open(path, encoding="utf-8") as file:
         return file.read()
 
+def latest_stress_report_summary_exists(path: str) -> bool:
+    """Return whether a saved stress report summary exists."""
+    return os.path.isfile(path)
+
 
 
 

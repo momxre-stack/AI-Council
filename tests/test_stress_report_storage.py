@@ -7,6 +7,7 @@ from agent.stress_report_storage import (
     get_latest_stress_report_path,
     load_latest_stress_report,
     load_latest_stress_report_summary,
+    latest_stress_report_summary_exists,
     load_stress_report,
     load_stress_reports,
     save_latest_stress_report_summary,
@@ -326,6 +327,22 @@ def test_load_latest_stress_report_summary_reads_file(tmp_path):
         "Failure rate delta: -0.3000\n"
         "Success rate delta: +0.3000"
     )
+
+def test_latest_stress_report_summary_exists(tmp_path):
+    summary_file = tmp_path / "latest-summary.txt"
+
+    assert latest_stress_report_summary_exists(
+        str(summary_file)
+    ) is False
+
+    summary_file.write_text(
+        "Changes detected: no",
+        encoding="utf-8",
+    )
+
+    assert latest_stress_report_summary_exists(
+        str(summary_file)
+    ) is True
 
 def test_compare_saved_stress_reports_returns_numeric_deltas():
     previous_report = {
