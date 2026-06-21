@@ -3,6 +3,7 @@ from agent.stress_report_storage import (
     compare_latest_stress_reports,
     compare_saved_stress_reports,
     format_latest_stress_report_changes,
+    generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     load_latest_stress_report,
     load_stress_report,
@@ -230,8 +231,8 @@ def test_format_latest_stress_report_changes_returns_text():
 
     assert result == (
         "Changes detected: yes\n"
-        "Success rate delta: +0.3000\n"
-        "Failure rate delta: -0.3000"
+        "Failure rate delta: -0.3000\n"
+        "Success rate delta: +0.3000"
     )
 
 
@@ -242,6 +243,36 @@ def test_format_latest_stress_report_changes_handles_empty_summary():
     }
 
     result = format_latest_stress_report_changes(summary)
+
+    assert result == "Changes detected: no"
+
+def test_generate_latest_stress_report_summary_returns_text(tmp_path):
+    save_stress_report(
+        {
+            "success_rate": 0.5,
+            "failure_rate": 0.5,
+        },
+        str(tmp_path / "stress-report-001.json"),
+    )
+    save_stress_report(
+        {
+            "success_rate": 0.8,
+            "failure_rate": 0.2,
+        },
+        str(tmp_path / "stress-report-002.json"),
+    )
+
+    result = generate_latest_stress_report_summary(str(tmp_path))
+
+    assert result == (
+        "Changes detected: yes\n"
+        "Failure rate delta: -0.3000\n"
+        "Success rate delta: +0.3000"
+    )
+
+
+def test_generate_latest_stress_report_summary_handles_missing_reports(tmp_path):
+    result = generate_latest_stress_report_summary(str(tmp_path))
 
     assert result == "Changes detected: no"
 
