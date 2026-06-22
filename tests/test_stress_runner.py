@@ -67,6 +67,17 @@ def test_runs_stress_test_with_injected_council_runner():
     assert summary["report"]["min_duration_seconds"] == 0.5
     assert summary["report"]["max_duration_seconds"] == 0.5
 
+def test_run_stress_test_rejects_non_positive_request_count():
+    try:
+        run_stress_test(
+            question="test question",
+            request_count=0,
+        )
+    except ValueError as error:
+        assert str(error) == "request_count must be positive"
+    else:
+        raise AssertionError("Expected ValueError")
+
 
 def test_runs_stress_test_counts_degraded_results():
     times = iter([1.0, 1.25, 2.0, 2.75])

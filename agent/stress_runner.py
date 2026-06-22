@@ -88,6 +88,9 @@ def run_stress_test(
     council_runner=ask_council,
     timer=perf_counter,
 ) -> dict:
+    if request_count <= 0:
+        raise ValueError("request_count must be positive")
+
     results = [
         _run_stress_request(question, council_runner, timer)
         for _ in range(request_count)
