@@ -9,6 +9,8 @@ REQUIRED_DEBATE_FIELDS = {
     "consensus_answer",
 }
 
+MIN_DEBATE_FIELD_LENGTH = 3
+
 
 def _parse_debate_json(raw_response: str) -> dict:
     result = parse_json_object(raw_response, "Debate did not return JSON")
@@ -38,6 +40,11 @@ def _parse_debate_json(raw_response: str) -> dict:
         if not result[field].strip():
             raise ValueError(
                 f"Debate response field '{field}' must not be empty"
+            )
+
+        if len(result[field].strip()) < MIN_DEBATE_FIELD_LENGTH:
+            raise ValueError(
+                f"Debate response field '{field}' is too short"
             )
 
     return result

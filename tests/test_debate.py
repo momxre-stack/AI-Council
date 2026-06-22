@@ -154,3 +154,21 @@ def test_run_debate_rejects_identical_model_responses():
             gemini_response="same answer",
             deepseek_response="same answer",
         )
+
+@patch("agent.debate.ask_gemini")
+def test_run_debate_rejects_too_short_required_fields(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": "ok",
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": "Both missed details",
+      "consensus_answer": "Final answer"
+    }
+    """
+
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="gemini answer",
+            deepseek_response="deepseek answer",
+        )
