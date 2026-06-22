@@ -49,3 +49,20 @@ def test_run_debate_rejects_malformed_json(mock_gemini):
             gemini_response="gemini answer",
             deepseek_response="deepseek answer",
         )
+
+@patch("agent.debate.ask_gemini")
+def test_run_debate_rejects_missing_required_fields(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": "Gemini strength",
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": "Both missed details"
+    }
+    """
+
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="gemini answer",
+            deepseek_response="deepseek answer",
+        )

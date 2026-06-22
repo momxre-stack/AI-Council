@@ -2,8 +2,24 @@ from agent.json_utils import parse_json_object
 from agent.providers.gemini import ask_gemini
 
 
+REQUIRED_DEBATE_FIELDS = {
+    "gemini_strengths",
+    "deepseek_strengths",
+    "criticisms",
+    "consensus_answer",
+}
+
+
 def _parse_debate_json(raw_response: str) -> dict:
-    return parse_json_object(raw_response, "Debate did not return JSON")
+    result = parse_json_object(raw_response, "Debate did not return JSON")
+
+    missing_fields = REQUIRED_DEBATE_FIELDS - result.keys()
+
+    if missing_fields:
+        missing_list = ", ".join(sorted(missing_fields))
+        raise ValueError(f"Debate response missing required fields: {missing_list}")
+
+    return result
 
 
 def run_debate(
