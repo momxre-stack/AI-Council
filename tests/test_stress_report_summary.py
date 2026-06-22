@@ -49,3 +49,8 @@ def test_generate_latest_stress_report_summary_returns_text():
         "Failure rate delta: -0.3000\n"
         "Success rate delta: +0.3000"
     )
+
+def test_format_latest_stress_report_changes_defaults_missing_has_changes():
+    result = format_latest_stress_report_changes({})
+
+    assert result == "Changes detected: no"
