@@ -24,6 +24,20 @@ def test_counts_stress_result_statuses():
         "debate_count": 1,
     }
 
+def test_count_statuses_treats_missing_status_as_failure():
+    results = [
+        {"debate": None},
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics == {
+        "success_count": 0,
+        "degraded_count": 0,
+        "failure_count": 1,
+        "debate_count": 0,
+    }
+
 
 def test_counts_twenty_simulated_requests():
     results = []

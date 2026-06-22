@@ -7,9 +7,11 @@ def count_statuses(results: list[dict]) -> dict:
     }
 
     for result in results:
-        if result["status"] == "ok":
+        status = result.get("status")
+
+        if status == "ok":
             metrics["success_count"] += 1
-        elif result["status"] == "degraded":
+        elif status == "degraded":
             metrics["degraded_count"] += 1
         else:
             metrics["failure_count"] += 1
@@ -84,6 +86,7 @@ def format_stress_report(report: dict) -> str:
         )
 
     return "\n".join(lines)
+
 
 def build_reliability_summary(report: dict) -> dict:
     reliability_score = round(
