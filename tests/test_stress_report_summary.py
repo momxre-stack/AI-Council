@@ -54,3 +54,13 @@ def test_format_latest_stress_report_changes_defaults_missing_has_changes():
     result = format_latest_stress_report_changes({})
 
     assert result == "Changes detected: no"
+
+def test_format_latest_stress_report_changes_handles_none_deltas():
+    result = format_latest_stress_report_changes(
+        {
+            "has_changes": True,
+            "deltas": None,
+        }
+    )
+
+    assert result == "Changes detected: yes"

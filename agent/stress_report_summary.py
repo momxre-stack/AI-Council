@@ -3,7 +3,7 @@
 
 def format_latest_stress_report_changes(summary: dict) -> str:
     """Return a human-readable latest stress report summary."""
-    deltas = summary.get("deltas", {})
+    deltas = summary.get("deltas") or {}
 
     lines = [
         f"Changes detected: {'yes' if summary.get('has_changes', False) else 'no'}",
