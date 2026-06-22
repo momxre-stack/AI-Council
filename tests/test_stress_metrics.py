@@ -306,3 +306,26 @@ def test_builds_poor_reliability_summary():
         "reliability_score": 0.30,
         "status": "poor",
     }
+
+def test_format_stress_report_defaults_missing_reliability_status():
+    report = {
+        "total_count": 1,
+        "success_rate": 1.0,
+        "degraded_rate": 0.0,
+        "failure_rate": 0.0,
+        "debate_rate": 0.0,
+        "reliability_score": 1.0,
+    }
+
+    formatted = format_stress_report(report)
+
+    assert formatted == (
+        "Reliability status: unknown\n"
+        "Reliability score: 1.000\n"
+        "\n"
+        "Total requests: 1\n"
+        "Success rate: 100.0%\n"
+        "Degraded rate: 0.0%\n"
+        "Failure rate: 0.0%\n"
+        "Debate rate: 0.0%"
+    )

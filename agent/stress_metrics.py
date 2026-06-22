@@ -57,7 +57,7 @@ def format_stress_report(report: dict) -> str:
     if "reliability_score" in report:
         lines.extend(
             [
-                f"Reliability status: {report['reliability_status']}",
+                f"Reliability status: {report.get('reliability_status', 'unknown')}",
                 f"Reliability score: {report['reliability_score']:.3f}",
                 "",
             ]
