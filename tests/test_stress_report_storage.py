@@ -277,6 +277,16 @@ def test_save_latest_stress_report_summary_writes_file(tmp_path):
         "Success rate delta: +0.3000"
     )
 
+def test_save_latest_stress_report_summary_creates_parent_directory(tmp_path):
+    output_file = tmp_path / "summaries" / "latest-summary.txt"
+
+    save_latest_stress_report_summary(
+        str(tmp_path),
+        str(output_file),
+    )
+
+    assert output_file.read_text(encoding="utf-8") == "Changes detected: no"
+
 
 def test_load_latest_stress_report_summary_reads_file(tmp_path):
     summary_file = tmp_path / "latest-summary.txt"

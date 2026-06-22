@@ -110,6 +110,10 @@ def save_latest_stress_report_summary(
 ) -> None:
     """Save the latest stress report summary to a text file."""
     summary = generate_latest_stress_report_summary(directory)
+    output_directory = os.path.dirname(path)
+
+    if output_directory:
+        os.makedirs(output_directory, exist_ok=True)
 
     with open(path, "w", encoding="utf-8") as file:
         file.write(summary)
