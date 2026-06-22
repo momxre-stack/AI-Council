@@ -51,6 +51,9 @@ def run_debate(
     if not question.strip():
         raise ValueError("Debate question must not be empty")
 
+    if not gemini_response.strip():
+        raise ValueError("Gemini response must not be empty")
+
     prompt = f"""
 Question:
 {question}
