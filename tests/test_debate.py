@@ -103,3 +103,22 @@ def test_run_debate_rejects_empty_required_fields(mock_gemini):
             gemini_response="gemini answer",
             deepseek_response="deepseek answer",
         )
+
+@patch("agent.debate.ask_gemini")
+def test_run_debate_rejects_unexpected_fields(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": "Gemini strength",
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": "Both missed details",
+      "consensus_answer": "Final answer",
+      "debug_notes": "Internal notes"
+    }
+    """
+
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="gemini answer",
+            deepseek_response="deepseek answer",
+        )

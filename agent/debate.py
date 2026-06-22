@@ -21,6 +21,14 @@ def _parse_debate_json(raw_response: str) -> dict:
             f"Debate response missing required fields: {missing_list}"
         )
 
+    unexpected_fields = result.keys() - REQUIRED_DEBATE_FIELDS
+
+    if unexpected_fields:
+        unexpected_list = ", ".join(sorted(unexpected_fields))
+        raise ValueError(
+            f"Debate response contains unexpected fields: {unexpected_list}"
+        )
+
     for field in REQUIRED_DEBATE_FIELDS:
         if not isinstance(result[field], str):
             raise ValueError(
@@ -61,6 +69,8 @@ Return ONLY valid JSON with this exact structure:
 
 Rules:
 - Return a single JSON object only.
+- Use exactly the four fields above.
+- Do not add extra fields.
 - All values must be strings.
 - All values must be non-empty after trimming whitespace.
 - Escape all quotation marks inside string values.
