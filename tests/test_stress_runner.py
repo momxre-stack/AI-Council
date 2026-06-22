@@ -167,6 +167,14 @@ def test_runs_stress_questions_with_multiple_questions():
     assert summary["report"]["success_count"] == 2
     assert summary["report"]["failure_count"] == 0
 
+def test_run_stress_questions_rejects_empty_questions():
+    try:
+        run_stress_questions([])
+    except ValueError as error:
+        assert str(error) == "questions must not be empty"
+    else:
+        raise AssertionError("Expected ValueError")
+
 
 def test_runs_stress_questions_counts_debate_results():
     times = iter([1.0, 1.5, 2.0, 2.5])

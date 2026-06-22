@@ -104,6 +104,9 @@ def run_stress_questions(
     council_runner=ask_council,
     timer=perf_counter,
 ) -> dict:
+    if not questions:
+        raise ValueError("questions must not be empty")
+
     results = [
         _run_stress_request(question, council_runner, timer)
         for question in questions
