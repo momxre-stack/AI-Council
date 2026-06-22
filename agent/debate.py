@@ -57,6 +57,9 @@ def run_debate(
     if not deepseek_response.strip():
         raise ValueError("DeepSeek response must not be empty")
 
+    if gemini_response.strip() == deepseek_response.strip():
+        raise ValueError("Debate requires different model responses")
+
     prompt = f"""
 Question:
 {question}

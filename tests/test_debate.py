@@ -146,3 +146,11 @@ def test_run_debate_rejects_empty_deepseek_response():
             gemini_response="gemini answer",
             deepseek_response="   ",
         )
+
+def test_run_debate_rejects_identical_model_responses():
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="same answer",
+            deepseek_response="same answer",
+        )
