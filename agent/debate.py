@@ -27,6 +27,11 @@ def _parse_debate_json(raw_response: str) -> dict:
                 f"Debate response field '{field}' must be a string"
             )
 
+        if not result[field].strip():
+            raise ValueError(
+                f"Debate response field '{field}' must not be empty"
+            )
+
     return result
 
 
@@ -57,6 +62,7 @@ Return ONLY valid JSON with this exact structure:
 Rules:
 - Return a single JSON object only.
 - All values must be strings.
+- All values must be non-empty after trimming whitespace.
 - Escape all quotation marks inside string values.
 - Do not use unescaped newlines inside string values.
 - Do not include markdown.
