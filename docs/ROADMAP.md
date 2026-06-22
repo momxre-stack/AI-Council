@@ -45,11 +45,12 @@ Stable baseline:
 * Summary load helper
 * Summary existence checks
 * Stress report summary module
-* 94 passing tests
+* Reliability quality improvements
+* 104 passing tests
 
 Latest stable commit:
 
-381b0e1
+a9aa6cb
 
 ---
 
@@ -148,7 +149,21 @@ Planned.
 
 Status:
 
-Planned.
+Completed.
+
+Implemented:
+
+* Missing trend direction fallback
+* None trend deltas fallback
+* Missing summary fields fallback
+* None summary deltas fallback
+* Missing reliability status fallback
+* Missing stress result status fallback
+* Parent directory creation
+* Reject non-positive request counts
+* Reject non-positive real stress request counts
+* Reject empty question lists
+* Additional regression coverage
 
 ### Debate Quality Improvements
 
