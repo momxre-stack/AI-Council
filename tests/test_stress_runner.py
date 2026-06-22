@@ -304,3 +304,11 @@ def test_real_stress_test_uses_default_questions(monkeypatch):
     assert summary["report"]["total_count"] == 3
     assert summary["report"]["success_count"] == 3
     assert summary["report"]["failure_count"] == 0
+
+def test_run_real_stress_test_rejects_non_positive_request_count():
+    try:
+        run_real_stress_test(request_count=0)
+    except ValueError as error:
+        assert str(error) == "request_count must be positive"
+    else:
+        raise AssertionError("Expected ValueError")

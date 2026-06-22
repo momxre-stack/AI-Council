@@ -126,6 +126,9 @@ def run_default_stress_test(
 def run_real_stress_test(
     request_count: int,
 ) -> dict:
+    if request_count <= 0:
+        raise ValueError("request_count must be positive")
+
     questions = DEFAULT_STRESS_QUESTIONS * request_count
 
     return run_stress_questions(
