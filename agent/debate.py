@@ -54,6 +54,9 @@ def run_debate(
     if not gemini_response.strip():
         raise ValueError("Gemini response must not be empty")
 
+    if not deepseek_response.strip():
+        raise ValueError("DeepSeek response must not be empty")
+
     prompt = f"""
 Question:
 {question}

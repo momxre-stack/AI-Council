@@ -138,3 +138,11 @@ def test_run_debate_rejects_empty_gemini_response():
             gemini_response="   ",
             deepseek_response="deepseek answer",
         )
+
+def test_run_debate_rejects_empty_deepseek_response():
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="gemini answer",
+            deepseek_response="   ",
+        )
