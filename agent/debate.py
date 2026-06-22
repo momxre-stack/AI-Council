@@ -17,7 +17,15 @@ def _parse_debate_json(raw_response: str) -> dict:
 
     if missing_fields:
         missing_list = ", ".join(sorted(missing_fields))
-        raise ValueError(f"Debate response missing required fields: {missing_list}")
+        raise ValueError(
+            f"Debate response missing required fields: {missing_list}"
+        )
+
+    for field in REQUIRED_DEBATE_FIELDS:
+        if not isinstance(result[field], str):
+            raise ValueError(
+                f"Debate response field '{field}' must be a string"
+            )
 
     return result
 

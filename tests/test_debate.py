@@ -66,3 +66,21 @@ def test_run_debate_rejects_missing_required_fields(mock_gemini):
             gemini_response="gemini answer",
             deepseek_response="deepseek answer",
         )
+
+@patch("agent.debate.ask_gemini")
+def test_run_debate_rejects_non_string_required_fields(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": [],
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": null,
+      "consensus_answer": 123
+    }
+    """
+
+    with pytest.raises(ValueError):
+        run_debate(
+            question="question",
+            gemini_response="gemini answer",
+            deepseek_response="deepseek answer",
+        )
