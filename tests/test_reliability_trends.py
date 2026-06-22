@@ -367,3 +367,13 @@ def test_format_reliability_trend_summary_defaults_missing_direction_to_unknown(
     result = format_reliability_trend_summary({})
 
     assert result == "Reliability trend: unknown"
+
+def test_format_reliability_trend_summary_handles_none_deltas():
+    summary = {
+        "direction": "unknown",
+        "deltas": None,
+    }
+
+    result = format_reliability_trend_summary(summary)
+
+    assert result == "Reliability trend: unknown"

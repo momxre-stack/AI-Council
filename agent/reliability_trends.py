@@ -137,7 +137,7 @@ def format_reliability_history_report(report: dict) -> str:
 
 def format_reliability_trend_summary(summary: dict) -> str:
     """Return a human-readable reliability trend summary."""
-    deltas = summary.get("deltas", {})
+    deltas = summary.get("deltas") or {}
 
     lines = [
         f"Reliability trend: {summary.get('direction', 'unknown')}",
