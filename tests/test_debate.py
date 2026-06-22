@@ -122,3 +122,11 @@ def test_run_debate_rejects_unexpected_fields(mock_gemini):
             gemini_response="gemini answer",
             deepseek_response="deepseek answer",
         )
+
+def test_run_debate_rejects_empty_question():
+    with pytest.raises(ValueError):
+        run_debate(
+            question="   ",
+            gemini_response="gemini answer",
+            deepseek_response="deepseek answer",
+        )

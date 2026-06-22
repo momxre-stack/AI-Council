@@ -48,6 +48,8 @@ def run_debate(
     gemini_response: str,
     deepseek_response: str,
 ) -> dict:
+    if not question.strip():
+        raise ValueError("Debate question must not be empty")
 
     prompt = f"""
 Question:
