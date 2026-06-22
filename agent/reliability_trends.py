@@ -140,7 +140,7 @@ def format_reliability_trend_summary(summary: dict) -> str:
     deltas = summary.get("deltas", {})
 
     lines = [
-        f"Reliability trend: {summary['direction']}",
+        f"Reliability trend: {summary.get('direction', 'unknown')}",
     ]
 
     if "reliability_score_delta" in deltas:
