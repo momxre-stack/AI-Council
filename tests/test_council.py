@@ -25,6 +25,7 @@ def test_council_without_debate(
 
     assert result["question"] == "test"
     assert result["status"] == "ok"
+    assert result["degraded_reason"] is None
     assert result["debate"] is None
     assert result["judgment"]["final_needs_debate"] is False
 
@@ -55,6 +56,7 @@ def test_council_with_debate(
     result = ask_council("test")
 
     assert result["status"] == "ok"
+    assert result["degraded_reason"] is None
     assert result["debate"] is not None
 
     mock_debate.assert_called_once()
