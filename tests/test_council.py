@@ -200,3 +200,41 @@ def test_council_raises_when_both_providers_fail(
 
     with pytest.raises(RuntimeError, match="Both providers failed"):
         ask_council("test")
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_degraded_when_gemini_returns_empty_response(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "   "
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["responses"]["gemini"] is None
+    assert result["responses"]["deepseek"] == "DeepSeek answer"
+    assert result["provider_errors"]["gemini"] == "Provider returned empty response"
+    assert result["judgment"] is None
+    assert result["debate"] is None
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_degraded_when_deepseek_returns_empty_response(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = ""
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["responses"]["gemini"] == "Gemini answer"
+    assert result["responses"]["deepseek"] is None
+    assert result["provider_errors"]["deepseek"] == "Provider returned empty response"
+    assert result["judgment"] is None
+    assert result["debate"] is None

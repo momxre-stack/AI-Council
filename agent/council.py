@@ -7,9 +7,19 @@ from agent.quota_utils import is_quota_error
 
 def _ask_provider(provider_name: str, provider, question: str) -> dict:
     try:
+        response = provider(question)
+
+        if not isinstance(response, str) or not response.strip():
+            return {
+                "provider": provider_name,
+                "response": None,
+                "error": "Provider returned empty response",
+                "quota_error": False,
+            }
+
         return {
             "provider": provider_name,
-            "response": provider(question),
+            "response": response,
             "error": None,
             "quota_error": False,
         }
