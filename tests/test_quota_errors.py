@@ -23,3 +23,14 @@ def test_non_quota_error_returns_false():
     assert not is_quota_error(
         Exception("Connection failed")
     )
+
+def test_detects_timeout_error():
+    assert is_quota_error(
+        Exception("Request timed out")
+    )
+
+
+def test_detects_network_error():
+    assert is_quota_error(
+        Exception("Network connection error")
+    )

@@ -7,6 +7,10 @@ def is_quota_error(error: Exception) -> bool:
         "rate limit",
         "rate_limit",
         "quota",
+        "timed out",
+        "timeout",
+        "network connection error",
+        "connection error",
     ]
 
     return any(marker in message for marker in quota_markers)
