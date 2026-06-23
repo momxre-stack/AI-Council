@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 from google.genai.errors import APIError, ServerError, UnknownApiResponseError
 
-from agent.providers.gemini import MAX_RETRIES, ask_gemini
+from agent.providers.gemini import MAX_RETRIES, REQUEST_TIMEOUT_SECONDS, ask_gemini
 
 
 @patch("agent.providers.gemini.time.sleep")
@@ -146,3 +146,24 @@ def test_gemini_recovers_after_unknown_api_response_error(
     assert result == "Recovered answer"
     assert mock_client.models.generate_content.call_count == 2
     assert mock_sleep.call_count == 1
+
+@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini.os.getenv")
+def test_gemini_client_uses_request_timeout(
+    mock_getenv,
+    mock_client_class,
+):
+    mock_getenv.return_value = "test-key"
+
+    mock_client = Mock()
+    mock_response = Mock()
+    mock_response.text = "Gemini answer"
+    mock_client.models.generate_content.return_value = mock_response
+    mock_client_class.return_value = mock_client
+
+    ask_gemini("test prompt")
+
+    client_kwargs = mock_client_class.call_args.kwargs
+
+    assert client_kwargs["api_key"] == "test-key"
+    assert client_kwargs["http_options"].timeout == REQUEST_TIMEOUT_SECONDS

@@ -3,6 +3,7 @@ import time
 
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from google.genai.errors import APIError, UnknownApiResponseError
 
 load_dotenv()
@@ -10,6 +11,7 @@ load_dotenv()
 
 MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2
+REQUEST_TIMEOUT_SECONDS = 30
 
 
 def ask_gemini(prompt: str) -> str:
@@ -18,7 +20,10 @@ def ask_gemini(prompt: str) -> str:
     if not api_key:
         raise ValueError("GEMINI_API_KEY not found")
 
-    client = genai.Client(api_key=api_key)
+    client = genai.Client(
+        api_key=api_key,
+        http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT_SECONDS),
+    )
 
     last_error = None
 
