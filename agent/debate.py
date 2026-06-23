@@ -12,9 +12,25 @@ REQUIRED_DEBATE_FIELDS = {
 MIN_DEBATE_FIELD_LENGTH = 3
 
 
-def _parse_debate_json(raw_response: str) -> dict:
-    result = parse_json_object(raw_response, "Debate did not return JSON")
+def _validate_debate_inputs(
+    question: str,
+    gemini_response: str,
+    deepseek_response: str,
+) -> None:
+    if not question.strip():
+        raise ValueError("Debate question must not be empty")
 
+    if not gemini_response.strip():
+        raise ValueError("Gemini response must not be empty")
+
+    if not deepseek_response.strip():
+        raise ValueError("DeepSeek response must not be empty")
+
+    if gemini_response.strip() == deepseek_response.strip():
+        raise ValueError("Debate requires different model responses")
+
+
+def _validate_debate_result(result: dict) -> None:
     missing_fields = REQUIRED_DEBATE_FIELDS - result.keys()
 
     if missing_fields:
@@ -47,6 +63,10 @@ def _parse_debate_json(raw_response: str) -> dict:
                 f"Debate response field '{field}' is too short"
             )
 
+
+def _parse_debate_json(raw_response: str) -> dict:
+    result = parse_json_object(raw_response, "Debate did not return JSON")
+    _validate_debate_result(result)
     return result
 
 
@@ -55,17 +75,7 @@ def run_debate(
     gemini_response: str,
     deepseek_response: str,
 ) -> dict:
-    if not question.strip():
-        raise ValueError("Debate question must not be empty")
-
-    if not gemini_response.strip():
-        raise ValueError("Gemini response must not be empty")
-
-    if not deepseek_response.strip():
-        raise ValueError("DeepSeek response must not be empty")
-
-    if gemini_response.strip() == deepseek_response.strip():
-        raise ValueError("Debate requires different model responses")
+    _validate_debate_inputs(question, gemini_response, deepseek_response)
 
     question = question.strip()
     gemini_response = gemini_response.strip()
