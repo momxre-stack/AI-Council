@@ -9,7 +9,15 @@ def _ask_provider(provider_name: str, provider, question: str) -> dict:
     try:
         response = provider(question)
 
-        if not isinstance(response, str) or not response.strip():
+        if not isinstance(response, str):
+            return {
+                "provider": provider_name,
+                "response": None,
+                "error": "Provider returned invalid response",
+                "quota_error": False,
+            }
+
+        if not response.strip():
             return {
                 "provider": provider_name,
                 "response": None,

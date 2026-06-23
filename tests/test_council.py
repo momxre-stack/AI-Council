@@ -238,3 +238,34 @@ def test_council_degraded_when_deepseek_returns_empty_response(
     assert result["provider_errors"]["deepseek"] == "Provider returned empty response"
     assert result["judgment"] is None
     assert result["debate"] is None
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_degraded_when_gemini_returns_none(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = None
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["responses"]["gemini"] is None
+    assert result["provider_errors"]["gemini"] == "Provider returned invalid response"
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_degraded_when_deepseek_returns_dict(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = {"answer": "test"}
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["responses"]["deepseek"] is None
+    assert result["provider_errors"]["deepseek"] == "Provider returned invalid response"
