@@ -4,7 +4,7 @@ import httpx
 import pytest
 from openai import APIConnectionError, APIError, RateLimitError
 
-from agent.providers.deepseek import MAX_RETRIES, ask_deepseek
+from agent.providers.deepseek import MAX_RETRIES, REQUEST_TIMEOUT_SECONDS, ask_deepseek
 
 
 @patch("agent.providers.deepseek.time.sleep")
@@ -122,3 +122,27 @@ def test_deepseek_retries_connection_errors_until_exhausted(
     assert error.value is connection_error
     assert mock_client.chat.completions.create.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
+
+@patch("agent.providers.deepseek.OpenAI")
+@patch("agent.providers.deepseek.os.getenv")
+def test_deepseek_client_uses_request_timeout(
+    mock_getenv,
+    mock_openai,
+):
+    mock_getenv.return_value = "test-key"
+
+    mock_client = Mock()
+    mock_response = Mock()
+    mock_response.choices = [
+        Mock(message=Mock(content="DeepSeek answer"))
+    ]
+    mock_client.chat.completions.create.return_value = mock_response
+    mock_openai.return_value = mock_client
+
+    ask_deepseek("test prompt")
+
+    mock_openai.assert_called_once_with(
+        api_key="test-key",
+        base_url="https://api.deepseek.com",
+        timeout=REQUEST_TIMEOUT_SECONDS,
+    )

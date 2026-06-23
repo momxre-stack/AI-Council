@@ -10,6 +10,7 @@ load_dotenv()
 
 MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2
+REQUEST_TIMEOUT_SECONDS = 30
 
 
 def ask_deepseek(prompt: str) -> str:
@@ -21,6 +22,7 @@ def ask_deepseek(prompt: str) -> str:
     client = OpenAI(
         api_key=api_key,
         base_url="https://api.deepseek.com",
+        timeout=REQUEST_TIMEOUT_SECONDS,
     )
 
     last_error = None
