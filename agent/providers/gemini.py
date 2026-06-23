@@ -3,7 +3,7 @@ import time
 
 from dotenv import load_dotenv
 from google import genai
-from google.genai.errors import APIError
+from google.genai.errors import APIError, UnknownApiResponseError
 
 load_dotenv()
 
@@ -31,7 +31,7 @@ def ask_gemini(prompt: str) -> str:
 
             return response.text
 
-        except APIError as error:
+        except (APIError, UnknownApiResponseError) as error:
             last_error = error
 
             if attempt == MAX_RETRIES - 1:
