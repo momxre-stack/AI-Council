@@ -198,8 +198,14 @@ def test_council_raises_when_both_providers_fail(
     mock_gemini.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED")
     mock_deepseek.side_effect = RuntimeError("429 RESOURCE_EXHAUSTED")
 
-    with pytest.raises(RuntimeError, match="Both providers failed"):
+    with pytest.raises(RuntimeError) as error:
         ask_council("test")
+
+    assert str(error.value) == (
+        "Both providers failed: "
+        "gemini=429 RESOURCE_EXHAUSTED; "
+        "deepseek=429 RESOURCE_EXHAUSTED"
+    )
 
 
 @patch("agent.council.ask_gemini")

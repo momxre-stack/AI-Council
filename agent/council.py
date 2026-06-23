@@ -58,7 +58,11 @@ def ask_council(question: str) -> dict:
     }
 
     if gemini_response is None and deepseek_response is None:
-        raise RuntimeError("Both providers failed")
+        raise RuntimeError(
+            "Both providers failed: "
+            f"gemini={provider_errors['gemini']}; "
+            f"deepseek={provider_errors['deepseek']}"
+        )
 
     if gemini_response is None or deepseek_response is None:
         return {
