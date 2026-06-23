@@ -2,12 +2,14 @@ from agent.json_utils import parse_json_object
 from agent.providers.gemini import ask_gemini
 
 
-REQUIRED_DEBATE_FIELDS = {
+DEBATE_FIELD_ORDER = (
     "gemini_strengths",
     "deepseek_strengths",
     "criticisms",
     "consensus_answer",
-}
+)
+
+REQUIRED_DEBATE_FIELDS = set(DEBATE_FIELD_ORDER)
 
 MIN_DEBATE_FIELD_LENGTH = 3
 
@@ -106,7 +108,7 @@ def _parse_debate_json(raw_response: str) -> dict:
 
     return {
         field: result[field].strip()
-        for field in REQUIRED_DEBATE_FIELDS
+        for field in DEBATE_FIELD_ORDER
     }
 
 
