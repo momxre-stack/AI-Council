@@ -72,6 +72,7 @@ def test_council_degraded_when_gemini_fails(
     result = ask_council("test")
 
     assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "provider_failure"
     assert result["responses"]["gemini"] is None
     assert result["responses"]["deepseek"] == "DeepSeek answer"
     assert result["provider_errors"]["gemini"] == "Gemini failed"

@@ -74,6 +74,7 @@ def ask_council(question: str) -> dict:
             "provider_errors": provider_errors,
             "quota_errors": quota_errors,
             "status": "degraded",
+            "degraded_reason": "provider_failure",
             "judgment": None,
             "judgment_error": None,
             "debate": None,
