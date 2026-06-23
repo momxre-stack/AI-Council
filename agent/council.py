@@ -118,6 +118,7 @@ def ask_council(question: str) -> dict:
             debate_error = str(error)
 
     status = "degraded" if debate_error else "ok"
+    degraded_reason = "debate_failure" if debate_error else None
 
     return {
         "question": question,
@@ -128,6 +129,7 @@ def ask_council(question: str) -> dict:
         "provider_errors": provider_errors,
         "quota_errors": quota_errors,
         "status": status,
+        "degraded_reason": degraded_reason,
         "judgment": judgment,
         "judgment_error": None,
         "debate": debate,
