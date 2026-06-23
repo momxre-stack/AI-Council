@@ -4,6 +4,7 @@ def count_statuses(results: list[dict]) -> dict:
         "degraded_count": 0,
         "failure_count": 0,
         "debate_count": 0,
+        "debate_vote_count": 0,
     }
 
     for result in results:
@@ -18,6 +19,9 @@ def count_statuses(results: list[dict]) -> dict:
 
         if result.get("debate") is not None:
             metrics["debate_count"] += 1
+
+        judgment = result.get("judgment") or {}
+        metrics["debate_vote_count"] += judgment.get("debate_vote_count", 0)
 
     return metrics
 

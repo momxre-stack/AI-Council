@@ -22,7 +22,33 @@ def test_counts_stress_result_statuses():
         "degraded_count": 1,
         "failure_count": 1,
         "debate_count": 1,
+        "debate_vote_count": 0,
     }
+
+
+def test_counts_debate_vote_totals():
+    results = [
+        {
+            "status": "ok",
+            "debate": None,
+            "judgment": {"debate_vote_count": 0},
+        },
+        {
+            "status": "ok",
+            "debate": None,
+            "judgment": {"debate_vote_count": 1},
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "final"},
+            "judgment": {"debate_vote_count": 2},
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["debate_vote_count"] == 3
+
 
 def test_count_statuses_treats_missing_status_as_failure():
     results = [
@@ -36,6 +62,7 @@ def test_count_statuses_treats_missing_status_as_failure():
         "degraded_count": 0,
         "failure_count": 1,
         "debate_count": 0,
+        "debate_vote_count": 0,
     }
 
 
@@ -63,6 +90,7 @@ def test_counts_twenty_simulated_requests():
         "degraded_count": 3,
         "failure_count": 1,
         "debate_count": 1,
+        "debate_vote_count": 0,
     }
 
 
@@ -91,6 +119,7 @@ def test_counts_fifty_simulated_requests():
         "degraded_count": 7,
         "failure_count": 2,
         "debate_count": 1,
+        "debate_vote_count": 0,
     }
 
 
@@ -159,6 +188,7 @@ def test_builds_stress_report():
         "degraded_count": 1,
         "failure_count": 1,
         "debate_count": 1,
+        "debate_vote_count": 0,
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
