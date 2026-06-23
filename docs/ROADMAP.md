@@ -46,11 +46,12 @@ Stable baseline:
 * Summary existence checks
 * Stress report summary module
 * Reliability quality improvements
-* 104 passing tests
+* Debate quality improvements
+* 115 passing tests
 
 Latest stable commit:
 
-a9aa6cb
+0fa96d1
 
 ---
 
@@ -169,7 +170,31 @@ Implemented:
 
 Status:
 
-Planned.
+Completed.
+
+Implemented:
+
+* Required debate field validation
+* Debate string type validation
+* Empty debate field rejection
+* Unexpected debate field rejection
+* Empty question rejection
+* Empty Gemini response rejection
+* Empty DeepSeek response rejection
+* Identical response rejection
+* Minimum debate field length checks
+* Debate input trimming
+* Debate output trimming
+* Debate validation helper extraction
+* Debate prompt template extraction
+* Stable debate output field order
+* Additional debate regression coverage
+
+### Provider Reliability Hardening
+
+Status:
+
+Next.
 
 ### Provider Expansion
 
