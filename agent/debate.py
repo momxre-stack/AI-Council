@@ -67,6 +67,10 @@ def run_debate(
     if gemini_response.strip() == deepseek_response.strip():
         raise ValueError("Debate requires different model responses")
 
+    question = question.strip()
+    gemini_response = gemini_response.strip()
+    deepseek_response = deepseek_response.strip()
+
     prompt = f"""
 Question:
 {question}

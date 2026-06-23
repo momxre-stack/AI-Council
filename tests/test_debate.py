@@ -172,3 +172,26 @@ def test_run_debate_rejects_too_short_required_fields(mock_gemini):
             gemini_response="gemini answer",
             deepseek_response="deepseek answer",
         )
+
+@patch("agent.debate.ask_gemini")
+def test_run_debate_trims_inputs_before_prompt(mock_gemini):
+    mock_gemini.return_value = """
+    {
+      "gemini_strengths": "Gemini strength",
+      "deepseek_strengths": "DeepSeek strength",
+      "criticisms": "Both missed details",
+      "consensus_answer": "Final answer"
+    }
+    """
+
+    run_debate(
+        question="  question  ",
+        gemini_response="\n gemini answer \n",
+        deepseek_response="  deepseek answer  ",
+    )
+
+    prompt = mock_gemini.call_args[0][0]
+
+    assert "Question:\nquestion\n" in prompt
+    assert "Gemini said:\ngemini answer\n" in prompt
+    assert "DeepSeek said:\ndeepseek answer\n" in prompt
