@@ -67,7 +67,11 @@ def _validate_debate_result(result: dict) -> None:
 def _parse_debate_json(raw_response: str) -> dict:
     result = parse_json_object(raw_response, "Debate did not return JSON")
     _validate_debate_result(result)
-    return result
+
+    return {
+        field: result[field].strip()
+        for field in REQUIRED_DEBATE_FIELDS
+    }
 
 
 def run_debate(
