@@ -114,6 +114,7 @@ def test_council_degraded_when_judge_fails(
     result = ask_council("test")
 
     assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "judge_failure"
     assert result["judgment"] is None
     assert result["judgment_error"] == "Judge failed"
     assert result["debate"] is None
