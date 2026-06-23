@@ -112,6 +112,19 @@ def test_calculates_stress_rates():
     }
 
 
+def test_calculates_debate_usage_rate():
+    metrics = {
+        "success_count": 16,
+        "degraded_count": 3,
+        "failure_count": 1,
+        "debate_count": 4,
+    }
+
+    rates = calculate_rates(metrics, total_count=20)
+
+    assert rates["debate_rate"] == 0.2
+
+
 def test_calculates_zero_rates_for_empty_results():
     metrics = {
         "success_count": 0,
