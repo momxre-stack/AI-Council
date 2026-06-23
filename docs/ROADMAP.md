@@ -194,7 +194,23 @@ Implemented:
 
 Status:
 
-Next.
+Completed.
+
+Implemented:
+
+* Retry recovery coverage
+* Retry exhaustion coverage
+* Gemini API error retries
+* Gemini unknown response retries
+* DeepSeek API error retries
+* DeepSeek rate limit retries
+* DeepSeek connection retries
+* Provider timeout configuration
+* Provider degraded reasons
+* Judge degraded reasons
+* Debate degraded reasons
+* Successful flow degraded reason coverage
+* Additional provider regression coverage
 
 ### Provider Expansion
 
