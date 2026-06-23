@@ -11,6 +11,42 @@ REQUIRED_DEBATE_FIELDS = {
 
 MIN_DEBATE_FIELD_LENGTH = 3
 
+DEBATE_PROMPT_TEMPLATE = """
+Question:
+{question}
+
+Gemini said:
+{gemini_response}
+
+DeepSeek said:
+{deepseek_response}
+
+Return ONLY valid JSON with this exact structure:
+{{
+  "gemini_strengths": "",
+  "deepseek_strengths": "",
+  "criticisms": "",
+  "consensus_answer": ""
+}}
+
+Rules:
+- Return a single JSON object only.
+- Use exactly the four fields above.
+- Do not add extra fields.
+- All values must be strings.
+- All values must be non-empty after trimming whitespace.
+- Trim leading and trailing whitespace in all string values.
+- Escape all quotation marks inside string values.
+- Do not use unescaped newlines inside string values.
+- Do not include markdown.
+- Do not include code fences.
+- Do not include explanations outside JSON.
+- gemini_strengths must explain where Gemini's answer is stronger.
+- deepseek_strengths must explain where DeepSeek's answer is stronger.
+- criticisms must explain what each answer misses or gets wrong.
+- consensus_answer must combine the strongest parts into one final answer.
+"""
+
 
 def _validate_debate_inputs(
     question: str,
@@ -85,41 +121,11 @@ def run_debate(
     gemini_response = gemini_response.strip()
     deepseek_response = deepseek_response.strip()
 
-    prompt = f"""
-Question:
-{question}
-
-Gemini said:
-{gemini_response}
-
-DeepSeek said:
-{deepseek_response}
-
-Return ONLY valid JSON with this exact structure:
-{{
-  "gemini_strengths": "",
-  "deepseek_strengths": "",
-  "criticisms": "",
-  "consensus_answer": ""
-}}
-
-Rules:
-- Return a single JSON object only.
-- Use exactly the four fields above.
-- Do not add extra fields.
-- All values must be strings.
-- All values must be non-empty after trimming whitespace.
-- Trim leading and trailing whitespace in all string values.
-- Escape all quotation marks inside string values.
-- Do not use unescaped newlines inside string values.
-- Do not include markdown.
-- Do not include code fences.
-- Do not include explanations outside JSON.
-- gemini_strengths must explain where Gemini's answer is stronger.
-- deepseek_strengths must explain where DeepSeek's answer is stronger.
-- criticisms must explain what each answer misses or gets wrong.
-- consensus_answer must combine the strongest parts into one final answer.
-"""
+    prompt = DEBATE_PROMPT_TEMPLATE.format(
+        question=question,
+        gemini_response=gemini_response,
+        deepseek_response=deepseek_response,
+    )
 
     result = ask_gemini(prompt)
 
