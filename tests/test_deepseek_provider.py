@@ -1,7 +1,8 @@
 from unittest.mock import Mock, patch
 
+import httpx
 import pytest
-from openai import APIError
+from openai import APIError, RateLimitError
 
 from agent.providers.deepseek import MAX_RETRIES, ask_deepseek
 
@@ -67,3 +68,31 @@ def test_deepseek_recovers_after_temporary_api_error(
     assert result == "Recovered answer"
     assert mock_client.chat.completions.create.call_count == 2
     assert mock_sleep.call_count == 1
+
+
+@patch("agent.providers.deepseek.time.sleep")
+@patch("agent.providers.deepseek.OpenAI")
+@patch("agent.providers.deepseek.os.getenv")
+def test_deepseek_retries_rate_limit_errors_until_exhausted(
+    mock_getenv,
+    mock_openai,
+    mock_sleep,
+):
+    mock_getenv.return_value = "test-key"
+
+    rate_limit_error = RateLimitError(
+        "rate limit exceeded",
+        response=httpx.Response(429, request=httpx.Request("POST", "https://api.deepseek.com")),
+        body=None,
+    )
+
+    mock_client = Mock()
+    mock_client.chat.completions.create.side_effect = rate_limit_error
+    mock_openai.return_value = mock_client
+
+    with pytest.raises(RateLimitError) as error:
+        ask_deepseek("test prompt")
+
+    assert error.value is rate_limit_error
+    assert mock_client.chat.completions.create.call_count == MAX_RETRIES
+    assert mock_sleep.call_count == MAX_RETRIES - 1
