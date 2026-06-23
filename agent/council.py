@@ -1,8 +1,16 @@
-from agent.providers.gemini import ask_gemini
-from agent.providers.deepseek import ask_deepseek
+from agent.providers.registry import PROVIDERS
 from agent.dual_judge import run_dual_judgment
 from agent.debate import run_debate
 from agent.quota_utils import is_quota_error
+
+
+
+def ask_gemini(prompt: str) -> str:
+    return PROVIDERS["gemini"](prompt)
+
+
+def ask_deepseek(prompt: str) -> str:
+    return PROVIDERS["deepseek"](prompt)
 
 
 def _ask_provider(provider_name: str, provider, question: str) -> dict:
