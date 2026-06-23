@@ -109,6 +109,7 @@ Rules:
 - Do not add extra fields.
 - All values must be strings.
 - All values must be non-empty after trimming whitespace.
+- Trim leading and trailing whitespace in all string values.
 - Escape all quotation marks inside string values.
 - Do not use unescaped newlines inside string values.
 - Do not include markdown.
