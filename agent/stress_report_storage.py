@@ -124,6 +124,10 @@ def build_historical_comparison_report(history: list[dict]) -> str:
 def generate_historical_reliability_report(reports: list[dict]) -> str:
     """Generate a historical reliability report from loaded stress reports."""
     history = build_reliability_history(reports)
+
+    if not history:
+        return "No historical reliability data."
+
     return build_historical_comparison_report(history)
 
 

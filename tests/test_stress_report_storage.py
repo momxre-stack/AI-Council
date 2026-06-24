@@ -517,6 +517,12 @@ def test_generate_historical_reliability_report_returns_text():
     )
 
 
+def test_generate_historical_reliability_report_handles_empty_reports():
+    result = generate_historical_reliability_report([])
+
+    assert result == "No historical reliability data."
+
+
 def os_path(*parts):
     import os
 
