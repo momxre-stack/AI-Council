@@ -523,6 +523,28 @@ def test_generate_historical_reliability_report_handles_empty_reports():
     assert result == "No historical reliability data."
 
 
+def test_generate_historical_reliability_report_handles_single_report():
+    reports = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability": {
+                "reliability_score": 0.88,
+                "status": "good",
+            },
+        },
+    ]
+
+    result = generate_historical_reliability_report(reports)
+
+    assert result == (
+        "Total runs: 1\n"
+        "Latest score: 0.88\n"
+        "Best score: 0.88\n"
+        "Worst score: 0.88\n"
+        "Current status: good"
+    )
+
+
 def os_path(*parts):
     import os
 
