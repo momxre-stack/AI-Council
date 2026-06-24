@@ -241,6 +241,7 @@ def test_calculates_stress_rates():
         "degraded_rate": 0.15,
         "failure_rate": 0.05,
         "debate_rate": 0.05,
+        "debate_effectiveness_rate": 0.0,
     }
 
 
@@ -256,6 +257,18 @@ def test_calculates_debate_usage_rate():
 
     assert rates["debate_rate"] == 0.2
 
+def test_calculates_debate_effectiveness_rate():
+    metrics = {
+        "success_count": 16,
+        "degraded_count": 3,
+        "failure_count": 1,
+        "debate_count": 4,
+        "debate_success_count": 3,
+    }
+
+    rates = calculate_rates(metrics, total_count=20)
+
+    assert rates["debate_effectiveness_rate"] == 0.75
 
 def test_calculates_zero_rates_for_empty_results():
     metrics = {
@@ -272,6 +285,7 @@ def test_calculates_zero_rates_for_empty_results():
         "degraded_rate": 0,
         "failure_rate": 0,
         "debate_rate": 0,
+        "debate_effectiveness_rate": 0,
     }
 
 
@@ -300,6 +314,7 @@ def test_builds_stress_report():
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
         "debate_rate": 0.25,
+        "debate_effectiveness_rate": 1.0,
     }
 
 def test_formats_stress_report():

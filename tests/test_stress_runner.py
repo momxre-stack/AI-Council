@@ -34,6 +34,7 @@ def test_summarizes_stress_results():
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
         "debate_rate": 0.25,
+        "debate_effectiveness_rate": 1.0,
         "average_duration_seconds": 0,
         "min_duration_seconds": 0,
         "max_duration_seconds": 0,
