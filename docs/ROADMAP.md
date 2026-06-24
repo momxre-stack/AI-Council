@@ -244,18 +244,19 @@ Note:
 
 Status:
 
-Planned.
+Completed.
 
-Goal:
-
-Track reliability behavior over time and detect long-term degradation.
-
-Planned:
+Implemented:
 
 * Historical reliability history
 * Trend comparisons across saved runs
 * Reliability degradation detection
 * Historical comparison reports
+* Historical reliability summaries
+* Historical report generation
+* Empty historical report handling
+* Single-report historical coverage
+* Additional regression coverage
 
 ### Provider Expansion
 
