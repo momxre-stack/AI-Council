@@ -23,6 +23,7 @@ def test_counts_stress_result_statuses():
         "failure_count": 1,
         "debate_count": 1,
         "debate_success_count": 1,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
@@ -119,6 +120,26 @@ def test_counts_successful_debates():
 
     assert metrics["debate_success_count"] == 1
 
+def test_counts_failed_debates():
+    results = [
+        {
+            "status": "degraded",
+            "debate": {"consensus_answer": "final"},
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "final"},
+        },
+        {
+            "status": "ok",
+            "debate": None,
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["debate_failure_count"] == 1
+
 
 def test_count_statuses_treats_missing_status_as_failure():
     results = [
@@ -133,6 +154,7 @@ def test_count_statuses_treats_missing_status_as_failure():
         "failure_count": 1,
         "debate_count": 0,
         "debate_success_count": 0,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
@@ -164,6 +186,7 @@ def test_counts_twenty_simulated_requests():
         "failure_count": 1,
         "debate_count": 1,
         "debate_success_count": 1,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
@@ -196,6 +219,7 @@ def test_counts_fifty_simulated_requests():
         "failure_count": 2,
         "debate_count": 1,
         "debate_success_count": 1,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
@@ -268,6 +292,7 @@ def test_builds_stress_report():
         "failure_count": 1,
         "debate_count": 1,
         "debate_success_count": 1,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,

@@ -26,6 +26,7 @@ def test_summarizes_stress_results():
         "failure_count": 1,
         "debate_count": 1,
         "debate_success_count": 1,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,

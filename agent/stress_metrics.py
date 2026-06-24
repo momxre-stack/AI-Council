@@ -5,6 +5,7 @@ def count_statuses(results: list[dict]) -> dict:
         "failure_count": 0,
         "debate_count": 0,
         "debate_success_count": 0,
+        "debate_failure_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
@@ -25,6 +26,9 @@ def count_statuses(results: list[dict]) -> dict:
 
             if status == "ok":
                 metrics["debate_success_count"] += 1
+
+            if status == "degraded":
+                metrics["debate_failure_count"] += 1
 
         judgment = result.get("judgment") or {}
         metrics["debate_vote_count"] += judgment.get("debate_vote_count", 0)
