@@ -109,6 +109,19 @@ def build_historical_reliability_summary(history: list[dict]) -> dict:
     }
 
 
+def build_historical_comparison_report(history: list[dict]) -> str:
+    """Build a human-readable historical reliability report."""
+    summary = build_historical_reliability_summary(history)
+
+    return (
+        f"Total runs: {summary['total_runs']}\n"
+        f"Latest score: {summary['latest_score']:.2f}\n"
+        f"Best score: {summary['best_score']:.2f}\n"
+        f"Worst score: {summary['worst_score']:.2f}\n"
+        f"Current status: {summary['latest_status']}"
+    )
+
+
 def detect_reliability_degradation(history: list[dict]) -> dict:
     """Detect reliability degradation between the two latest history entries."""
     previous_entry = history[-2]
@@ -125,7 +138,6 @@ def detect_reliability_degradation(history: list[dict]) -> dict:
         "score_delta": score_delta,
         "degraded": score_delta < 0,
     }
-
 
 
 def compare_latest_stress_reports(directory: str) -> dict:

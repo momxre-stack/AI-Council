@@ -1,15 +1,16 @@
 from agent.stress_report_storage import (
+    build_historical_comparison_report,
+    build_historical_reliability_summary,
     build_reliability_history,
     build_stress_report_path,
     compare_latest_stress_reports,
     compare_saved_stress_reports,
     detect_reliability_degradation,
-    build_historical_reliability_summary,
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
+    latest_stress_report_summary_exists,
     load_latest_stress_report,
     load_latest_stress_report_summary,
-    latest_stress_report_summary_exists,
     load_stress_report,
     load_stress_reports,
     save_latest_stress_report_summary,
@@ -459,6 +460,31 @@ def test_build_historical_reliability_summary_returns_score_summary():
         "worst_score": 0.82,
         "latest_status": "good",
     }
+
+
+def test_build_historical_comparison_report_returns_text_summary():
+    history = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability_score": 0.90,
+            "status": "good",
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability_score": 0.82,
+            "status": "warning",
+        },
+    ]
+
+    result = build_historical_comparison_report(history)
+
+    assert result == (
+        "Total runs: 2\n"
+        "Latest score: 0.82\n"
+        "Best score: 0.90\n"
+        "Worst score: 0.82\n"
+        "Current status: warning"
+    )
 
 
 def os_path(*parts):
