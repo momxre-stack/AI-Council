@@ -121,6 +121,12 @@ def build_historical_comparison_report(history: list[dict]) -> str:
         f"Current status: {summary['latest_status']}"
     )
 
+def generate_historical_reliability_report(reports: list[dict]) -> str:
+    """Generate a historical reliability report from loaded stress reports."""
+    history = build_reliability_history(reports)
+    return build_historical_comparison_report(history)
+
+
 
 def detect_reliability_degradation(history: list[dict]) -> dict:
     """Detect reliability degradation between the two latest history entries."""

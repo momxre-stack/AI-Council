@@ -6,6 +6,7 @@ from agent.stress_report_storage import (
     compare_latest_stress_reports,
     compare_saved_stress_reports,
     detect_reliability_degradation,
+    generate_historical_reliability_report,
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     latest_stress_report_summary_exists,
@@ -477,6 +478,35 @@ def test_build_historical_comparison_report_returns_text_summary():
     ]
 
     result = build_historical_comparison_report(history)
+
+    assert result == (
+        "Total runs: 2\n"
+        "Latest score: 0.82\n"
+        "Best score: 0.90\n"
+        "Worst score: 0.82\n"
+        "Current status: warning"
+    )
+
+
+def test_generate_historical_reliability_report_returns_text():
+    reports = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability": {
+                "reliability_score": 0.90,
+                "status": "good",
+            },
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability": {
+                "reliability_score": 0.82,
+                "status": "warning",
+            },
+        },
+    ]
+
+    result = generate_historical_reliability_report(reports)
 
     assert result == (
         "Total runs: 2\n"
