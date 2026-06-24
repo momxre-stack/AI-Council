@@ -30,6 +30,7 @@ def test_summarizes_stress_results():
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
         "judge_disagreement_count": 0,
+        "judge_useful_count": 0,
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
