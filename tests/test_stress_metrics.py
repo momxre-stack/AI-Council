@@ -23,6 +23,7 @@ def test_counts_stress_result_statuses():
         "failure_count": 1,
         "debate_count": 1,
         "debate_vote_count": 0,
+        "judge_agreement_count": 0,
     }
 
 
@@ -50,6 +51,30 @@ def test_counts_debate_vote_totals():
     assert metrics["debate_vote_count"] == 3
 
 
+def test_counts_judge_agreements():
+    results = [
+        {
+            "status": "ok",
+            "debate": None,
+            "judgment": {"final_needs_debate": False},
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "final"},
+            "judgment": {"final_needs_debate": True},
+        },
+        {
+            "status": "degraded",
+            "debate": None,
+            "judgment": None,
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["judge_agreement_count"] == 1
+
+
 def test_count_statuses_treats_missing_status_as_failure():
     results = [
         {"debate": None},
@@ -63,6 +88,7 @@ def test_count_statuses_treats_missing_status_as_failure():
         "failure_count": 1,
         "debate_count": 0,
         "debate_vote_count": 0,
+        "judge_agreement_count": 0,
     }
 
 
@@ -91,6 +117,7 @@ def test_counts_twenty_simulated_requests():
         "failure_count": 1,
         "debate_count": 1,
         "debate_vote_count": 0,
+        "judge_agreement_count": 0,
     }
 
 
@@ -120,6 +147,7 @@ def test_counts_fifty_simulated_requests():
         "failure_count": 2,
         "debate_count": 1,
         "debate_vote_count": 0,
+        "judge_agreement_count": 0,
     }
 
 
@@ -189,12 +217,12 @@ def test_builds_stress_report():
         "failure_count": 1,
         "debate_count": 1,
         "debate_vote_count": 0,
+        "judge_agreement_count": 0,
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
         "debate_rate": 0.25,
     }
-
 
 def test_formats_stress_report():
     report = {
@@ -240,6 +268,7 @@ def test_formats_stress_report_with_timing_metrics():
         "Min duration: 0.500s\n"
         "Max duration: 2.750s"
     )
+
 
 def test_formats_stress_report_with_reliability_metrics():
     report = {
@@ -290,10 +319,13 @@ def test_counts_one_hundred_simulated_requests():
     assert report["degraded_count"] == 12
     assert report["failure_count"] == 4
     assert report["debate_count"] == 2
+    assert report["debate_vote_count"] == 0
+    assert report["judge_agreement_count"] == 0
     assert report["success_rate"] == 0.84
     assert report["degraded_rate"] == 0.12
     assert report["failure_rate"] == 0.04
     assert report["debate_rate"] == 0.02
+
 
 def test_builds_excellent_reliability_summary():
     summary = build_reliability_summary(
@@ -349,6 +381,7 @@ def test_builds_poor_reliability_summary():
         "reliability_score": 0.30,
         "status": "poor",
     }
+
 
 def test_format_stress_report_defaults_missing_reliability_status():
     report = {
