@@ -95,6 +95,24 @@ def build_reliability_history(reports: list[dict]) -> list[dict]:
 
     return history
 
+def detect_reliability_degradation(history: list[dict]) -> dict:
+    """Detect reliability degradation between the two latest history entries."""
+    previous_entry = history[-2]
+    current_entry = history[-1]
+
+    previous_score = previous_entry["reliability_score"]
+    current_score = current_entry["reliability_score"]
+
+    score_delta = round(current_score - previous_score, 4)
+
+    return {
+        "previous_score": previous_score,
+        "current_score": current_score,
+        "score_delta": score_delta,
+        "degraded": score_delta < 0,
+    }
+
+
 
 def compare_latest_stress_reports(directory: str) -> dict:
     """Compare the two latest saved stress reports from a directory."""

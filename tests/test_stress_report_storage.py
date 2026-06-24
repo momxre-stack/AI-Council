@@ -3,6 +3,7 @@ from agent.stress_report_storage import (
     build_stress_report_path,
     compare_latest_stress_reports,
     compare_saved_stress_reports,
+    detect_reliability_degradation,
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     load_latest_stress_report,
@@ -403,6 +404,30 @@ def test_build_reliability_history_returns_chronological_entries():
             "status": "good",
         },
     ]
+
+
+def test_detect_reliability_degradation_detects_score_drop():
+    history = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability_score": 0.90,
+            "status": "good",
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability_score": 0.82,
+            "status": "good",
+        },
+    ]
+
+    result = detect_reliability_degradation(history)
+
+    assert result == {
+        "previous_score": 0.90,
+        "current_score": 0.82,
+        "score_delta": -0.08,
+        "degraded": True,
+    }
 
 
 def os_path(*parts):
