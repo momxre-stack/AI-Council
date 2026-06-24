@@ -95,11 +95,17 @@ def build_stress_report(results: list[dict]) -> dict:
     metrics = count_statuses(results)
     total_count = len(results)
     rates = calculate_rates(metrics, total_count)
+    categories = {
+        result["category"]
+        for result in results
+        if result.get("category")
+    }
 
     return {
         "total_count": total_count,
         **metrics,
         **rates,
+        "category_count": len(categories),
     }
 
 

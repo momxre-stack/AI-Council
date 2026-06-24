@@ -320,6 +320,19 @@ def test_calculates_zero_rates_for_empty_results():
     }
 
 
+def test_builds_category_coverage_metrics():
+    results = [
+        {"status": "ok", "debate": None, "category": "reliability"},
+        {"status": "ok", "debate": None, "category": "json"},
+        {"status": "degraded", "debate": None, "category": "json"},
+        {"status": "failed", "debate": None},
+    ]
+
+    report = build_stress_report(results)
+
+    assert report["category_count"] == 2
+
+
 def test_builds_stress_report():
     results = [
         {"status": "ok", "debate": None},
@@ -348,6 +361,7 @@ def test_builds_stress_report():
         "debate_effectiveness_rate": 1.0,
         "judge_agreement_rate": 0,
         "judge_disagreement_rate": 0,
+        "category_count": 0,
     }
 
 def test_formats_stress_report():
