@@ -24,6 +24,7 @@ def test_counts_stress_result_statuses():
         "debate_count": 1,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
     }
 
 
@@ -74,6 +75,29 @@ def test_counts_judge_agreements():
 
     assert metrics["judge_agreement_count"] == 1
 
+def test_counts_judge_disagreements():
+    results = [
+        {
+            "status": "ok",
+            "debate": None,
+            "judgment": {"final_needs_debate": False},
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "final"},
+            "judgment": {"final_needs_debate": True},
+        },
+        {
+            "status": "degraded",
+            "debate": None,
+            "judgment": None,
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["judge_disagreement_count"] == 1
+
 
 def test_count_statuses_treats_missing_status_as_failure():
     results = [
@@ -89,6 +113,7 @@ def test_count_statuses_treats_missing_status_as_failure():
         "debate_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
     }
 
 
@@ -118,6 +143,7 @@ def test_counts_twenty_simulated_requests():
         "debate_count": 1,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
     }
 
 
@@ -148,6 +174,7 @@ def test_counts_fifty_simulated_requests():
         "debate_count": 1,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
     }
 
 
@@ -218,6 +245,7 @@ def test_builds_stress_report():
         "debate_count": 1,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,

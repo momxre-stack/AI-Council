@@ -6,6 +6,7 @@ def count_statuses(results: list[dict]) -> dict:
         "debate_count": 0,
         "debate_vote_count": 0,
         "judge_agreement_count": 0,
+        "judge_disagreement_count": 0,
     }
 
     for result in results:
@@ -26,6 +27,9 @@ def count_statuses(results: list[dict]) -> dict:
 
         if judgment and judgment.get("final_needs_debate") is False:
             metrics["judge_agreement_count"] += 1
+
+        if judgment and judgment.get("final_needs_debate") is True:
+            metrics["judge_disagreement_count"] += 1
 
     return metrics
 
