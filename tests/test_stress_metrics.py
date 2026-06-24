@@ -243,6 +243,7 @@ def test_calculates_stress_rates():
         "debate_rate": 0.05,
         "debate_effectiveness_rate": 0.0,
         "judge_agreement_rate": 0,
+        "judge_disagreement_rate": 0,
     }
 
 
@@ -285,6 +286,20 @@ def test_calculates_judge_agreement_rate():
     rates = calculate_rates(metrics, total_count=20)
 
     assert rates["judge_agreement_rate"] == 0.75
+
+def test_calculates_judge_disagreement_rate():
+    metrics = {
+        "success_count": 16,
+        "degraded_count": 3,
+        "failure_count": 1,
+        "debate_count": 4,
+        "judge_agreement_count": 6,
+        "judge_disagreement_count": 2,
+    }
+
+    rates = calculate_rates(metrics, total_count=20)
+
+    assert rates["judge_disagreement_rate"] == 0.25
 
 def test_calculates_zero_rates_for_empty_results():
     metrics = {
@@ -332,6 +347,7 @@ def test_builds_stress_report():
         "debate_rate": 0.25,
         "debate_effectiveness_rate": 1.0,
         "judge_agreement_rate": 0,
+        "judge_disagreement_rate": 0,
     }
 
 def test_formats_stress_report():

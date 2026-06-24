@@ -36,6 +36,7 @@ def test_summarizes_stress_results():
         "debate_rate": 0.25,
         "debate_effectiveness_rate": 1.0,
         "judge_agreement_rate": 0,
+        "judge_disagreement_rate": 0,
         "average_duration_seconds": 0,
         "min_duration_seconds": 0,
         "max_duration_seconds": 0,

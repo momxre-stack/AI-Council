@@ -69,9 +69,14 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
 
     if judge_total_count == 0:
         judge_agreement_rate = 0
+        judge_disagreement_rate = 0
     else:
         judge_agreement_rate = (
             metrics.get("judge_agreement_count", 0)
+            / judge_total_count
+        )
+        judge_disagreement_rate = (
+            metrics.get("judge_disagreement_count", 0)
             / judge_total_count
         )
 
@@ -82,6 +87,7 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
         "debate_rate": debate_count / total_count,
         "debate_effectiveness_rate": debate_effectiveness_rate,
         "judge_agreement_rate": judge_agreement_rate,
+        "judge_disagreement_rate": judge_disagreement_rate,
     }
 
 
