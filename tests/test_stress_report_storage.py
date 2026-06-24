@@ -4,6 +4,7 @@ from agent.stress_report_storage import (
     compare_latest_stress_reports,
     compare_saved_stress_reports,
     detect_reliability_degradation,
+    build_historical_reliability_summary,
     generate_latest_stress_report_summary,
     get_latest_stress_report_path,
     load_latest_stress_report,
@@ -427,6 +428,36 @@ def test_detect_reliability_degradation_detects_score_drop():
         "current_score": 0.82,
         "score_delta": -0.08,
         "degraded": True,
+    }
+
+
+def test_build_historical_reliability_summary_returns_score_summary():
+    history = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability_score": 0.90,
+            "status": "good",
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability_score": 0.82,
+            "status": "good",
+        },
+        {
+            "created_at": "2026-06-24T12:00:00",
+            "reliability_score": 0.88,
+            "status": "good",
+        },
+    ]
+
+    result = build_historical_reliability_summary(history)
+
+    assert result == {
+        "total_runs": 3,
+        "latest_score": 0.88,
+        "best_score": 0.90,
+        "worst_score": 0.82,
+        "latest_status": "good",
     }
 
 

@@ -95,6 +95,20 @@ def build_reliability_history(reports: list[dict]) -> list[dict]:
 
     return history
 
+def build_historical_reliability_summary(history: list[dict]) -> dict:
+    """Build a compact summary from reliability history entries."""
+    scores = [entry["reliability_score"] for entry in history]
+    latest_entry = history[-1]
+
+    return {
+        "total_runs": len(history),
+        "latest_score": latest_entry["reliability_score"],
+        "best_score": max(scores),
+        "worst_score": min(scores),
+        "latest_status": latest_entry["status"],
+    }
+
+
 def detect_reliability_degradation(history: list[dict]) -> dict:
     """Detect reliability degradation between the two latest history entries."""
     previous_entry = history[-2]
