@@ -78,6 +78,24 @@ def load_stress_reports(directory: str) -> list[dict]:
 
     return reports
 
+def build_reliability_history(reports: list[dict]) -> list[dict]:
+    """Build a compact reliability history from loaded stress reports."""
+    history = []
+
+    for report in reports:
+        reliability = report.get("reliability", {})
+
+        history.append(
+            {
+                "created_at": report.get("created_at"),
+                "reliability_score": reliability.get("reliability_score"),
+                "status": reliability.get("status"),
+            }
+        )
+
+    return history
+
+
 def compare_latest_stress_reports(directory: str) -> dict:
     """Compare the two latest saved stress reports from a directory."""
     reports = load_stress_reports(directory)

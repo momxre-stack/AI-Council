@@ -1,4 +1,5 @@
 from agent.stress_report_storage import (
+    build_reliability_history,
     build_stress_report_path,
     compare_latest_stress_reports,
     compare_saved_stress_reports,
@@ -369,6 +370,39 @@ def test_compare_saved_stress_reports_ignores_missing_and_non_numeric_values():
     assert result == {
         "success_rate_delta": 0.1,
     }
+
+def test_build_reliability_history_returns_chronological_entries():
+    reports = [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability": {
+                "reliability_score": 0.82,
+                "status": "good",
+            },
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability": {
+                "reliability_score": 0.90,
+                "status": "good",
+            },
+        },
+    ]
+
+    result = build_reliability_history(reports)
+
+    assert result == [
+        {
+            "created_at": "2026-06-24T10:00:00",
+            "reliability_score": 0.82,
+            "status": "good",
+        },
+        {
+            "created_at": "2026-06-24T11:00:00",
+            "reliability_score": 0.90,
+            "status": "good",
+        },
+    ]
 
 
 def os_path(*parts):
