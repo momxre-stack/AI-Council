@@ -50,7 +50,13 @@ def test_summarizes_stress_results():
 
 
 def test_runs_stress_test_with_injected_council_runner():
-    times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])
+    times = iter([
+        1.0, 1.5,
+        2.0, 2.5,
+        3.0, 3.5,
+        4.0, 4.5,
+        5.0, 5.5,
+    ])
 
     def fake_timer():
         return next(times)
@@ -273,7 +279,13 @@ def test_exports_stress_summary_text():
     )
 
 def test_runs_default_stress_test_with_default_questions():
-    times = iter([1.0, 1.5, 2.0, 2.5, 3.0, 3.5])
+    times = iter([
+        1.0, 1.5,
+        2.0, 2.5,
+        3.0, 3.5,
+        4.0, 4.5,
+        5.0, 5.5,
+    ])
     calls = []
 
     def fake_timer():
@@ -296,9 +308,12 @@ def test_runs_default_stress_test_with_default_questions():
         "Explain AI Council in one sentence.",
         "Compare reliability and speed in software systems.",
         "List three risks of malformed JSON outputs.",
+        "Explain when an AI judge should trigger debate.",
+        "Identify the strongest and weakest answer in a comparison.",
     ]
-    assert summary["report"]["total_count"] == 3
-    assert summary["report"]["success_count"] == 3
+    assert summary["report"]["total_count"] == 5
+    assert summary["report"]["category_count"] == 5
+    assert summary["report"]["success_count"] == 5
     assert summary["report"]["failure_count"] == 0
 
 def test_runs_default_stress_test_with_custom_questions():
@@ -348,12 +363,29 @@ def test_real_stress_test_uses_default_questions(monkeypatch):
     summary = run_real_stress_test(request_count=1)
 
     assert captured_questions == [
-        "Explain AI Council in one sentence.",
-        "Compare reliability and speed in software systems.",
-        "List three risks of malformed JSON outputs.",
+        {
+            "category": "general",
+            "question": "Explain AI Council in one sentence.",
+        },
+        {
+            "category": "reliability",
+            "question": "Compare reliability and speed in software systems.",
+        },
+        {
+            "category": "json",
+            "question": "List three risks of malformed JSON outputs.",
+        },
+        {
+            "category": "debate",
+            "question": "Explain when an AI judge should trigger debate.",
+        },
+        {
+            "category": "comparison",
+            "question": "Identify the strongest and weakest answer in a comparison.",
+        },
     ]
-    assert summary["report"]["total_count"] == 3
-    assert summary["report"]["success_count"] == 3
+    assert summary["report"]["total_count"] == 5
+    assert summary["report"]["success_count"] == 5
     assert summary["report"]["failure_count"] == 0
 
 def test_run_real_stress_test_rejects_non_positive_request_count():

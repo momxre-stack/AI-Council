@@ -8,9 +8,26 @@ from agent.stress_metrics import (
 )
 
 DEFAULT_STRESS_QUESTIONS = [
-    "Explain AI Council in one sentence.",
-    "Compare reliability and speed in software systems.",
-    "List three risks of malformed JSON outputs.",
+    {
+        "category": "general",
+        "question": "Explain AI Council in one sentence.",
+    },
+    {
+        "category": "reliability",
+        "question": "Compare reliability and speed in software systems.",
+    },
+    {
+        "category": "json",
+        "question": "List three risks of malformed JSON outputs.",
+    },
+    {
+        "category": "debate",
+        "question": "Explain when an AI judge should trigger debate.",
+    },
+    {
+        "category": "comparison",
+        "question": "Identify the strongest and weakest answer in a comparison.",
+    },
 ]
 
 
