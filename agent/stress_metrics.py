@@ -62,12 +62,26 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
             debate_success_count / debate_count
         )
 
+    judge_total_count = (
+        metrics.get("judge_agreement_count", 0)
+        + metrics.get("judge_disagreement_count", 0)
+    )
+
+    if judge_total_count == 0:
+        judge_agreement_rate = 0
+    else:
+        judge_agreement_rate = (
+            metrics.get("judge_agreement_count", 0)
+            / judge_total_count
+        )
+
     return {
         "success_rate": metrics["success_count"] / total_count,
         "degraded_rate": metrics["degraded_count"] / total_count,
         "failure_rate": metrics["failure_count"] / total_count,
         "debate_rate": debate_count / total_count,
         "debate_effectiveness_rate": debate_effectiveness_rate,
+        "judge_agreement_rate": judge_agreement_rate,
     }
 
 
