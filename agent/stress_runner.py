@@ -62,24 +62,37 @@ def export_stress_summary(summary: dict) -> str:
     )
 
 
-def _run_stress_request(question: str, council_runner, timer=perf_counter) -> dict:
+def _run_stress_request(question: str | dict, council_runner, timer=perf_counter) -> dict:
+    if isinstance(question, dict):
+        question_text = question["question"]
+        category = question.get("category")
+    else:
+        question_text = question
+        category = None
+
     start_time = timer()
 
     try:
-        result = council_runner(question)
+        result = council_runner(question_text)
     except Exception as error:
         result = {
-            "question": question,
+            "question": question_text,
             "status": "failed",
             "error": str(error),
             "debate": None,
         }
 
     end_time = timer()
-    return {
+    output = {
         **result,
+        "question": question_text,
         "duration_seconds": end_time - start_time,
     }
+
+    if category is not None:
+        output["category"] = category
+
+    return output
 
 
 def run_stress_test(

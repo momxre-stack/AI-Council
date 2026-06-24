@@ -175,6 +175,40 @@ def test_runs_stress_questions_with_multiple_questions():
     assert summary["report"]["success_count"] == 2
     assert summary["report"]["failure_count"] == 0
 
+def test_run_stress_questions_preserves_question_categories():
+    times = iter([1.0, 1.5, 2.0, 2.5])
+
+    def fake_timer():
+        return next(times)
+
+    def fake_council_runner(question: str) -> dict:
+        return {
+            "question": question,
+            "status": "ok",
+            "debate": None,
+        }
+
+    summary = run_stress_questions(
+        questions=[
+            {
+                "category": "reliability",
+                "question": "Compare reliability and speed.",
+            },
+            {
+                "category": "json",
+                "question": "List JSON output risks.",
+            },
+        ],
+        council_runner=fake_council_runner,
+        timer=fake_timer,
+    )
+
+    assert summary["results"][0]["question"] == "Compare reliability and speed."
+    assert summary["results"][0]["category"] == "reliability"
+    assert summary["results"][1]["question"] == "List JSON output risks."
+    assert summary["results"][1]["category"] == "json"
+
+
 def test_run_stress_questions_rejects_empty_questions():
     try:
         run_stress_questions([])
