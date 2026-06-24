@@ -23,6 +23,7 @@ Stable baseline:
 * Stress runner execution helper
 * Multi-question stress runner
 * Configurable default stress questions
+* Categorized benchmark questions
 * Real stress runner entrypoint
 * Stress timing metrics
 * Timing metrics in formatted stress reports
@@ -47,11 +48,12 @@ Stable baseline:
 * Stress report summary module
 * Reliability quality improvements
 * Debate quality improvements
-* 132 passing tests
+* Evaluation and benchmark improvements
+* 144 passing tests
 
 Latest stable commit:
 
-2b1764e
+697e856
 
 ---
 
@@ -212,6 +214,49 @@ Implemented:
 * Successful flow degraded reason coverage
 * Additional provider regression coverage
 
+### Evaluation / Benchmark Improvements
+
+Status:
+
+Completed.
+
+Implemented:
+
+* Debate usage rate coverage
+* Debate vote metrics
+* Judge agreement metrics
+* Judge disagreement metrics
+* Debate success metrics
+* Debate failure metrics
+* Debate effectiveness rate
+* Judge agreement rate
+* Judge disagreement rate
+* Stress question categories
+* Category coverage metrics
+* Improved benchmark question set
+* Judge usefulness metrics
+
+Note:
+
+* Debate usefulness is covered by debate effectiveness rate.
+
+### Historical Analytics
+
+Status:
+
+Planned.
+
+Goal:
+
+Track reliability behavior over time and detect long-term degradation.
+
+Planned:
+
+* Historical reliability history
+* Trend comparisons across saved runs
+* Reliability degradation detection
+* Historical comparison reports
+
 ### Provider Expansion
 
 Status:
@@ -235,6 +280,8 @@ Consensus Answer
 Reliability Measurement
 ->
 Reliability Trends
+->
+Historical Analytics
 ->
 Reliable AI Council
 
