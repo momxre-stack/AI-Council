@@ -8,6 +8,7 @@ def test_provider_registry_is_not_empty():
 def test_expected_providers_exist():
     assert "gemini" in PROVIDERS
     assert "deepseek" in PROVIDERS
+    assert "openai" in PROVIDERS
 
 
 def test_provider_names_are_unique():
