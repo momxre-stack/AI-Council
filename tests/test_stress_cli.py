@@ -1,4 +1,4 @@
-from agent.stress_cli import parse_request_count, run_stress_cli
+from agent.stress_cli import parse_request_count, run_stress_cli, run_stress_cli_from_args
 
 
 def test_run_stress_cli_returns_exported_real_stress_summary():
@@ -45,3 +45,27 @@ def test_parse_request_count_uses_default_when_no_arguments():
 
 def test_parse_request_count_uses_first_argument():
     assert parse_request_count(["3"]) == 3
+
+
+
+def test_run_stress_cli_from_args_uses_request_count_argument():
+    captured_request_counts = []
+
+    def fake_runner(request_count):
+        captured_request_counts.append(request_count)
+        return {
+            "reliability": {
+                "status": "strong",
+                "reliability_score": 1.0,
+            },
+            "summary": "Stress report text",
+        }
+
+    output = run_stress_cli_from_args(["3"], runner=fake_runner)
+
+    assert captured_request_counts == [3]
+    assert output == (
+        "Reliability status: strong\n"
+        "Reliability score: 1.000\n\n"
+        "Stress report text"
+    )
