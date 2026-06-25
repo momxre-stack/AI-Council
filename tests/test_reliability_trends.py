@@ -500,3 +500,14 @@ def test_build_reliability_confidence_below_point_eight_is_medium():
     assert result == {
         "confidence": "medium",
     }
+
+def test_build_reliability_confidence_below_point_six_is_low():
+    result = build_reliability_confidence(
+        agreement_rate=0.59,
+        debate_used=False,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "low",
+    }
