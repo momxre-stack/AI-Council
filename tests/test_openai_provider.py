@@ -1,6 +1,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
+from openai import APIError
 
 from agent.providers.openai_provider import (
     REQUEST_TIMEOUT_SECONDS,
@@ -41,3 +42,39 @@ def test_openai_raises_when_api_key_is_missing(mock_getenv):
         ask_openai("test prompt")
 
     assert str(error.value) == "OPENAI_API_KEY not found"
+
+
+@patch("agent.providers.openai_provider.time.sleep")
+@patch("agent.providers.openai_provider.OpenAI")
+@patch("agent.providers.openai_provider.os.getenv")
+def test_openai_recovers_after_temporary_api_error(
+    mock_getenv,
+    mock_openai,
+    mock_sleep,
+):
+    mock_getenv.return_value = "test-key"
+
+    api_error = APIError(
+        "temporary provider failure",
+        request=Mock(),
+        body=None,
+    )
+
+    success_response = Mock()
+    success_response.choices = [
+        Mock(message=Mock(content="Recovered answer"))
+    ]
+
+    mock_client = Mock()
+    mock_client.chat.completions.create.side_effect = [
+        api_error,
+        success_response,
+    ]
+
+    mock_openai.return_value = mock_client
+
+    result = ask_openai("test prompt")
+
+    assert result == "Recovered answer"
+    assert mock_client.chat.completions.create.call_count == 2
+    assert mock_sleep.call_count == 1
