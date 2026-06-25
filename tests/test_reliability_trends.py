@@ -466,3 +466,15 @@ def test_build_reliability_assessment_marks_debate_required_reason():
             "reliability_status": "healthy",
         },
     }
+
+def test_build_reliability_confidence_boundary_at_point_six():
+    result = build_reliability_confidence(
+        agreement_rate=0.6,
+        debate_used=False,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "medium",
+    }
+
