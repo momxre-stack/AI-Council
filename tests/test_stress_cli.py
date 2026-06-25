@@ -47,6 +47,23 @@ def test_parse_request_count_uses_first_argument():
     assert parse_request_count(["3"]) == 3
 
 
+def test_parse_request_count_rejects_non_numeric_argument():
+    try:
+        parse_request_count(["abc"])
+    except ValueError as error:
+        assert str(error) == "request_count must be a positive integer"
+    else:
+        raise AssertionError("Expected ValueError")
+
+
+def test_parse_request_count_rejects_non_positive_argument():
+    try:
+        parse_request_count(["0"])
+    except ValueError as error:
+        assert str(error) == "request_count must be a positive integer"
+    else:
+        raise AssertionError("Expected ValueError")
+
 
 def test_run_stress_cli_from_args_uses_request_count_argument():
     captured_request_counts = []

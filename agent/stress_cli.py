@@ -7,7 +7,15 @@ def parse_request_count(args: list[str]) -> int:
     if not args:
         return 1
 
-    return int(args[0])
+    try:
+        request_count = int(args[0])
+    except ValueError:
+        raise ValueError("request_count must be a positive integer")
+
+    if request_count <= 0:
+        raise ValueError("request_count must be a positive integer")
+
+    return request_count
 
 
 def run_stress_cli(
