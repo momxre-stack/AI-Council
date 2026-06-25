@@ -28,7 +28,14 @@ def test_council_without_debate(
     assert result["degraded_reason"] is None
     assert result["debate"] is None
     assert result["judgment"]["final_needs_debate"] is False
-
+    assert result["assessment"] == {
+       "confidence": "low",
+       "signals": {
+           "agreement_rate": 0,
+           "debate_used": False,
+           "reliability_status": "ok",
+       },
+    }
 
 @patch("agent.council.ask_gemini")
 @patch("agent.council.ask_deepseek")
@@ -80,6 +87,7 @@ def test_council_degraded_when_gemini_fails(
     assert result["provider_errors"]["gemini"] == "Gemini failed"
     assert result["judgment"] is None
     assert result["debate"] is None
+    assert result["assessment"] is None
 
 
 @patch("agent.council.ask_gemini")

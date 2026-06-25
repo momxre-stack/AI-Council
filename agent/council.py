@@ -2,6 +2,7 @@ from agent.providers.registry import PROVIDERS
 from agent.dual_judge import run_dual_judgment
 from agent.debate import run_debate
 from agent.quota_utils import is_quota_error
+from agent.reliability_trends import build_reliability_assessment
 
 
 
@@ -83,6 +84,7 @@ def ask_council(question: str) -> dict:
             "quota_errors": quota_errors,
             "status": "degraded",
             "degraded_reason": "provider_failure",
+            "assessment": None,
             "judgment": None,
             "judgment_error": None,
             "debate": None,
@@ -106,6 +108,7 @@ def ask_council(question: str) -> dict:
             "quota_errors": quota_errors,
             "status": "degraded",
             "degraded_reason": "judge_failure",
+            "assessment": None,
             "judgment": None,
             "judgment_error": str(error),
             "debate": None,
@@ -128,6 +131,12 @@ def ask_council(question: str) -> dict:
     status = "degraded" if debate_error else "ok"
     degraded_reason = "debate_failure" if debate_error else None
 
+    assessment = build_reliability_assessment(
+        agreement_rate=judgment.get("agreement_rate", 0),
+        debate_used=judgment["final_needs_debate"],
+        reliability_status=status,
+    )
+
     return {
         "question": question,
         "responses": {
@@ -138,6 +147,7 @@ def ask_council(question: str) -> dict:
         "quota_errors": quota_errors,
         "status": status,
         "degraded_reason": degraded_reason,
+        "assessment": assessment,
         "judgment": judgment,
         "judgment_error": None,
         "debate": debate,
