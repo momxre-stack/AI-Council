@@ -8,3 +8,7 @@ def run_stress_cli(
     summary = runner(request_count=request_count)
 
     return export_stress_summary(summary)
+
+
+if __name__ == "__main__":
+    print(run_stress_cli())
