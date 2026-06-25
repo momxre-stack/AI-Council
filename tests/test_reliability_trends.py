@@ -1,4 +1,5 @@
 from agent.reliability_trends import (
+    build_reliability_assessment,
     build_reliability_confidence,
     build_reliability_history,
     build_reliability_history_from_directory,
@@ -412,4 +413,37 @@ def test_build_reliability_confidence_returns_low():
 
     assert result == {
         "confidence": "low",
+    }
+
+def test_build_reliability_assessment_returns_confidence_and_signals():
+    result = build_reliability_assessment(
+        agreement_rate=0.9,
+        debate_used=False,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "high",
+        "signals": {
+            "agreement_rate": 0.9,
+            "debate_used": False,
+            "reliability_status": "healthy",
+        },
+    }
+
+
+def test_build_reliability_assessment_reuses_confidence_logic():
+    result = build_reliability_assessment(
+        agreement_rate=0.5,
+        debate_used=True,
+        reliability_status="degraded",
+    )
+
+    assert result == {
+        "confidence": "low",
+        "signals": {
+            "agreement_rate": 0.5,
+            "debate_used": True,
+            "reliability_status": "degraded",
+        },
     }

@@ -30,6 +30,28 @@ def build_reliability_confidence(
     }
 
 
+def build_reliability_assessment(
+    agreement_rate: float,
+    debate_used: bool,
+    reliability_status: str,
+) -> dict:
+    """Return confidence with the signals used to build it."""
+    confidence = build_reliability_confidence(
+        agreement_rate=agreement_rate,
+        debate_used=debate_used,
+        reliability_status=reliability_status,
+    )
+
+    return {
+        "confidence": confidence["confidence"],
+        "signals": {
+            "agreement_rate": agreement_rate,
+            "debate_used": debate_used,
+            "reliability_status": reliability_status,
+        },
+    }
+
+
 def compare_reliability_reports(
     previous_report: dict,
     current_report: dict,
