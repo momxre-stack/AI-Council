@@ -1,4 +1,5 @@
 from agent.reliability_trends import (
+    build_reliability_confidence,
     build_reliability_history,
     build_reliability_history_from_directory,
     compare_reliability_reports,
@@ -377,3 +378,38 @@ def test_format_reliability_trend_summary_handles_none_deltas():
     result = format_reliability_trend_summary(summary)
 
     assert result == "Reliability trend: unknown"
+
+def test_build_reliability_confidence_returns_high():
+    result = build_reliability_confidence(
+        agreement_rate=0.9,
+        debate_used=False,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "high",
+    }
+
+
+def test_build_reliability_confidence_returns_medium():
+    result = build_reliability_confidence(
+        agreement_rate=0.7,
+        debate_used=True,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "medium",
+    }
+
+
+def test_build_reliability_confidence_returns_low():
+    result = build_reliability_confidence(
+        agreement_rate=0.5,
+        debate_used=True,
+        reliability_status="degraded",
+    )
+
+    assert result == {
+        "confidence": "low",
+    }

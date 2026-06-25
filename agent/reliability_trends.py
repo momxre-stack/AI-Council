@@ -12,6 +12,24 @@ TREND_METRICS = [
 ]
 
 
+def build_reliability_confidence(
+    agreement_rate: float,
+    debate_used: bool,
+    reliability_status: str,
+) -> dict:
+    """Return a simple confidence signal for a council answer."""
+    if reliability_status != "healthy" or agreement_rate < 0.6:
+        confidence = "low"
+    elif debate_used or agreement_rate < 0.8:
+        confidence = "medium"
+    else:
+        confidence = "high"
+
+    return {
+        "confidence": confidence,
+    }
+
+
 def compare_reliability_reports(
     previous_report: dict,
     current_report: dict,
