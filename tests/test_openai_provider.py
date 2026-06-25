@@ -1,6 +1,11 @@
 from unittest.mock import Mock, patch
 
-from agent.providers.openai_provider import REQUEST_TIMEOUT_SECONDS, ask_openai
+import pytest
+
+from agent.providers.openai_provider import (
+    REQUEST_TIMEOUT_SECONDS,
+    ask_openai,
+)
 
 
 @patch("agent.providers.openai_provider.OpenAI")
@@ -27,3 +32,12 @@ def test_openai_client_uses_request_timeout(
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
 
+
+@patch("agent.providers.openai_provider.os.getenv")
+def test_openai_raises_when_api_key_is_missing(mock_getenv):
+    mock_getenv.return_value = None
+
+    with pytest.raises(ValueError) as error:
+        ask_openai("test prompt")
+
+    assert str(error.value) == "OPENAI_API_KEY not found"
