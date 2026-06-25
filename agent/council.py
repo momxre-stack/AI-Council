@@ -134,7 +134,7 @@ def ask_council(question: str) -> dict:
     assessment = build_reliability_assessment(
         agreement_rate=judgment.get("agreement_rate", 0),
         debate_used=judgment["final_needs_debate"],
-        reliability_status=status,
+        reliability_status="healthy" if status == "ok" else status,
     )
 
     return {

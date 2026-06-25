@@ -29,12 +29,12 @@ def test_council_without_debate(
     assert result["debate"] is None
     assert result["judgment"]["final_needs_debate"] is False
     assert result["assessment"] == {
-       "confidence": "low",
-       "signals": {
-           "agreement_rate": 0,
-           "debate_used": False,
-           "reliability_status": "ok",
-       },
+        "confidence": "low",
+        "signals": {
+            "agreement_rate": 0,
+            "debate_used": False,
+            "reliability_status": "healthy",
+        },
     }
 
 @patch("agent.council.ask_gemini")
@@ -288,3 +288,26 @@ def test_council_degraded_when_deepseek_returns_dict(
     assert result["status"] == "degraded"
     assert result["responses"]["deepseek"] is None
     assert result["provider_errors"]["deepseek"] == "Provider returned invalid response"
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_dual_judgment")
+def test_council_assessment_uses_judgment_agreement_rate(
+    mock_judge,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    mock_judge.return_value = {
+        "gemini_judge": {},
+        "deepseek_judge": {},
+        "final_needs_debate": False,
+        "agreement_rate": 0.9,
+    }
+
+    result = ask_council("test")
+
+    assert result["assessment"]["confidence"] == "high"
+    assert result["assessment"]["signals"]["agreement_rate"] == 0.9
