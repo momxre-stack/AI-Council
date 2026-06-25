@@ -258,6 +258,22 @@ Implemented:
 * Single-report historical coverage
 * Additional regression coverage
 
+### Reliability Confidence
+
+Status:
+
+Completed.
+
+Implemented:
+
+* Reliability confidence helper
+* Reliability assessment helper
+* Council reliability assessment integration
+* Judgment agreement rate integration
+* Reliability assessment reasons
+* Confidence boundary regression coverage
+* Assessment regression coverage
+
 ### Provider Expansion
 
 Status:
