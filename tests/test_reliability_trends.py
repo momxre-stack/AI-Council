@@ -478,3 +478,14 @@ def test_build_reliability_confidence_boundary_at_point_six():
         "confidence": "medium",
     }
 
+
+def test_build_reliability_confidence_boundary_at_point_eight():
+    result = build_reliability_confidence(
+        agreement_rate=0.8,
+        debate_used=False,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "high",
+    }
