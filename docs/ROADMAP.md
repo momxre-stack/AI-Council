@@ -146,7 +146,16 @@ Implemented:
 
 Status:
 
-Planned.
+Completed.
+
+Implemented:
+
+* Stress CLI helper wrapper
+* Request count support
+* Executable module entry point
+* Basic request count argument parsing
+* CLI request count validation
+* CLI regression coverage
 
 ### Reliability Quality Improvements
 
