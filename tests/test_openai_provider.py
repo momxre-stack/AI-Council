@@ -4,6 +4,7 @@ import pytest
 from openai import APIError
 
 from agent.providers.openai_provider import (
+    MAX_RETRIES,
     REQUEST_TIMEOUT_SECONDS,
     ask_openai,
 )
@@ -78,3 +79,30 @@ def test_openai_recovers_after_temporary_api_error(
     assert result == "Recovered answer"
     assert mock_client.chat.completions.create.call_count == 2
     assert mock_sleep.call_count == 1
+
+@patch("agent.providers.openai_provider.time.sleep")
+@patch("agent.providers.openai_provider.OpenAI")
+@patch("agent.providers.openai_provider.os.getenv")
+def test_openai_retries_api_errors_until_exhausted(
+    mock_getenv,
+    mock_openai,
+    mock_sleep,
+):
+    mock_getenv.return_value = "test-key"
+
+    api_error = APIError(
+        "temporary provider failure",
+        request=Mock(),
+        body=None,
+    )
+
+    mock_client = Mock()
+    mock_client.chat.completions.create.side_effect = api_error
+    mock_openai.return_value = mock_client
+
+    with pytest.raises(APIError) as error:
+        ask_openai("test prompt")
+
+    assert error.value is api_error
+    assert mock_client.chat.completions.create.call_count == MAX_RETRIES
+    assert mock_sleep.call_count == MAX_RETRIES - 1
