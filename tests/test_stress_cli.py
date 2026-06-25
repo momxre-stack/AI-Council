@@ -19,3 +19,21 @@ def test_run_stress_cli_returns_exported_real_stress_summary():
         "Reliability score: 1.000\n\n"
         "Stress report text"
     )
+
+
+def test_run_stress_cli_passes_request_count_to_runner():
+    captured_request_counts = []
+
+    def fake_runner(request_count):
+        captured_request_counts.append(request_count)
+        return {
+            "reliability": {
+                "status": "strong",
+                "reliability_score": 1.0,
+            },
+            "summary": "Stress report text",
+        }
+
+    run_stress_cli(request_count=3, runner=fake_runner)
+
+    assert captured_request_counts == [3]
