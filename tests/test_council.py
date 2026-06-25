@@ -30,6 +30,7 @@ def test_council_without_debate(
     assert result["judgment"]["final_needs_debate"] is False
     assert result["assessment"] == {
         "confidence": "low",
+        "reason": "low_agreement",
         "signals": {
             "agreement_rate": 0,
             "debate_used": False,

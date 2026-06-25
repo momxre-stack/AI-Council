@@ -42,8 +42,20 @@ def build_reliability_assessment(
         reliability_status=reliability_status,
     )
 
+    if reliability_status != "healthy":
+        reason = "unhealthy_reliability"
+    elif agreement_rate < 0.6:
+        reason = "low_agreement"
+    elif debate_used:
+        reason = "debate_required"
+    elif agreement_rate < 0.8:
+        reason = "moderate_agreement"
+    else:
+        reason = "high_agreement"
+
     return {
         "confidence": confidence["confidence"],
+        "reason": reason,
         "signals": {
             "agreement_rate": agreement_rate,
             "debate_used": debate_used,

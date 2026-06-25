@@ -424,6 +424,7 @@ def test_build_reliability_assessment_returns_confidence_and_signals():
 
     assert result == {
         "confidence": "high",
+        "reason": "high_agreement",
         "signals": {
             "agreement_rate": 0.9,
             "debate_used": False,
@@ -441,9 +442,27 @@ def test_build_reliability_assessment_reuses_confidence_logic():
 
     assert result == {
         "confidence": "low",
+        "reason": "unhealthy_reliability",
         "signals": {
             "agreement_rate": 0.5,
             "debate_used": True,
             "reliability_status": "degraded",
+        },
+    }
+
+def test_build_reliability_assessment_marks_debate_required_reason():
+    result = build_reliability_assessment(
+        agreement_rate=0.9,
+        debate_used=True,
+        reliability_status="healthy",
+    )
+
+    assert result == {
+        "confidence": "medium",
+        "reason": "debate_required",
+        "signals": {
+            "agreement_rate": 0.9,
+            "debate_used": True,
+            "reliability_status": "healthy",
         },
     }
