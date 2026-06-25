@@ -1,4 +1,4 @@
-from agent.stress_cli import run_stress_cli
+from agent.stress_cli import parse_request_count, run_stress_cli
 
 
 def test_run_stress_cli_returns_exported_real_stress_summary():
@@ -37,3 +37,11 @@ def test_run_stress_cli_passes_request_count_to_runner():
     run_stress_cli(request_count=3, runner=fake_runner)
 
     assert captured_request_counts == [3]
+
+
+def test_parse_request_count_uses_default_when_no_arguments():
+    assert parse_request_count([]) == 1
+
+
+def test_parse_request_count_uses_first_argument():
+    assert parse_request_count(["3"]) == 3
