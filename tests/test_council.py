@@ -312,3 +312,32 @@ def test_council_assessment_uses_judgment_agreement_rate(
 
     assert result["assessment"]["confidence"] == "high"
     assert result["assessment"]["signals"]["agreement_rate"] == 0.9
+
+@patch("agent.council.PROVIDERS")
+def test_ask_gemini_uses_provider_registry(mock_providers):
+    mock_providers.__getitem__.return_value.return_value = "Gemini answer"
+
+    from agent.council import ask_gemini
+
+    result = ask_gemini("test prompt")
+
+    assert result == "Gemini answer"
+    mock_providers.__getitem__.assert_called_once_with("gemini")
+    mock_providers.__getitem__.return_value.assert_called_once_with(
+        "test prompt"
+    )
+
+
+@patch("agent.council.PROVIDERS")
+def test_ask_deepseek_uses_provider_registry(mock_providers):
+    mock_providers.__getitem__.return_value.return_value = "DeepSeek answer"
+
+    from agent.council import ask_deepseek
+
+    result = ask_deepseek("test prompt")
+
+    assert result == "DeepSeek answer"
+    mock_providers.__getitem__.assert_called_once_with("deepseek")
+    mock_providers.__getitem__.return_value.assert_called_once_with(
+        "test prompt"
+    )
