@@ -341,3 +341,26 @@ def test_ask_deepseek_uses_provider_registry(mock_providers):
     mock_providers.__getitem__.return_value.assert_called_once_with(
         "test prompt"
     )
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_dual_judgment")
+def test_council_response_includes_only_gemini_and_deepseek(
+    mock_judge,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    mock_judge.return_value = {
+        "gemini_judge": {},
+        "deepseek_judge": {},
+        "final_needs_debate": False,
+    }
+
+    result = ask_council("test")
+
+    assert set(result["responses"]) == {"gemini", "deepseek"}
+    assert set(result["provider_errors"]) == {"gemini", "deepseek"}
+    assert set(result["quota_errors"]) == {"gemini", "deepseek"}
