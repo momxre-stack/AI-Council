@@ -5,7 +5,23 @@ app = Flask(__name__)
 
 @app.get("/")
 def home():
-    return "AI Council is running"
+    return """
+<!doctype html>
+<html>
+  <head>
+    <title>AI Council</title>
+  </head>
+  <body>
+    <h1>AI Council</h1>
+    <p>Status: Running</p>
+    <h2>Available endpoints</h2>
+    <ul>
+      <li><a href="/health">/health</a></li>
+    </ul>
+    <p>Web interface foundation</p>
+  </body>
+</html>
+"""
 
 
 @app.get("/health")

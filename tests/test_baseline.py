@@ -6,6 +6,9 @@ def test_home():
     response = client.get("/")
 
     assert response.status_code == 200
+    assert b"AI Council" in response.data
+    assert b"Status: Running" in response.data
+    assert b"/health" in response.data
 
 
 def test_health():
