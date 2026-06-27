@@ -13,6 +13,8 @@ def test_home():
     assert b"Mode: Web interface foundation" in response.data
     assert b"Health endpoint: /health" in response.data
     assert b"multi-model decision system" in response.data
+    assert b"Navigation" in response.data
+    assert b"Home" in response.data
 
 
 def test_health():

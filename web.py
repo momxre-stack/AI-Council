@@ -16,6 +16,12 @@ def home():
 
     <p>Status: Running</p>
 
+    <h2>Navigation</h2>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/health">Health</a></li>
+    </ul>
+
     <h2>System details</h2>
     <ul>
       <li>Council: Gemini + DeepSeek</li>
