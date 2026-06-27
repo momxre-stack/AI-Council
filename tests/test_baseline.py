@@ -37,6 +37,7 @@ def test_ask_page_accepts_submitted_question():
     assert response.status_code == 200
     assert b"Ask AI Council" in response.data
     assert b"What is reliability?" in response.data
+    assert b"Council response will appear here." in response.data
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 

@@ -59,9 +59,11 @@ def ask():
 
     submitted_question_html = ""
     error_message_html = ""
+    council_response_html = ""
 
     if submitted_question:
         submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
+        council_response_html = "<p>Council response will appear here.</p>"
 
     if error_message:
         error_message_html = f"<p>{error_message}</p>"
@@ -84,6 +86,7 @@ def ask():
     </form>
 
     {submitted_question_html}
+    {council_response_html}
     {error_message_html}
 
     <p>
