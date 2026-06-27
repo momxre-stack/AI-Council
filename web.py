@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -46,9 +46,14 @@ def home():
 """
 
 
-@app.get("/ask")
+@app.route("/ask", methods=["GET", "POST"])
 def ask():
-    return """
+    submitted_question = ""
+
+    if request.method == "POST":
+        submitted_question = request.form.get("question", "")
+
+    return f"""
 <!doctype html>
 <html>
   <head>
@@ -57,13 +62,15 @@ def ask():
   <body>
     <h1>Ask AI Council</h1>
 
-    <p>Ask page form foundation. Submissions are not enabled yet.</p>
+    <p>Ask page form foundation. Submissions are handled locally only.</p>
 
-    <form>
+    <form method="post">
       <label for="question">Question</label><br>
-      <textarea id="question" name="question" rows="6" cols="60"></textarea><br>
-      <button type="button">Ask</button>
+      <textarea id="question" name="question" rows="6" cols="60">{submitted_question}</textarea><br>
+      <button type="submit">Ask</button>
     </form>
+
+    <p>Submitted question: {submitted_question}</p>
 
     <p>
       <a href="/">Home</a>
