@@ -23,6 +23,12 @@ def home():
       <li>Health endpoint: /health</li>
     </ul>
 
+    <h2>Project overview</h2>
+    <p>
+      AI Council is a multi-model decision system focused on reliable answers
+      through provider agreement and debate.
+    </p>
+
     <h2>Available endpoints</h2>
     <ul>
       <li><a href="/health">/health</a></li>

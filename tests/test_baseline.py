@@ -12,6 +12,7 @@ def test_home():
     assert b"Council: Gemini + DeepSeek" in response.data
     assert b"Mode: Web interface foundation" in response.data
     assert b"Health endpoint: /health" in response.data
+    assert b"multi-model decision system" in response.data
 
 
 def test_health():
