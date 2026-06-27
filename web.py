@@ -56,7 +56,20 @@ def ask():
   </head>
   <body>
     <h1>Ask AI Council</h1>
-    <p>Coming soon</p>
+
+    <p>Ask page form foundation. Submissions are not enabled yet.</p>
+
+    <form>
+      <label for="question">Question</label><br>
+      <textarea id="question" name="question" rows="6" cols="60"></textarea><br>
+      <button type="button">Ask</button>
+    </form>
+
+    <p>
+      <a href="/">Home</a>
+      |
+      <a href="/health">Health</a>
+    </p>
   </body>
 </html>
 """

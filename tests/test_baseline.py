@@ -23,7 +23,11 @@ def test_ask_page():
 
     assert response.status_code == 200
     assert b"Ask AI Council" in response.data
-    assert b"Coming soon" in response.data
+    assert b"Question" in response.data
+    assert b"<textarea" in response.data
+    assert b"Ask" in response.data
+    assert b'href="/"' in response.data
+    assert b'href="/health"' in response.data
 
 
 def test_health():
