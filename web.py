@@ -49,9 +49,13 @@ def home():
 @app.route("/ask", methods=["GET", "POST"])
 def ask():
     submitted_question = ""
+    error_message = ""
 
     if request.method == "POST":
-        submitted_question = request.form.get("question", "")
+        submitted_question = request.form.get("question", "").strip()
+
+        if not submitted_question:
+            error_message = "Question is required."
 
     return f"""
 <!doctype html>
@@ -71,6 +75,7 @@ def ask():
     </form>
 
     <p>Submitted question: {submitted_question}</p>
+    <p>{error_message}</p>
 
     <p>
       <a href="/">Home</a>

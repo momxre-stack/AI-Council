@@ -40,6 +40,17 @@ def test_ask_page_accepts_submitted_question():
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 
+def test_ask_page_rejects_empty_question():
+    client = app.test_client()
+    response = client.post("/ask", data={"question": ""})
+
+    assert response.status_code == 200
+    assert b"Ask AI Council" in response.data
+    assert b"Question is required." in response.data
+    assert b'href="/"' in response.data
+    assert b'href="/health"' in response.data
+
+
 
 def test_health():
     client = app.test_client()
