@@ -17,6 +17,15 @@ def test_home():
     assert b"Home" in response.data
 
 
+def test_ask_page():
+    client = app.test_client()
+    response = client.get("/ask")
+
+    assert response.status_code == 200
+    assert b"Ask AI Council" in response.data
+    assert b"Coming soon" in response.data
+
+
 def test_health():
     client = app.test_client()
     response = client.get("/health")

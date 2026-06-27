@@ -46,6 +46,22 @@ def home():
 """
 
 
+@app.get("/ask")
+def ask():
+    return """
+<!doctype html>
+<html>
+  <head>
+    <title>Ask AI Council</title>
+  </head>
+  <body>
+    <h1>Ask AI Council</h1>
+    <p>Coming soon</p>
+  </body>
+</html>
+"""
+
+
 @app.get("/health")
 def health():
     return jsonify({"status": "ok"})
