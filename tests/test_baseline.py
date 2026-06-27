@@ -51,6 +51,15 @@ def test_ask_page_rejects_empty_question():
     assert b'href="/health"' in response.data
 
 
+def test_ask_page_does_not_show_empty_submitted_question():
+    client = app.test_client()
+    response = client.post("/ask", data={"question": ""})
+
+    assert response.status_code == 200
+    assert b"Submitted question:" not in response.data
+    assert b"<p></p>" not in response.data
+
+
 
 def test_health():
     client = app.test_client()

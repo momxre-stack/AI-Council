@@ -57,6 +57,15 @@ def ask():
         if not submitted_question:
             error_message = "Question is required."
 
+    submitted_question_html = ""
+    error_message_html = ""
+
+    if submitted_question:
+        submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
+
+    if error_message:
+        error_message_html = f"<p>{error_message}</p>"
+
     return f"""
 <!doctype html>
 <html>
@@ -74,8 +83,8 @@ def ask():
       <button type="submit">Ask</button>
     </form>
 
-    <p>Submitted question: {submitted_question}</p>
-    <p>{error_message}</p>
+    {submitted_question_html}
+    {error_message_html}
 
     <p>
       <a href="/">Home</a>
