@@ -71,6 +71,7 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
                 "deepseek": "DeepSeek test response",
             },
             "status": "degraded",
+            "degraded_reason": "provider_failure",
         }
 
     monkeypatch.setattr("web.ask_council", fake_ask_council)
@@ -79,13 +80,19 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
     response = client.post("/ask", data={"question": "What is reliability?"})
 
     assert response.status_code == 200
+
     assert b"<h2>Gemini</h2>" in response.data
     assert b"No response" in response.data
     assert b"None" not in response.data
+
     assert b"<h2>DeepSeek</h2>" in response.data
     assert b"DeepSeek test response" in response.data
+
     assert b"<h2>Status</h2>" in response.data
     assert b"degraded" in response.data
+
+    assert b"<h2>Reason</h2>" in response.data
+    assert b"provider_failure" in response.data
 
 def test_ask_page_rejects_empty_question():
     client = app.test_client()

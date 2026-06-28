@@ -62,6 +62,7 @@ def ask():
     error_message_html = ""
     council_response_html = ""
     council_status_html = ""
+    degraded_reason_html = ""
 
     if submitted_question:
         submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
@@ -69,11 +70,15 @@ def ask():
         gemini_response = council_result["responses"]["gemini"] or "No response"
         deepseek_response = council_result["responses"]["deepseek"] or "No response"
         council_status = council_result["status"]
+        degraded_reason = council_result.get("degraded_reason")
         council_response_html = (
             f"<h2>Gemini</h2><pre>{gemini_response}</pre>"
             f"<h2>DeepSeek</h2><pre>{deepseek_response}</pre>"
         )
         council_status_html = f"<h2>Status</h2><p>{council_status}</p>"
+
+        if degraded_reason:
+            degraded_reason_html = f"<h2>Reason</h2><p>{degraded_reason}</p>"
 
     if error_message:
         error_message_html = f"<p>{error_message}</p>"
@@ -98,6 +103,7 @@ def ask():
     {submitted_question_html}
     {council_response_html}
     {council_status_html}
+    {degraded_reason_html}
     {error_message_html}
 
     <p>
