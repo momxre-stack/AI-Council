@@ -54,6 +54,27 @@ def test_ask_page_accepts_submitted_question(monkeypatch):
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 
+def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
+    def fake_ask_council(question):
+        return {
+            "question": question,
+            "responses": {
+                "gemini": None,
+                "deepseek": "DeepSeek test response",
+            },
+            "status": "degraded",
+        }
+
+    monkeypatch.setattr("web.ask_council", fake_ask_council)
+
+    client = app.test_client()
+    response = client.post("/ask", data={"question": "What is reliability?"})
+
+    assert response.status_code == 200
+    assert b"Gemini: No response" in response.data
+    assert b"Gemini: None" not in response.data
+    assert b"DeepSeek test response" in response.data
+
 def test_ask_page_rejects_empty_question():
     client = app.test_client()
     response = client.post("/ask", data={"question": ""})

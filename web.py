@@ -65,8 +65,8 @@ def ask():
     if submitted_question:
         submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
         council_result = ask_council(submitted_question)
-        gemini_response = council_result["responses"]["gemini"]
-        deepseek_response = council_result["responses"]["deepseek"]
+        gemini_response = council_result["responses"]["gemini"] or "No response"
+        deepseek_response = council_result["responses"]["deepseek"] or "No response"
         council_response_html = (
             f"<p>Gemini: {gemini_response}</p>"
             f"<p>DeepSeek: {deepseek_response}</p>"
