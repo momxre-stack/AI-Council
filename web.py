@@ -29,7 +29,95 @@ def home():
     <h2>System details</h2>
     <ul>
       <li>Council: Gemini + DeepSeek</li>
-      <li>Mode: Web interface foundation</li>
+      <li>Mode: Web interface foundation</li>from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_council
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council        council_response_html = "<p>Council response will appear here.</p>"
+from agent.council import ask_council
+from agent.council import ask_councilfrom flask import Flask, jsonify, request
+from flask import Flask, jsonify, request
+from agent.council import ask_council
+from agent.council import ask_council
+from agent.council import ask_council
       <li>Health endpoint: /health</li>
     </ul>
 
