@@ -49,8 +49,13 @@ def test_ask_page_accepts_submitted_question(monkeypatch):
     assert response.status_code == 200
     assert b"Ask AI Council" in response.data
     assert b"What is reliability?" in response.data
+
+    assert b"<h2>Gemini</h2>" in response.data
     assert b"Gemini test response" in response.data
+
+    assert b"<h2>DeepSeek</h2>" in response.data
     assert b"DeepSeek test response" in response.data
+
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 
@@ -71,8 +76,10 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
     response = client.post("/ask", data={"question": "What is reliability?"})
 
     assert response.status_code == 200
-    assert b"Gemini: No response" in response.data
-    assert b"Gemini: None" not in response.data
+    assert b"<h2>Gemini</h2>" in response.data
+    assert b"No response" in response.data
+    assert b"None" not in response.data
+    assert b"<h2>DeepSeek</h2>" in response.data
     assert b"DeepSeek test response" in response.data
 
 def test_ask_page_rejects_empty_question():

@@ -68,8 +68,8 @@ def ask():
         gemini_response = council_result["responses"]["gemini"] or "No response"
         deepseek_response = council_result["responses"]["deepseek"] or "No response"
         council_response_html = (
-            f"<p>Gemini: {gemini_response}</p>"
-            f"<p>DeepSeek: {deepseek_response}</p>"
+            f"<h2>Gemini</h2><pre>{gemini_response}</pre>"
+            f"<h2>DeepSeek</h2><pre>{deepseek_response}</pre>"
         )
 
     if error_message:
