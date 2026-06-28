@@ -72,6 +72,10 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
             },
             "status": "degraded",
             "degraded_reason": "provider_failure",
+            "provider_errors": {
+                "gemini": "timed out",
+                "deepseek": None,
+            },
         }
 
     monkeypatch.setattr("web.ask_council", fake_ask_council)
@@ -93,6 +97,10 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
 
     assert b"<h2>Reason</h2>" in response.data
     assert b"provider_failure" in response.data
+
+    assert b"<h2>Provider errors</h2>" in response.data
+    assert b"Gemini: timed out" in response.data
+
 
 def test_ask_page_rejects_empty_question():
     client = app.test_client()

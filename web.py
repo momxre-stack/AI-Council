@@ -63,6 +63,7 @@ def ask():
     council_response_html = ""
     council_status_html = ""
     degraded_reason_html = ""
+    provider_errors_html = ""
 
     if submitted_question:
         submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
@@ -79,6 +80,18 @@ def ask():
 
         if degraded_reason:
             degraded_reason_html = f"<h2>Reason</h2><p>{degraded_reason}</p>"
+        provider_errors = council_result.get("provider_errors", {})
+        visible_provider_errors = [
+            f"{provider.title()}: {error}"
+            for provider, error in provider_errors.items()
+            if error
+        ]
+
+        if visible_provider_errors:
+            provider_errors_html = (
+                "<h2>Provider errors</h2>"
+                + "".join(f"<p>{error}</p>" for error in visible_provider_errors)
+            )
 
     if error_message:
         error_message_html = f"<p>{error_message}</p>"
@@ -104,6 +117,7 @@ def ask():
     {council_response_html}
     {council_status_html}
     {degraded_reason_html}
+    {provider_errors_html}
     {error_message_html}
 
     <p>
