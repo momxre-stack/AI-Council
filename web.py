@@ -61,16 +61,19 @@ def ask():
     submitted_question_html = ""
     error_message_html = ""
     council_response_html = ""
+    council_status_html = ""
 
     if submitted_question:
         submitted_question_html = f"<p>Submitted question: {submitted_question}</p>"
         council_result = ask_council(submitted_question)
         gemini_response = council_result["responses"]["gemini"] or "No response"
         deepseek_response = council_result["responses"]["deepseek"] or "No response"
+        council_status = council_result["status"]
         council_response_html = (
             f"<h2>Gemini</h2><pre>{gemini_response}</pre>"
             f"<h2>DeepSeek</h2><pre>{deepseek_response}</pre>"
         )
+        council_status_html = f"<h2>Status</h2><p>{council_status}</p>"
 
     if error_message:
         error_message_html = f"<p>{error_message}</p>"
@@ -94,6 +97,7 @@ def ask():
 
     {submitted_question_html}
     {council_response_html}
+    {council_status_html}
     {error_message_html}
 
     <p>

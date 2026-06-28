@@ -56,6 +56,9 @@ def test_ask_page_accepts_submitted_question(monkeypatch):
     assert b"<h2>DeepSeek</h2>" in response.data
     assert b"DeepSeek test response" in response.data
 
+    assert b"<h2>Status</h2>" in response.data
+    assert b"ok" in response.data
+
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 
@@ -81,6 +84,8 @@ def test_ask_page_shows_no_response_for_missing_provider_response(monkeypatch):
     assert b"None" not in response.data
     assert b"<h2>DeepSeek</h2>" in response.data
     assert b"DeepSeek test response" in response.data
+    assert b"<h2>Status</h2>" in response.data
+    assert b"degraded" in response.data
 
 def test_ask_page_rejects_empty_question():
     client = app.test_client()
