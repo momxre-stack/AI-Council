@@ -30,14 +30,27 @@ def test_ask_page():
     assert b'href="/health"' in response.data
 
 
-def test_ask_page_accepts_submitted_question():
+def test_ask_page_accepts_submitted_question(monkeypatch):
+    def fake_ask_council(question):
+        return {
+            "question": question,
+            "responses": {
+                "gemini": "Gemini test response",
+                "deepseek": "DeepSeek test response",
+            },
+            "status": "ok",
+        }
+
+    monkeypatch.setattr("web.ask_council", fake_ask_council)
+
     client = app.test_client()
     response = client.post("/ask", data={"question": "What is reliability?"})
 
     assert response.status_code == 200
     assert b"Ask AI Council" in response.data
     assert b"What is reliability?" in response.data
-    assert b"Council response will appear here." in response.data
+    assert b"Gemini test response" in response.data
+    assert b"DeepSeek test response" in response.data
     assert b'href="/"' in response.data
     assert b'href="/health"' in response.data
 
