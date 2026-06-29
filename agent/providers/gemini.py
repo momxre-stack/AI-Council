@@ -3,8 +3,6 @@ import time
 
 import httpx
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
 from google.genai.errors import APIError, UnknownApiResponseError
 
 load_dotenv()
