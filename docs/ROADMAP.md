@@ -223,6 +223,59 @@ Implemented:
 * Successful flow degraded reason coverage
 * Additional provider regression coverage
 
+### Gemini REST Provider Migration
+
+Status:
+
+Completed.
+
+Implemented:
+
+* Replaced Gemini SDK execution path with REST implementation
+* Preserved public provider contract
+* Added Gemini REST request helper
+* Added Gemini REST response parser
+* Migrated Gemini provider tests to REST-based mocks
+* Preserved retry behavior
+* Preserved graceful provider failure behavior
+* Removed unused Gemini SDK imports
+* Verified manual Gemini REST smoke test
+* Verified browser /ask
+* Verified full test suite: 197 passing tests
+
+Notes:
+
+* Gemini SDK SSL handshake timeout is resolved.
+* Remaining provider limitation is HTTP 429 rate limiting.
+
+### Provider Rate-Limit Handling
+
+Status:
+
+Next.
+
+Initial target:
+
+* Gemini REST provider
+
+Goals:
+
+* Detect HTTP 429 explicitly
+* Distinguish quota failures from generic provider failures
+* Normalize provider rate-limit errors into common internal categories
+* Surface quota information clearly in Council and Web
+* Avoid unnecessary repeated live provider calls
+* Introduce controlled retry/backoff where appropriate
+* Keep browser requests responsive
+* Preserve existing Council, Debate, Web and Provider architecture
+
+Principles:
+
+* Never hide provider limits
+* Make provider failures observable
+* Preserve graceful degradation
+* Keep provider behavior consistent across implementations
+
 ### Evaluation / Benchmark Improvements
 
 Status:
