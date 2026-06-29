@@ -36,7 +36,7 @@ def ask_gemini(prompt: str) -> str:
 
             return response.text
 
-        except (APIError, UnknownApiResponseError) as error:
+        except (APIError, UnknownApiResponseError, TimeoutError) as error:
             last_error = error
 
             if attempt == MAX_RETRIES - 1:

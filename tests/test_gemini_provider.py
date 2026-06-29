@@ -167,3 +167,27 @@ def test_gemini_client_uses_request_timeout(
 
     assert client_kwargs["api_key"] == "test-key"
     assert client_kwargs["http_options"].timeout == REQUEST_TIMEOUT_SECONDS
+
+@patch("agent.providers.gemini.time.sleep")
+@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini.os.getenv")
+def test_gemini_retries_timeout_errors_until_exhausted(
+    mock_getenv,
+    mock_client_class,
+    mock_sleep,
+):
+    mock_getenv.return_value = "test-key"
+
+    timeout_error = TimeoutError("_ssl.c:989: The handshake operation timed out")
+
+    mock_client = Mock()
+    mock_client.models.generate_content.side_effect = timeout_error
+    mock_client_class.return_value = mock_client
+
+    with pytest.raises(TimeoutError) as error:
+        ask_gemini("test prompt")
+
+    assert error.value is timeout_error
+    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_sleep.call_count == MAX_RETRIES - 1
+
