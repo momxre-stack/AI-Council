@@ -39,6 +39,7 @@ def _post_generate_content(api_key: str, prompt: str) -> dict:
         json=payload,
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
+    response.raise_for_status()
 
     return response.json()
 
@@ -49,23 +50,19 @@ def ask_gemini(prompt: str) -> str:
     if not api_key:
         raise ValueError("GEMINI_API_KEY not found")
 
-    client = genai.Client(
-        api_key=api_key,
-        http_options=types.HttpOptions(timeout=REQUEST_TIMEOUT_SECONDS),
-    )
-
     last_error = None
 
     for attempt in range(MAX_RETRIES):
         try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-            )
+            response_data = _post_generate_content(api_key, prompt)
+            return _parse_generate_content_response(response_data)
 
-            return response.text
-
-        except (APIError, UnknownApiResponseError, TimeoutError, httpx.TimeoutException) as error:
+        except (
+            APIError,
+            UnknownApiResponseError,
+            TimeoutError,
+            httpx.HTTPError,
+        ) as error:
             last_error = error
 
             if attempt == MAX_RETRIES - 1:

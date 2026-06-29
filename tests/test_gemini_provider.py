@@ -7,71 +7,76 @@ from google.genai.errors import APIError, ServerError, UnknownApiResponseError
 from agent.providers.gemini import MAX_RETRIES, REQUEST_TIMEOUT_SECONDS, ask_gemini
 
 
+def _success_response_data(text="Gemini answer"):
+    return {
+        "candidates": [
+            {
+                "content": {
+                    "parts": [
+                        {"text": text}
+                    ]
+                }
+            }
+        ]
+    }
+
+
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_retries_server_errors_until_exhausted(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
 
     server_error = ServerError(
-    500,
-    {"error": {"message": "temporary provider failure"}},
-)
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = server_error
-    mock_client_class.return_value = mock_client
+        500,
+        {"error": {"message": "temporary provider failure"}},
+    )
+    mock_post.side_effect = server_error
 
     with pytest.raises(ServerError) as error:
         ask_gemini("test prompt")
 
     assert error.value is server_error
-    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_post.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
 
 
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_recovers_after_temporary_server_error(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
 
     server_error = ServerError(
-    500,
-    {"error": {"message": "temporary provider failure"}},
-)
-
-    success_response = Mock()
-    success_response.text = "Recovered answer"
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = [
+        500,
+        {"error": {"message": "temporary provider failure"}},
+    )
+    mock_post.side_effect = [
         server_error,
-        success_response,
+        _success_response_data("Recovered answer"),
     ]
-
-    mock_client_class.return_value = mock_client
 
     result = ask_gemini("test prompt")
 
     assert result == "Recovered answer"
-    assert mock_client.models.generate_content.call_count == 2
+    assert mock_post.call_count == 2
     assert mock_sleep.call_count == 1
 
+
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_retries_api_errors_until_exhausted(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
@@ -80,24 +85,22 @@ def test_gemini_retries_api_errors_until_exhausted(
         500,
         {"error": {"message": "temporary provider failure"}},
     )
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = api_error
-    mock_client_class.return_value = mock_client
+    mock_post.side_effect = api_error
 
     with pytest.raises(APIError) as error:
         ask_gemini("test prompt")
 
     assert error.value is api_error
-    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_post.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
 
+
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_retries_unknown_api_response_errors_until_exhausted(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
@@ -105,24 +108,22 @@ def test_gemini_retries_unknown_api_response_errors_until_exhausted(
     unknown_response_error = UnknownApiResponseError(
         "unknown API response"
     )
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = unknown_response_error
-    mock_client_class.return_value = mock_client
+    mock_post.side_effect = unknown_response_error
 
     with pytest.raises(UnknownApiResponseError) as error:
         ask_gemini("test prompt")
 
     assert error.value is unknown_response_error
-    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_post.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
 
+
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_recovers_after_unknown_api_response_error(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
@@ -130,107 +131,105 @@ def test_gemini_recovers_after_unknown_api_response_error(
     unknown_response_error = UnknownApiResponseError(
         "unknown API response"
     )
-
-    success_response = Mock()
-    success_response.text = "Recovered answer"
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = [
+    mock_post.side_effect = [
         unknown_response_error,
-        success_response,
+        _success_response_data("Recovered answer"),
     ]
-
-    mock_client_class.return_value = mock_client
 
     result = ask_gemini("test prompt")
 
     assert result == "Recovered answer"
-    assert mock_client.models.generate_content.call_count == 2
+    assert mock_post.call_count == 2
     assert mock_sleep.call_count == 1
 
-@patch("agent.providers.gemini.genai.Client")
-@patch("agent.providers.gemini.os.getenv")
-def test_gemini_client_uses_request_timeout(
-    mock_getenv,
-    mock_client_class,
-):
-    mock_getenv.return_value = "test-key"
-
-    mock_client = Mock()
-    mock_response = Mock()
-    mock_response.text = "Gemini answer"
-    mock_client.models.generate_content.return_value = mock_response
-    mock_client_class.return_value = mock_client
-
-    ask_gemini("test prompt")
-
-    client_kwargs = mock_client_class.call_args.kwargs
-
-    assert client_kwargs["api_key"] == "test-key"
-    assert client_kwargs["http_options"].timeout == REQUEST_TIMEOUT_SECONDS
 
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_retries_timeout_errors_until_exhausted(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
 
     timeout_error = TimeoutError("_ssl.c:989: The handshake operation timed out")
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = timeout_error
-    mock_client_class.return_value = mock_client
+    mock_post.side_effect = timeout_error
 
     with pytest.raises(TimeoutError) as error:
         ask_gemini("test prompt")
 
     assert error.value is timeout_error
-    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_post.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
 
+
 @patch("agent.providers.gemini.time.sleep")
-@patch("agent.providers.gemini.genai.Client")
+@patch("agent.providers.gemini._post_generate_content")
 @patch("agent.providers.gemini.os.getenv")
 def test_gemini_retries_httpx_connect_timeout_until_exhausted(
     mock_getenv,
-    mock_client_class,
+    mock_post,
     mock_sleep,
 ):
     mock_getenv.return_value = "test-key"
 
     timeout_error = httpx.ConnectTimeout("timed out")
-
-    mock_client = Mock()
-    mock_client.models.generate_content.side_effect = timeout_error
-    mock_client_class.return_value = mock_client
+    mock_post.side_effect = timeout_error
 
     with pytest.raises(httpx.ConnectTimeout) as error:
         ask_gemini("test prompt")
 
     assert error.value is timeout_error
-    assert mock_client.models.generate_content.call_count == MAX_RETRIES
+    assert mock_post.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
+
+
+@patch("agent.providers.gemini.time.sleep")
+@patch("agent.providers.gemini._post_generate_content")
+@patch("agent.providers.gemini.os.getenv")
+def test_gemini_retries_http_status_errors_until_exhausted(
+    mock_getenv,
+    mock_post,
+    mock_sleep,
+):
+    mock_getenv.return_value = "test-key"
+
+    request = httpx.Request("POST", "https://example.com")
+    response = httpx.Response(500, request=request)
+    status_error = httpx.HTTPStatusError(
+        "server error",
+        request=request,
+        response=response,
+    )
+    mock_post.side_effect = status_error
+
+    with pytest.raises(httpx.HTTPStatusError) as error:
+        ask_gemini("test prompt")
+
+    assert error.value is status_error
+    assert mock_post.call_count == MAX_RETRIES
+    assert mock_sleep.call_count == MAX_RETRIES - 1
+
+
+@patch("agent.providers.gemini.os.getenv")
+def test_gemini_requires_api_key(mock_getenv):
+    mock_getenv.return_value = None
+
+    with pytest.raises(ValueError, match="GEMINI_API_KEY not found"):
+        ask_gemini("test prompt")
+
 
 def test_parse_generate_content_response_returns_first_candidate_text():
     from agent.providers.gemini import _parse_generate_content_response
 
-    response_data = {
-        "candidates": [
-            {
-                "content": {
-                    "parts": [
-                        {"text": "Gemini REST answer"}
-                    ]
-                }
-            }
-        ]
-    }
+    assert (
+        _parse_generate_content_response(
+            _success_response_data("Gemini REST answer")
+        )
+        == "Gemini REST answer"
+    )
 
-    assert _parse_generate_content_response(response_data) == "Gemini REST answer"
 
 @patch("agent.providers.gemini.httpx.post")
 def test_post_generate_content_sends_rest_request(mock_post):
@@ -243,6 +242,7 @@ def test_post_generate_content_sends_rest_request(mock_post):
     result = _post_generate_content("test-key", "Hello")
 
     assert result == {"candidates": []}
+    mock_response.raise_for_status.assert_called_once()
     mock_post.assert_called_once_with(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=test-key",
         json={
@@ -257,3 +257,22 @@ def test_post_generate_content_sends_rest_request(mock_post):
         timeout=REQUEST_TIMEOUT_SECONDS,
     )
 
+
+@patch("agent.providers.gemini._parse_generate_content_response")
+@patch("agent.providers.gemini._post_generate_content")
+@patch("agent.providers.gemini.os.getenv")
+def test_ask_gemini_uses_rest_helpers(
+    mock_getenv,
+    mock_post,
+    mock_parse,
+):
+    mock_getenv.return_value = "test-key"
+
+    mock_post.return_value = {"candidates": []}
+    mock_parse.return_value = "Gemini answer"
+
+    result = ask_gemini("Hello")
+
+    assert result == "Gemini answer"
+    mock_post.assert_called_once_with("test-key", "Hello")
+    mock_parse.assert_called_once_with({"candidates": []})
