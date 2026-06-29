@@ -214,3 +214,20 @@ def test_gemini_retries_httpx_connect_timeout_until_exhausted(
     assert error.value is timeout_error
     assert mock_client.models.generate_content.call_count == MAX_RETRIES
     assert mock_sleep.call_count == MAX_RETRIES - 1
+
+def test_parse_generate_content_response_returns_first_candidate_text():
+    from agent.providers.gemini import _parse_generate_content_response
+
+    response_data = {
+        "candidates": [
+            {
+                "content": {
+                    "parts": [
+                        {"text": "Gemini REST answer"}
+                    ]
+                }
+            }
+        ]
+    }
+
+    assert _parse_generate_content_response(response_data) == "Gemini REST answer"

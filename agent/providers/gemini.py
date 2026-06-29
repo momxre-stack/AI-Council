@@ -15,6 +15,10 @@ RETRY_DELAY_SECONDS = 2
 REQUEST_TIMEOUT_SECONDS = 30
 
 
+def _parse_generate_content_response(response_data: dict) -> str:
+    return response_data["candidates"][0]["content"]["parts"][0]["text"]
+
+
 def ask_gemini(prompt: str) -> str:
     api_key = os.getenv("GEMINI_API_KEY")
 
