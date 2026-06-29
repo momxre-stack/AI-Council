@@ -231,3 +231,29 @@ def test_parse_generate_content_response_returns_first_candidate_text():
     }
 
     assert _parse_generate_content_response(response_data) == "Gemini REST answer"
+
+@patch("agent.providers.gemini.httpx.post")
+def test_post_generate_content_sends_rest_request(mock_post):
+    from agent.providers.gemini import _post_generate_content
+
+    mock_response = Mock()
+    mock_response.json.return_value = {"candidates": []}
+    mock_post.return_value = mock_response
+
+    result = _post_generate_content("test-key", "Hello")
+
+    assert result == {"candidates": []}
+    mock_post.assert_called_once_with(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=test-key",
+        json={
+            "contents": [
+                {
+                    "parts": [
+                        {"text": "Hello"}
+                    ]
+                }
+            ]
+        },
+        timeout=REQUEST_TIMEOUT_SECONDS,
+    )
+
