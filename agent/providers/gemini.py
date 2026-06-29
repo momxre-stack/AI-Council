@@ -1,6 +1,7 @@
 import os
 import time
 
+import httpx
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
@@ -36,7 +37,7 @@ def ask_gemini(prompt: str) -> str:
 
             return response.text
 
-        except (APIError, UnknownApiResponseError, TimeoutError) as error:
+        except (APIError, UnknownApiResponseError, TimeoutError, httpx.TimeoutException) as error:
             last_error = error
 
             if attempt == MAX_RETRIES - 1:
