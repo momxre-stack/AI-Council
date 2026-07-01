@@ -1,4 +1,7 @@
-from agent.semantic_validation import build_validation_record
+from agent.semantic_validation import (
+    build_validation_record,
+    summarize_validation_records,
+)
 
 
 def test_build_validation_record_from_council_result():
@@ -32,4 +35,38 @@ def test_build_validation_record_from_council_result():
         "debate_used": True,
         "status": "ok",
         "assessment": {"confidence": "low"},
+    }
+
+def test_summarize_validation_records():
+    summary = summarize_validation_records(
+        [
+            {
+                "independent_score": 23,
+                "max_provider_agreement": 90,
+                "agreement_gap": 67,
+            },
+            {
+                "independent_score": 40,
+                "max_provider_agreement": 80,
+                "agreement_gap": 40,
+            },
+        ]
+    )
+
+    assert summary == {
+        "records_count": 2,
+        "average_independent_score": 31.5,
+        "average_provider_score": 85,
+        "average_agreement_gap": 53.5,
+    }
+
+
+def test_summarize_validation_records_handles_empty_list():
+    summary = summarize_validation_records([])
+
+    assert summary == {
+        "records_count": 0,
+        "average_independent_score": 0,
+        "average_provider_score": 0,
+        "average_agreement_gap": 0,
     }

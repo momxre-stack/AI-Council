@@ -25,3 +25,33 @@ def build_validation_record(council_result: dict) -> dict:
         "status": council_result.get("status"),
         "assessment": council_result.get("assessment"),
     }
+
+def summarize_validation_records(records: list[dict]) -> dict:
+    if not records:
+        return {
+            "records_count": 0,
+            "average_independent_score": 0,
+            "average_provider_score": 0,
+            "average_agreement_gap": 0,
+        }
+
+    records_count = len(records)
+    total_independent_score = sum(
+        record.get("independent_score") or 0
+        for record in records
+    )
+    total_provider_score = sum(
+        record.get("max_provider_agreement") or 0
+        for record in records
+    )
+    total_agreement_gap = sum(
+        record.get("agreement_gap") or 0
+        for record in records
+    )
+
+    return {
+        "records_count": records_count,
+        "average_independent_score": total_independent_score / records_count,
+        "average_provider_score": total_provider_score / records_count,
+        "average_agreement_gap": total_agreement_gap / records_count,
+    }
