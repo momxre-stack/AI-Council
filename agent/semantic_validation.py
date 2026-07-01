@@ -10,6 +10,7 @@ def build_validation_record(council_result: dict) -> dict:
     deepseek_score = deepseek_judge.get("agreement_score") or 0
 
     max_provider_agreement = max(gemini_score, deepseek_score)
+    llm_average_score = (gemini_score + deepseek_score) / 2
     agreement_gap = max_provider_agreement - independent_score
 
     return {
@@ -20,7 +21,14 @@ def build_validation_record(council_result: dict) -> dict:
         "gemini_score": gemini_score,
         "deepseek_score": deepseek_score,
         "max_provider_agreement": max_provider_agreement,
+        "llm_average_score": llm_average_score,
         "agreement_gap": agreement_gap,
+        "is_semantic_candidate": is_semantic_candidate(
+            {
+                "max_provider_agreement": max_provider_agreement,
+                "agreement_gap": agreement_gap,
+            }
+        ),
         "debate_used": judgment.get("final_needs_debate"),
         "status": council_result.get("status"),
         "assessment": council_result.get("assessment"),
