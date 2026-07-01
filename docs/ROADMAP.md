@@ -248,33 +248,26 @@ Notes:
 * Gemini SDK SSL handshake timeout is resolved.
 * Remaining provider limitation is HTTP 429 rate limiting.
 
-### Provider Rate-Limit Handling
+### Semantic Judge Design
 
 Status:
 
-Next.
+Completed.
 
-Initial target:
+Implemented:
 
-* Gemini REST provider
+* Analyzed Independent Judge limitations
+* Documented lexical overlap limitation
+* Defined semantic agreement direction
+* Compared rejected and acceptable approaches
+* Selected smallest safe prototype direction
+* Added Semantic Judge design document
 
-Goals:
+Notes:
 
-* Detect HTTP 429 explicitly
-* Distinguish quota failures from generic provider failures
-* Normalize provider rate-limit errors into common internal categories
-* Surface quota information clearly in Council and Web
-* Avoid unnecessary repeated live provider calls
-* Introduce controlled retry/backoff where appropriate
-* Keep browser requests responsive
-* Preserve existing Council, Debate, Web and Provider architecture
-
-Principles:
-
-* Never hide provider limits
-* Make provider failures observable
-* Preserve graceful degradation
-* Keep provider behavior consistent across implementations
+* No production behavior changed.
+* Council, Debate, and Providers remain unchanged.
+* Semantic Engine implementation is intentionally postponed.
 
 ### Evaluation / Benchmark Improvements
 
