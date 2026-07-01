@@ -350,3 +350,49 @@ AI Council is not intended to replace existing AI systems.
 Its purpose is to improve the reliability of decisions produced by multiple intelligent systems.
 
 The future Semantic Engine should help both AI systems and people understand each other more accurately while remaining as independent, transparent, and reproducible as practical.
+
+---
+
+# Prototype Selection
+
+The selected first prototype is:
+
+Deterministic Concept Matching Baseline
+
+This prototype should be implemented before embeddings, LLM-based judging, or hybrid judging.
+
+The goal is not to build the final Semantic Engine.
+
+The goal is to create the smallest measurable improvement over the current lexical Independent Judge while preserving determinism, explainability, reproducibility, provider independence, and backward compatibility.
+
+## Accepted First Prototype
+
+The first implementation candidate should focus on deterministic concept matching.
+
+It should attempt to identify shared concepts even when two responses use different wording.
+
+It should remain simple, local, explainable, and objectively testable.
+
+## Rejected or Postponed Approaches
+
+Local embeddings are postponed because they introduce additional model dependencies, resource requirements, and evaluation complexity.
+
+LLM-based semantic judging is rejected as the first prototype because it depends on external providers, reduces reproducibility, increases cost, and weakens independence.
+
+Hybrid judging is postponed because it should only be considered after a deterministic baseline exists.
+
+## Validation Requirement
+
+The prototype should only be considered successful if it reduces obvious false disagreements compared with the current lexical judge without increasing false agreements.
+
+It must remain deterministic and explainable.
+
+## Recommended Milestone #16.7
+
+Milestone #16.7 should be:
+
+Deterministic Concept Matching Prototype
+
+It should not modify Council, Debate, or Providers.
+
+It should introduce only the smallest experimental semantic baseline needed to compare against the current Independent Judge.
