@@ -55,3 +55,9 @@ def summarize_validation_records(records: list[dict]) -> dict:
         "average_provider_score": total_provider_score / records_count,
         "average_agreement_gap": total_agreement_gap / records_count,
     }
+
+def is_semantic_candidate(record: dict) -> bool:
+    return (
+        record["max_provider_agreement"] >= 80
+        and record["agreement_gap"] >= 40
+    )

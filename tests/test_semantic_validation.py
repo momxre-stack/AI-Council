@@ -1,6 +1,7 @@
 from agent.semantic_validation import (
     build_validation_record,
     summarize_validation_records,
+    is_semantic_candidate,
 )
 
 
@@ -70,3 +71,20 @@ def test_summarize_validation_records_handles_empty_list():
         "average_provider_score": 0,
         "average_agreement_gap": 0,
     }
+
+def test_is_semantic_candidate_returns_true():
+    assert is_semantic_candidate(
+        {
+            "max_provider_agreement": 90,
+            "agreement_gap": 67,
+        }
+    ) is True
+
+
+def test_is_semantic_candidate_returns_false():
+    assert is_semantic_candidate(
+        {
+            "max_provider_agreement": 60,
+            "agreement_gap": 15,
+        }
+    ) is False
