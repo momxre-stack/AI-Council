@@ -16,8 +16,9 @@ def test_council_without_debate(
     mock_deepseek.return_value = "DeepSeek answer"
 
     mock_judge.return_value = {
-        "gemini_judge": {},
-        "deepseek_judge": {},
+        "gemini_judge": {"agreement_score": 90},
+        "deepseek_judge": {"agreement_score": 80},
+        "independent_judge": {"agreement_score": 40},
         "final_needs_debate": False,
     }
 
@@ -27,6 +28,10 @@ def test_council_without_debate(
     assert result["status"] == "ok"
     assert result["degraded_reason"] is None
     assert result["debate"] is None
+    assert result["semantic_validation"]["independent_score"] == 40
+    assert result["semantic_validation"]["llm_average_score"] == 85
+    assert result["semantic_validation"]["agreement_gap"] == 50
+    assert result["semantic_validation"]["is_semantic_candidate"] is True
     assert result["judgment"]["final_needs_debate"] is False
     assert result["assessment"] == {
         "confidence": "low",

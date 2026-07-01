@@ -3,6 +3,7 @@ from agent.dual_judge import run_dual_judgment
 from agent.debate import run_debate
 from agent.quota_utils import is_quota_error
 from agent.reliability_trends import build_reliability_assessment
+from agent.semantic_validation import build_validation_record
 
 
 
@@ -137,7 +138,7 @@ def ask_council(question: str) -> dict:
         reliability_status="healthy" if status == "ok" else status,
     )
 
-    return {
+    result = {
         "question": question,
         "responses": {
             "gemini": gemini_response,
@@ -153,3 +154,7 @@ def ask_council(question: str) -> dict:
         "debate": debate,
         "debate_error": debate_error,
     }
+
+    result["semantic_validation"] = build_validation_record(result)
+
+    return result
