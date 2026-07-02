@@ -69,3 +69,21 @@ def test_independent_judge_keeps_unrelated_answers_low_agreement():
     assert result["agreement_score"] < 50
     assert result["needs_debate"] is True
 
+def test_independent_judge_recognizes_live_ai_semantic_alignment():
+    result = independent_judge_responses(
+        question="What is AI in one sentence?",
+        gemini_response=(
+            "Artificial Intelligence (AI) is the ability of machines to perform "
+            "cognitive functions typically associated with human intelligence, "
+            "such as learning, understanding, problem-solving, and decision-making."
+        ),
+        deepseek_response=(
+            "AI is a field of computer science focused on creating systems that "
+            "can perform tasks typically requiring human intelligence, such as "
+            "learning, reasoning, and problem-solving."
+        ),
+    )
+
+    assert result["agreement_score"] >= 50
+    assert result["needs_debate"] is False
+

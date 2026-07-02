@@ -27,6 +27,15 @@ CONCEPT_NORMALIZATIONS = {
     "enabling": "capability",
     "problem-solving": "problem_solving_decision",
     "decisions": "problem_solving_decision",
+    "decision-making": "problem_solving_decision",
+    "understanding": "reason",
+    "cognitive": "task_function",
+    "functions": "task_function",
+    "tasks": "task_function",
+    "perform": "perform",
+    "requiring": "require",
+    "require": "require",
+    "associated": "require",
 }
 
 
