@@ -80,3 +80,23 @@ A deterministic prototype should only be accepted if it demonstrates all of the 
 This document is expected to grow as additional real AI Council outputs are collected.
 
 Implementation should be driven by recurring evidence from real Council executions rather than isolated examples.
+
+## Live Baseline Collection Note
+
+Initial live baseline collection was attempted after semantic validation was integrated into Council results.
+
+Observed behavior:
+
+- A single Council request can succeed.
+- Consecutive requests can trigger Gemini API rate limiting.
+- Google AI Studio showed Gemini Free Tier limits of 5 RPM and 20 RPD for the active project.
+- The project exceeded the daily request limit during live validation.
+- Gemini returned HTTP 429 Too Many Requests.
+- Council correctly returned degraded provider failure results.
+- Semantic validation is available for successful Council executions, but not for degraded provider-failure executions.
+
+Conclusion:
+
+The Semantic Validation infrastructure behaved as designed.
+
+Live baseline collection should be resumed after quota reset or after enabling billing with a small budget alert.
