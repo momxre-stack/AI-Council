@@ -34,3 +34,38 @@ def test_independent_judge_detects_more_complete_response():
     )
 
     assert result["more_complete_response"] == "gemini"
+
+
+def test_independent_judge_recognizes_real_ai_semantic_alignment():
+    result = independent_judge_responses(
+        question="What is AI in one sentence?",
+        gemini_response=(
+            "Artificial Intelligence (AI) is the development of computer systems "
+            "capable of performing tasks that typically require human intelligence, "
+            "such as learning, reasoning, and problem-solving."
+        ),
+        deepseek_response=(
+            "AI is the simulation of human intelligence by machines, "
+            "enabling them to learn, reason, and make decisions."
+        ),
+    )
+
+    assert result["agreement_score"] >= 50
+    assert result["needs_debate"] is False
+
+def test_independent_judge_keeps_unrelated_answers_low_agreement():
+    result = independent_judge_responses(
+        question="What is AI in one sentence?",
+        gemini_response=(
+            "Artificial Intelligence is the development of computer systems "
+            "capable of learning and reasoning."
+        ),
+        deepseek_response=(
+            "Photosynthesis is the process plants use to convert sunlight "
+            "into chemical energy."
+        ),
+    )
+
+    assert result["agreement_score"] < 50
+    assert result["needs_debate"] is True
+

@@ -1,8 +1,44 @@
+STOPWORDS = {
+    "and",
+    "as",
+    "by",
+    "is",
+    "of",
+    "such",
+    "that",
+    "the",
+    "them",
+    "to",
+    "typically",
+}
+
+CONCEPT_NORMALIZATIONS = {
+    "ai": "ai_concept",
+    "artificial": "ai_concept",
+    "intelligence": "ai_concept",
+    "computer": "machine_system",
+    "machines": "machine_system",
+    "systems": "machine_system",
+    "learning": "learn",
+    "learn": "learn",
+    "reasoning": "reason",
+    "reason": "reason",
+    "capable": "capability",
+    "enabling": "capability",
+    "problem-solving": "problem_solving_decision",
+    "decisions": "problem_solving_decision",
+}
+
+
+def _normalize_token(token: str) -> str:
+    return CONCEPT_NORMALIZATIONS.get(token, token)
+
+
 def _tokenize(text: str) -> set[str]:
     return {
-        word.strip(".,!?;:()[]{}\"'").lower()
+        _normalize_token(word.strip(".,!?;:()[]{}\"'").lower())
         for word in text.split()
-        if word.strip(".,!?;:()[]{}\"'")
+        if word.strip(".,!?;:()[]{}\"'").lower() not in STOPWORDS
     }
 
 
