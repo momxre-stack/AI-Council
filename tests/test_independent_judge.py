@@ -87,3 +87,28 @@ def test_independent_judge_recognizes_live_ai_semantic_alignment():
     assert result["agreement_score"] >= 50
     assert result["needs_debate"] is False
 
+
+def test_independent_judge_exposes_diagnostic_evidence():
+    result = independent_judge_responses(
+        question="What is AI in one sentence?",
+        gemini_response=(
+            "Artificial Intelligence is the development of computer systems "
+            "capable of learning and reasoning."
+        ),
+        deepseek_response=(
+            "AI is the ability of machines to learn and reason."
+        ),
+    )
+
+    assert "diagnostics" in result
+
+    diagnostics = result["diagnostics"]
+
+    assert diagnostics["gemini_tokens"]
+    assert diagnostics["deepseek_tokens"]
+    assert diagnostics["overlap_tokens"]
+    assert diagnostics["gemini_only_tokens"]
+    assert diagnostics["deepseek_only_tokens"]
+    assert diagnostics["overlap_count"] == len(diagnostics["overlap_tokens"])
+    assert diagnostics["total_count"] >= diagnostics["overlap_count"]
+

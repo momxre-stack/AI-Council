@@ -64,6 +64,24 @@ def _overlap_score(first: str, second: str) -> int:
     return int((len(overlap) / len(total)) * 100)
 
 
+def _build_diagnostics(first: str, second: str) -> dict:
+    first_tokens = _tokenize(first)
+    second_tokens = _tokenize(second)
+
+    overlap_tokens = first_tokens.intersection(second_tokens)
+    total_tokens = first_tokens.union(second_tokens)
+
+    return {
+        "gemini_tokens": sorted(first_tokens),
+        "deepseek_tokens": sorted(second_tokens),
+        "overlap_tokens": sorted(overlap_tokens),
+        "gemini_only_tokens": sorted(first_tokens - second_tokens),
+        "deepseek_only_tokens": sorted(second_tokens - first_tokens),
+        "overlap_count": len(overlap_tokens),
+        "total_count": len(total_tokens),
+    }
+
+
 def _more_complete_response(
     gemini_response: str,
     deepseek_response: str,
@@ -101,4 +119,5 @@ def independent_judge_responses(
         "more_complete_response": more_complete,
         "final_answer": "",
         "judge_type": "independent_rule_based",
+        "diagnostics": _build_diagnostics(gemini_response, deepseek_response),
     }
