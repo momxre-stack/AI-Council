@@ -127,3 +127,19 @@ def test_independent_judge_tokenization_ignores_markdown_emphasis():
     )
 
     assert markdown_result["agreement_score"] == plain_result["agreement_score"]
+
+
+def test_independent_judge_tokenization_splits_em_dash_words():
+    separated_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Redundancy often improves read performance.",
+        deepseek_response="Redundancy often improves read performance.",
+    )
+
+    em_dash_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Redundancy—often improves read performance.",
+        deepseek_response="Redundancy often improves read performance.",
+    )
+
+    assert em_dash_result["agreement_score"] == separated_result["agreement_score"]
