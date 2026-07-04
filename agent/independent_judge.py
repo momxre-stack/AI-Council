@@ -39,8 +39,23 @@ CONCEPT_NORMALIZATIONS = {
 }
 
 
+WORD_FORM_NORMALIZATIONS = {
+    "combining": "combine",
+    "combines": "combine",
+    "combined": "combine",
+    "minimizing": "minimize",
+    "minimizes": "minimize",
+    "minimized": "minimize",
+}
+
+
+def _normalize_word_form(token: str) -> str:
+    return WORD_FORM_NORMALIZATIONS.get(token, token)
+
+
 def _normalize_token(token: str) -> str:
-    return CONCEPT_NORMALIZATIONS.get(token, token)
+    normalized_word_form = _normalize_word_form(token)
+    return CONCEPT_NORMALIZATIONS.get(normalized_word_form, normalized_word_form)
 
 
 def _tokenize(text: str) -> set[str]:

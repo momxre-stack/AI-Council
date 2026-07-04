@@ -143,3 +143,19 @@ def test_independent_judge_tokenization_splits_em_dash_words():
     )
 
     assert em_dash_result["agreement_score"] == separated_result["agreement_score"]
+
+
+def test_independent_judge_normalizes_basic_word_forms():
+    base_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Combine tables to minimize joins.",
+        deepseek_response="Combine tables to minimize joins.",
+    )
+
+    variant_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Combining tables minimizes joins.",
+        deepseek_response="Combine tables to minimize joins.",
+    )
+
+    assert variant_result["agreement_score"] == base_result["agreement_score"]

@@ -80,7 +80,7 @@ BENCHMARK_CASES = [
             "joins required, often at the cost of increased storage and potential "
             "update anomalies."
         ),
-        "expected_agreement_score": 26,
+        "expected_agreement_score": 30,
     },
 ]
 
