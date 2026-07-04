@@ -45,9 +45,9 @@ def _normalize_token(token: str) -> str:
 
 def _tokenize(text: str) -> set[str]:
     return {
-        _normalize_token(word.strip(".,!?;:()[]{}\"'").lower())
+        _normalize_token(word.strip(".,!?;:()[]{}\"'*").lower())
         for word in text.split()
-        if word.strip(".,!?;:()[]{}\"'").lower() not in STOPWORDS
+        if word.strip(".,!?;:()[]{}\"'*").lower() not in STOPWORDS
     }
 
 

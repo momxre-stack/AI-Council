@@ -112,3 +112,18 @@ def test_independent_judge_exposes_diagnostic_evidence():
     assert diagnostics["overlap_count"] == len(diagnostics["overlap_tokens"])
     assert diagnostics["total_count"] >= diagnostics["overlap_count"]
 
+
+def test_independent_judge_tokenization_ignores_markdown_emphasis():
+    plain_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Process and thread share memory.",
+        deepseek_response="Process and thread share memory.",
+    )
+
+    markdown_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="**Process** and *thread* share **memory**.",
+        deepseek_response="Process and thread share memory.",
+    )
+
+    assert markdown_result["agreement_score"] == plain_result["agreement_score"]

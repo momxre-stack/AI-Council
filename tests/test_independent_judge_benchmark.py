@@ -26,7 +26,7 @@ BENCHMARK_CASES = [
             "of handling tasks (like multitasking), while parallelism is an "
             "**execution** mechanism (like multiple workers working side-by-side)."
         ),
-        "expected_agreement_score": 20,
+        "expected_agreement_score": 29,
     },
     {
         "question": (
@@ -54,7 +54,7 @@ BENCHMARK_CASES = [
             "processes, but a fault in one thread can crash the entire containing "
             "process."
         ),
-        "expected_agreement_score": 23,
+        "expected_agreement_score": 27,
     },
     {
         "question": (
@@ -80,7 +80,7 @@ BENCHMARK_CASES = [
             "joins required, often at the cost of increased storage and potential "
             "update anomalies."
         ),
-        "expected_agreement_score": 21,
+        "expected_agreement_score": 24,
     },
 ]
 
