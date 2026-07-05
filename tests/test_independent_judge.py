@@ -159,3 +159,19 @@ def test_independent_judge_normalizes_basic_word_forms():
     )
 
     assert variant_result["agreement_score"] == base_result["agreement_score"]
+
+
+def test_independent_judge_normalizes_increase_word_forms():
+    base_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Increase storage costs.",
+        deepseek_response="Increase storage costs.",
+    )
+
+    variant_result = independent_judge_responses(
+        question="Compare two responses.",
+        gemini_response="Increased storage costs.",
+        deepseek_response="Increase storage costs.",
+    )
+
+    assert variant_result["agreement_score"] == base_result["agreement_score"]

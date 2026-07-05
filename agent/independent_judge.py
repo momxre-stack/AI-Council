@@ -46,6 +46,9 @@ WORD_FORM_NORMALIZATIONS = {
     "minimizing": "minimize",
     "minimizes": "minimize",
     "minimized": "minimize",
+    "increasing": "increase",
+    "increases": "increase",
+    "increased": "increase",
 }
 
 
