@@ -98,3 +98,14 @@ def test_bidirectional_coverage_detects_subset_asymmetry():
     full_to_short = _coverage_score(full_response, short_response)
 
     assert short_to_full > full_to_short
+
+
+def test_bakeoff_includes_negation_disagreement_control_case():
+    result = independent_judge_responses(
+        question="What does normalization do?",
+        gemini_response="Normalization reduces data redundancy.",
+        deepseek_response="Normalization does not reduce data redundancy.",
+    )
+
+    assert result["needs_debate"] is True
+    assert "negation_mismatch" not in result["diagnostics"]
