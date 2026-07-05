@@ -2,6 +2,24 @@ from agent.independent_judge import independent_judge_responses
 from tests.test_independent_judge_benchmark import BENCHMARK_CASES
 
 
+def _coverage_score(source: str, target: str) -> int:
+    source_tokens = {
+        word.strip(".,!?;:()[]{}\"'*").lower()
+        for word in source.split()
+    }
+    target_tokens = {
+        word.strip(".,!?;:()[]{}\"'*").lower()
+        for word in target.split()
+    }
+
+    if not source_tokens:
+        return 0
+
+    covered_tokens = source_tokens.intersection(target_tokens)
+
+    return int((len(covered_tokens) / len(source_tokens)) * 100)
+
+
 def _run_baseline_cases() -> list[dict]:
     results = []
 
@@ -67,3 +85,16 @@ def test_bakeoff_includes_subset_answer_control_case():
     assert full_result["agreement_score"] == reversed_result["agreement_score"]
     assert full_result["more_complete_response"] == "gemini"
     assert reversed_result["more_complete_response"] == "deepseek"
+
+
+def test_bidirectional_coverage_detects_subset_asymmetry():
+    full_response = (
+        "Python is a programming language used for web development, "
+        "automation, data analysis, and scripting."
+    )
+    short_response = "Python is a programming language."
+
+    short_to_full = _coverage_score(short_response, full_response)
+    full_to_short = _coverage_score(full_response, short_response)
+
+    assert short_to_full > full_to_short
