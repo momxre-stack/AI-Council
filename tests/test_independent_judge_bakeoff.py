@@ -28,6 +28,26 @@ def _extract_claims(response: str) -> list[str]:
     ]
 
 
+def _build_claim_pairs(
+    gemini_claims: list[str],
+    deepseek_claims: list[str],
+) -> list[dict]:
+    pairs = []
+
+    for gemini_index, gemini_claim in enumerate(gemini_claims, start=1):
+        for deepseek_index, deepseek_claim in enumerate(deepseek_claims, start=1):
+            pairs.append(
+                {
+                    "gemini_claim_index": gemini_index,
+                    "deepseek_claim_index": deepseek_index,
+                    "gemini_claim": gemini_claim,
+                    "deepseek_claim": deepseek_claim,
+                }
+            )
+
+    return pairs
+
+
 def _run_baseline_cases() -> list[dict]:
     results = []
 
@@ -127,4 +147,57 @@ def test_claim_extractor_splits_response_into_claims():
     assert claims == [
         "normalization reduces redundancy",
         "denormalization improves read performance",
+    ]
+
+
+def test_claim_pair_builder_creates_all_cross_pairs():
+    gemini_claims = [
+        "normalization reduces redundancy",
+        "denormalization improves read performance",
+    ]
+    deepseek_claims = [
+        "normalization minimizes duplicate data",
+        "denormalization reduces joins",
+        "denormalization improves read performance",
+    ]
+
+    pairs = _build_claim_pairs(gemini_claims, deepseek_claims)
+
+    assert pairs == [
+        {
+            "gemini_claim_index": 1,
+            "deepseek_claim_index": 1,
+            "gemini_claim": "normalization reduces redundancy",
+            "deepseek_claim": "normalization minimizes duplicate data",
+        },
+        {
+            "gemini_claim_index": 1,
+            "deepseek_claim_index": 2,
+            "gemini_claim": "normalization reduces redundancy",
+            "deepseek_claim": "denormalization reduces joins",
+        },
+        {
+            "gemini_claim_index": 1,
+            "deepseek_claim_index": 3,
+            "gemini_claim": "normalization reduces redundancy",
+            "deepseek_claim": "denormalization improves read performance",
+        },
+        {
+            "gemini_claim_index": 2,
+            "deepseek_claim_index": 1,
+            "gemini_claim": "denormalization improves read performance",
+            "deepseek_claim": "normalization minimizes duplicate data",
+        },
+        {
+            "gemini_claim_index": 2,
+            "deepseek_claim_index": 2,
+            "gemini_claim": "denormalization improves read performance",
+            "deepseek_claim": "denormalization reduces joins",
+        },
+        {
+            "gemini_claim_index": 2,
+            "deepseek_claim_index": 3,
+            "gemini_claim": "denormalization improves read performance",
+            "deepseek_claim": "denormalization improves read performance",
+        },
     ]
