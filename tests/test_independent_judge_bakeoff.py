@@ -20,6 +20,14 @@ def _coverage_score(source: str, target: str) -> int:
     return int((len(covered_tokens) / len(source_tokens)) * 100)
 
 
+def _extract_claims(response: str) -> list[str]:
+    return [
+        sentence.strip().lower()
+        for sentence in response.split(".")
+        if sentence.strip()
+    ]
+
+
 def _run_baseline_cases() -> list[dict]:
     results = []
 
@@ -109,3 +117,14 @@ def test_bakeoff_includes_negation_disagreement_control_case():
 
     assert result["needs_debate"] is True
     assert "negation_mismatch" not in result["diagnostics"]
+
+
+def test_claim_extractor_splits_response_into_claims():
+    claims = _extract_claims(
+        "Normalization reduces redundancy. Denormalization improves read performance."
+    )
+
+    assert claims == [
+        "normalization reduces redundancy",
+        "denormalization improves read performance",
+    ]
