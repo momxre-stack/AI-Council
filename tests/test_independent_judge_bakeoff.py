@@ -60,9 +60,19 @@ def _build_multi_response_judge_prompt(
     return (
         "You are an independent judge evaluating anonymous AI responses.\n"
         "Do not infer provider identity.\n"
-        "Evaluate whether the responses share the same core answer, whether "
-        "there are material contradictions, and whether any response is an outlier.\n"
-        "Return JSON only.\n\n"
+        "Evaluate every response pair for semantic alignment.\n"
+        "Return JSON only using this exact schema:\n"
+        "{\n"
+        '  "pairwise_evaluations": [\n'
+        "    {\n"
+        '      "response_id_1": "R1",\n'
+        '      "response_id_2": "R2",\n'
+        '      "alignment": "aligned | partial | conflicting",\n'
+        '      "confidence": 0\n'
+        "    }\n"
+        "  ]\n"
+        "}\n"
+        "Allowed alignment values are: aligned, partial, conflicting.\n\n"
         f"Question:\n{question}\n\n"
         f"Responses:\n{response_blocks}"
     )
@@ -239,3 +249,22 @@ def test_multi_response_judge_prompt_uses_anonymous_response_ids():
     assert "DeepSeek" not in prompt
     assert "OpenAI" not in prompt
     assert "JSON" in prompt
+
+
+def test_multi_response_judge_prompt_defines_pairwise_output_contract():
+    prompt = _build_multi_response_judge_prompt(
+        question="What is AI?",
+        responses=[
+            {"id": "R1", "text": "AI lets machines perform human-like tasks."},
+            {"id": "R2", "text": "Artificial intelligence enables systems to learn and reason."},
+        ],
+    )
+
+    assert '"pairwise_evaluations"' in prompt
+    assert '"response_id_1"' in prompt
+    assert '"response_id_2"' in prompt
+    assert '"alignment"' in prompt
+    assert '"confidence"' in prompt
+    assert "aligned" in prompt
+    assert "partial" in prompt
+    assert "conflicting" in prompt
