@@ -48,6 +48,26 @@ def _build_claim_pairs(
     return pairs
 
 
+def _build_multi_response_judge_prompt(
+    question: str,
+    responses: list[dict],
+) -> str:
+    response_blocks = "\n\n".join(
+        f"{response['id']}:\n{response['text']}"
+        for response in responses
+    )
+
+    return (
+        "You are an independent judge evaluating anonymous AI responses.\n"
+        "Do not infer provider identity.\n"
+        "Evaluate whether the responses share the same core answer, whether "
+        "there are material contradictions, and whether any response is an outlier.\n"
+        "Return JSON only.\n\n"
+        f"Question:\n{question}\n\n"
+        f"Responses:\n{response_blocks}"
+    )
+
+
 def _run_baseline_cases() -> list[dict]:
     results = []
 
@@ -201,3 +221,21 @@ def test_claim_pair_builder_creates_all_cross_pairs():
             "deepseek_claim": "denormalization improves read performance",
         },
     ]
+
+
+def test_multi_response_judge_prompt_uses_anonymous_response_ids():
+    prompt = _build_multi_response_judge_prompt(
+        question="What is AI?",
+        responses=[
+            {"id": "R1", "text": "AI lets machines perform human-like tasks."},
+            {"id": "R2", "text": "Artificial intelligence enables systems to learn and reason."},
+        ],
+    )
+
+    assert "What is AI?" in prompt
+    assert "R1" in prompt
+    assert "R2" in prompt
+    assert "Gemini" not in prompt
+    assert "DeepSeek" not in prompt
+    assert "OpenAI" not in prompt
+    assert "JSON" in prompt
