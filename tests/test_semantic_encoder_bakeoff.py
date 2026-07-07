@@ -107,6 +107,29 @@ def _measure_reference_encoder_cases() -> dict[str, float]:
     return scores
 
 
+def _has_conflict_signal(text_a: str, text_b: str) -> bool:
+    first_text = text_a.lower()
+    second_text = text_b.lower()
+
+    opposite_terms = [
+        ("before", "after"),
+    ]
+
+    for first_term, second_term in opposite_terms:
+        first_has_first_term = first_term in first_text
+        first_has_second_term = second_term in first_text
+        second_has_first_term = first_term in second_text
+        second_has_second_term = second_term in second_text
+
+        if first_has_first_term and second_has_second_term:
+            return True
+
+        if first_has_second_term and second_has_first_term:
+            return True
+
+    return False
+
+
 def test_semantic_encoder_evaluation_cases_are_labeled():
     assert len(SEMANTIC_ENCODER_EVALUATION_CASES) == 10
 
@@ -135,3 +158,10 @@ def test_reference_encoder_does_not_detect_conflicts_by_itself():
     assert scores["negation_conflict"] >= 80
     assert scores["opposite_action"] >= 80
     assert scores["temporal_conflict"] >= 80
+
+
+def test_conflict_signal_detects_temporal_opposites():
+    assert _has_conflict_signal(
+        "Validation happens before execution.",
+        "Validation happens after execution.",
+    ) is True
