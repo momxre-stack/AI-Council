@@ -122,6 +122,7 @@ def _has_conflict_signal(text_a: str, text_b: str) -> bool:
         ("increases", "decreases"),
         ("can", "cannot"),
         ("always", "never"),
+        ("required", "optional"),
     ]
 
     for first_term, second_term in opposite_terms:
@@ -218,3 +219,10 @@ def test_conflict_signal_does_not_flag_matching_absolute_terms():
         "The cache always stores the result.",
         "The service always stores the result.",
     ) is False
+
+
+def test_conflict_signal_detects_requirement_opposites():
+    assert _has_conflict_signal(
+        "Authentication is required.",
+        "Authentication is optional.",
+    ) is True
