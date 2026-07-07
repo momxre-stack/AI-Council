@@ -108,24 +108,26 @@ def _measure_reference_encoder_cases() -> dict[str, float]:
 
 
 def _has_conflict_signal(text_a: str, text_b: str) -> bool:
-    first_text = text_a.lower()
-    second_text = text_b.lower()
+    first_tokens = {
+        word.strip(".,!?;:()[]{}\"'*").lower()
+        for word in text_a.split()
+    }
+    second_tokens = {
+        word.strip(".,!?;:()[]{}\"'*").lower()
+        for word in text_b.split()
+    }
 
     opposite_terms = [
         ("before", "after"),
         ("increases", "decreases"),
+        ("can", "cannot"),
     ]
 
     for first_term, second_term in opposite_terms:
-        first_has_first_term = first_term in first_text
-        first_has_second_term = second_term in first_text
-        second_has_first_term = first_term in second_text
-        second_has_second_term = second_term in second_text
-
-        if first_has_first_term and second_has_second_term:
+        if first_term in first_tokens and second_term in second_tokens:
             return True
 
-        if first_has_second_term and second_has_first_term:
+        if second_term in first_tokens and first_term in second_tokens:
             return True
 
     return False
@@ -186,4 +188,18 @@ def test_conflict_signal_does_not_flag_matching_actions():
     assert _has_conflict_signal(
         "The process increases system performance.",
         "The optimization increases application performance.",
+    ) is False
+
+
+def test_conflict_signal_detects_modal_opposites():
+    assert _has_conflict_signal(
+        "Python can be used for web development.",
+        "Python cannot be used for web development.",
+    ) is True
+
+
+def test_conflict_signal_does_not_flag_matching_modal_terms():
+    assert _has_conflict_signal(
+        "Python can be used for web development.",
+        "Python can be used for automation.",
     ) is False
