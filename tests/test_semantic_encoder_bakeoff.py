@@ -1,3 +1,8 @@
+import os
+
+import pytest
+
+
 SEMANTIC_ENCODER_EVALUATION_CASES = [
     {
         "category": "aligned_paraphrase",
@@ -65,6 +70,43 @@ SEMANTIC_ENCODER_EVALUATION_CASES = [
 ]
 
 
+def _semantic_encoder_bakeoff_enabled() -> bool:
+    return os.getenv("RUN_SEMANTIC_ENCODER_BAKEOFF") == "1"
+
+
+def _load_sentence_transformer():
+    if not _semantic_encoder_bakeoff_enabled():
+        pytest.skip("Set RUN_SEMANTIC_ENCODER_BAKEOFF=1 to run encoder bake-off")
+
+    sentence_transformers = pytest.importorskip("sentence_transformers")
+    return sentence_transformers.SentenceTransformer(
+        "sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+
+def _measure_reference_encoder_cases() -> dict[str, float]:
+    model = _load_sentence_transformer()
+
+    texts = [
+        text
+        for case in SEMANTIC_ENCODER_EVALUATION_CASES
+        for text in (case["text_a"], case["text_b"])
+    ]
+    embeddings = model.encode(texts, normalize_embeddings=True)
+
+    scores = {}
+
+    for index, case in enumerate(SEMANTIC_ENCODER_EVALUATION_CASES):
+        first_embedding = embeddings[index * 2]
+        second_embedding = embeddings[index * 2 + 1]
+        scores[case["category"]] = round(
+            float(first_embedding @ second_embedding) * 100,
+            1,
+        )
+
+    return scores
+
+
 def test_semantic_encoder_evaluation_cases_are_labeled():
     assert len(SEMANTIC_ENCODER_EVALUATION_CASES) == 10
 
@@ -78,3 +120,18 @@ def test_semantic_encoder_evaluation_cases_are_labeled():
             "partial",
             "unrelated",
         }
+
+
+def test_reference_encoder_separates_related_from_unrelated_text():
+    scores = _measure_reference_encoder_cases()
+
+    assert scores["aligned_paraphrase"] >= 80
+    assert scores["unrelated"] < 20
+
+
+def test_reference_encoder_does_not_detect_conflicts_by_itself():
+    scores = _measure_reference_encoder_cases()
+
+    assert scores["negation_conflict"] >= 80
+    assert scores["opposite_action"] >= 80
+    assert scores["temporal_conflict"] >= 80
