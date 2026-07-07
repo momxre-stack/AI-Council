@@ -165,3 +165,10 @@ def test_conflict_signal_detects_temporal_opposites():
         "Validation happens before execution.",
         "Validation happens after execution.",
     ) is True
+
+
+def test_conflict_signal_does_not_flag_matching_temporal_terms():
+    assert _has_conflict_signal(
+        "Validation happens before execution.",
+        "Checks happen before deployment.",
+    ) is False
