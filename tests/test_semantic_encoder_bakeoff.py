@@ -121,6 +121,7 @@ def _has_conflict_signal(text_a: str, text_b: str) -> bool:
         ("before", "after"),
         ("increases", "decreases"),
         ("can", "cannot"),
+        ("always", "never"),
     ]
 
     for first_term, second_term in opposite_terms:
@@ -202,4 +203,18 @@ def test_conflict_signal_does_not_flag_matching_modal_terms():
     assert _has_conflict_signal(
         "Python can be used for web development.",
         "Python can be used for automation.",
+    ) is False
+
+
+def test_conflict_signal_detects_absolute_opposites():
+    assert _has_conflict_signal(
+        "The cache always stores the result.",
+        "The cache never stores the result.",
+    ) is True
+
+
+def test_conflict_signal_does_not_flag_matching_absolute_terms():
+    assert _has_conflict_signal(
+        "The cache always stores the result.",
+        "The service always stores the result.",
     ) is False
