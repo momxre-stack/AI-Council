@@ -113,6 +113,7 @@ def _has_conflict_signal(text_a: str, text_b: str) -> bool:
 
     opposite_terms = [
         ("before", "after"),
+        ("increases", "decreases"),
     ]
 
     for first_term, second_term in opposite_terms:
@@ -171,4 +172,18 @@ def test_conflict_signal_does_not_flag_matching_temporal_terms():
     assert _has_conflict_signal(
         "Validation happens before execution.",
         "Checks happen before deployment.",
+    ) is False
+
+
+def test_conflict_signal_detects_opposite_actions():
+    assert _has_conflict_signal(
+        "The process increases system performance.",
+        "The process decreases system performance.",
+    ) is True
+
+
+def test_conflict_signal_does_not_flag_matching_actions():
+    assert _has_conflict_signal(
+        "The process increases system performance.",
+        "The optimization increases application performance.",
     ) is False
