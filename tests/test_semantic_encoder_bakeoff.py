@@ -263,3 +263,10 @@ def test_semantic_classifier_marks_low_similarity_unrelated():
         semantic_score=-6.1,
         has_conflict=False,
     ) == "unrelated"
+
+
+def test_semantic_classifier_currently_marks_subset_as_aligned():
+    assert _classify_semantic_relationship(
+        semantic_score=89.8,
+        has_conflict=False,
+    ) == "aligned"
