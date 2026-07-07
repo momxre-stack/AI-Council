@@ -135,6 +135,22 @@ def _has_conflict_signal(text_a: str, text_b: str) -> bool:
     return False
 
 
+def _classify_semantic_relationship(
+    semantic_score: float,
+    has_conflict: bool,
+) -> str:
+    if has_conflict:
+        return "conflicting"
+
+    if semantic_score >= 80:
+        return "aligned"
+
+    if semantic_score < 20:
+        return "unrelated"
+
+    return "unknown"
+
+
 def test_semantic_encoder_evaluation_cases_are_labeled():
     assert len(SEMANTIC_ENCODER_EVALUATION_CASES) == 10
 
@@ -226,3 +242,24 @@ def test_conflict_signal_detects_requirement_opposites():
         "Authentication is required.",
         "Authentication is optional.",
     ) is True
+
+
+def test_semantic_classifier_marks_high_similarity_conflict():
+    assert _classify_semantic_relationship(
+        semantic_score=95.5,
+        has_conflict=True,
+    ) == "conflicting"
+
+
+def test_semantic_classifier_marks_high_similarity_without_conflict_aligned():
+    assert _classify_semantic_relationship(
+        semantic_score=85.1,
+        has_conflict=False,
+    ) == "aligned"
+
+
+def test_semantic_classifier_marks_low_similarity_unrelated():
+    assert _classify_semantic_relationship(
+        semantic_score=-6.1,
+        has_conflict=False,
+    ) == "unrelated"
