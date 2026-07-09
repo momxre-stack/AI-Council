@@ -329,6 +329,54 @@ Implemented:
 * Confidence boundary regression coverage
 * Assessment regression coverage
 
+### Milestone #16.12 — Independent Judge Decision Authority Audit
+
+Status:
+
+Completed.
+
+Audit findings:
+
+* Confirmed Independent Judge is deterministic, provider-independent, and strongly lexical.
+* Confirmed Independent Judge can produce low agreement scores for semantically aligned answers.
+* Confirmed Dual Judge already contains separate winner-disagreement and significant score-gap protections.
+* Characterized the current policy where Independent Judge can act as the decisive second debate vote.
+* Characterized the current policy where Independent Judge alone cannot trigger debate.
+* Reviewed the original history that introduced Independent Judge into the debate vote count.
+* Found no existing repository evidence showing a unique true-positive case where both provider-based judges miss a real disagreement and Independent Judge uniquely catches it.
+* Confirmed provider judges already expose structured agreements and differences that may support future dissent auditing.
+* Reviewed five external architecture recommendations.
+* The recommendations consistently rejected a lexical Independent Judge as an equal direct vote and favored a narrower dissent-audit role.
+
+Conclusion:
+
+Independent Judge remains useful as a provider-independent audit, diagnostic, and semantic-gap signal.
+
+Its current direct vote authority is not sufficiently justified by unique true-positive evidence.
+
+The selected future direction is a Dissent Auditor: an independent layer that investigates strong minority disagreement and looks for concrete, auditable evidence before any escalation authority is considered.
+
+The first safe implementation, if pursued, must run in diagnostic or shadow mode without changing debate decisions.
+
+Production decision policy remains unchanged in this milestone.
+
+Explicitly deferred:
+
+* Removing Independent Judge from the current vote count.
+* Granting Dissent Auditor override authority.
+* Building a semantic engine.
+* Adding embeddings or classifiers.
+* Adding another LLM judge.
+* Adding new lexical dictionaries or open-ended normalization rules.
+* Designing future multi-provider majority rules before additional providers exist.
+
+Stable closeout:
+
+* 213 passing tests.
+* Two characterization tests added for current Independent Judge vote authority.
+* No production code changed.
+* No production decision behavior changed.
+
 ### Provider Expansion
 
 Status:
