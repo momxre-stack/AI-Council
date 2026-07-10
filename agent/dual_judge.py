@@ -99,6 +99,22 @@ def _debate_vote_count(
     )
 
 
+def _provider_debate_vote_count(
+    gemini_judgment: dict,
+    deepseek_judgment: dict,
+) -> int:
+    return sum(
+        [
+            bool(gemini_judgment.get("needs_debate", False)),
+            bool(deepseek_judgment.get("needs_debate", False)),
+        ]
+    )
+
+
+def _independent_debate_vote(independent_judgment: dict) -> bool:
+    return bool(independent_judgment.get("needs_debate", False))
+
+
 def run_dual_judgment(
     question: str,
     gemini_response: str,
@@ -128,6 +144,14 @@ def run_dual_judgment(
         independent_judgment,
     )
 
+    provider_debate_vote_count = _provider_debate_vote_count(
+        gemini_judgment,
+        deepseek_judgment,
+    )
+    independent_debate_vote = _independent_debate_vote(
+        independent_judgment,
+    )
+
     final_needs_debate = (
         debate_vote_count >= DEBATE_VOTE_THRESHOLD
         or _winner_disagreement(gemini_judgment, deepseek_judgment)
@@ -140,4 +164,6 @@ def run_dual_judgment(
         "independent_judge": independent_judgment,
         "debate_vote_count": debate_vote_count,
         "final_needs_debate": final_needs_debate,
+        "provider_debate_vote_count": provider_debate_vote_count,
+        "independent_debate_vote": independent_debate_vote,
     }
