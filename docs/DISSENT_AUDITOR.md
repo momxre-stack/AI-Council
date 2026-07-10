@@ -167,6 +167,96 @@ The goal is to improve AI Council reliability.
 
 ---
 
+## Diagnostic Benchmark Candidates
+
+Before defining a diagnostic evidence contract, the Dissent Auditor direction should be tested against a small set of human-reviewed cases.
+
+The purpose of these cases is not to prove an implementation.
+
+The purpose is to determine whether useful dissent evidence can be defined narrowly and measured objectively.
+
+Initial candidate case types:
+
+### 1. Unsupported Lexical Dissent
+
+Two responses express substantially the same answer using different wording.
+
+The current Independent Judge may produce a low agreement score.
+
+Expected diagnostic question:
+
+Is there any concrete disagreement evidence beyond low lexical overlap?
+
+Expected human assessment:
+
+No concrete evidence.
+
+This case should protect against treating a low score as proof of disagreement.
+
+### 2. Direct Contradiction
+
+Two responses make materially incompatible claims about the same relevant point.
+
+Expected diagnostic question:
+
+Can the conflicting claims be identified directly and specifically?
+
+Expected human assessment:
+
+Concrete contradiction evidence exists.
+
+This case should test whether useful dissent can be tied to an explicit conflict rather than a general score.
+
+### 3. Missed Mandatory Requirement
+
+The question contains an explicit requirement or constraint, and one response fails to satisfy it.
+
+Expected diagnostic question:
+
+Can the missed requirement and affected response be identified?
+
+Expected human assessment:
+
+Concrete requirement-failure evidence exists.
+
+This case should distinguish question-grounded failure from general answer differences.
+
+### 4. Material Omission
+
+One response omits information that is necessary to answer the core question, while the other addresses it.
+
+Expected diagnostic question:
+
+Can the necessary missing element be identified without requiring broad semantic judgment?
+
+Expected human assessment:
+
+Potential omission evidence exists.
+
+This case is intentionally uncertain.
+
+If material omission cannot be defined or evaluated narrowly, it should be removed from the first diagnostic benchmark.
+
+---
+
+These candidate cases do not define the final Dissent Auditor contract.
+
+They do not grant authority.
+
+They do not justify production implementation.
+
+The next step is to determine whether each case can be expressed with:
+
+* a clear human-reviewed expected result
+* concrete evidence
+* reproducible evaluation
+* no dependence on score-gap duplication
+* no open-ended semantic reasoning
+
+Any case that fails these requirements should be removed rather than expanded with special rules.
+
+---
+
 ## Guiding Principle
 
 Dissent is a signal.
