@@ -369,3 +369,27 @@ def test_council_response_includes_only_gemini_and_deepseek(
     assert set(result["responses"]) == {"gemini", "deepseek"}
     assert set(result["provider_errors"]) == {"gemini", "deepseek"}
     assert set(result["quota_errors"]) == {"gemini", "deepseek"}
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_redacts_api_key_from_provider_error(
+    mock_deepseek,
+    mock_gemini,
+):
+    exposed_key = "secret-gemini-api-key"
+    mock_gemini.side_effect = RuntimeError(
+        "503 Service Unavailable for "
+        "https://generativelanguage.googleapis.com/"
+        f"generateContent?key={exposed_key}"
+    )
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    result = ask_council("test")
+
+    gemini_error = result["provider_errors"]["gemini"]
+
+    assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "provider_failure"
+    assert exposed_key not in gemini_error
+    assert "?key=[REDACTED]" in gemini_error

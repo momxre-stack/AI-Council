@@ -1,3 +1,5 @@
+import re
+
 from agent.providers.registry import PROVIDERS
 from agent.dual_judge import run_dual_judgment
 from agent.debate import run_debate
@@ -13,6 +15,14 @@ def ask_gemini(prompt: str) -> str:
 
 def ask_deepseek(prompt: str) -> str:
     return PROVIDERS["deepseek"](prompt)
+
+
+def _sanitize_provider_error(error: Exception) -> str:
+    return re.sub(
+        r"([?&]key=)[^&\s'\"]+",
+        r"\1[REDACTED]",
+        str(error),
+    )
 
 
 def _ask_provider(provider_name: str, provider, question: str) -> dict:
@@ -45,7 +55,7 @@ def _ask_provider(provider_name: str, provider, question: str) -> dict:
         return {
             "provider": provider_name,
             "response": None,
-            "error": str(error),
+            "error": _sanitize_provider_error(error),
             "quota_error": is_quota_error(error),
         }
 
