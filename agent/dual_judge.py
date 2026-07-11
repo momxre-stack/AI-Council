@@ -152,6 +152,12 @@ def run_dual_judgment(
         independent_judgment,
     )
 
+    provider_only_final_needs_debate = (
+        provider_debate_vote_count >= DEBATE_VOTE_THRESHOLD
+        or _winner_disagreement(gemini_judgment, deepseek_judgment)
+        or _score_disagreement(gemini_judgment, deepseek_judgment)
+    )
+
     final_needs_debate = (
         debate_vote_count >= DEBATE_VOTE_THRESHOLD
         or _winner_disagreement(gemini_judgment, deepseek_judgment)
@@ -163,7 +169,10 @@ def run_dual_judgment(
         "deepseek_judge": deepseek_judgment,
         "independent_judge": independent_judgment,
         "debate_vote_count": debate_vote_count,
-        "final_needs_debate": final_needs_debate,
         "provider_debate_vote_count": provider_debate_vote_count,
         "independent_debate_vote": independent_debate_vote,
+        "final_needs_debate": final_needs_debate,
+        "provider_only_final_needs_debate": (
+            provider_only_final_needs_debate
+        ),
     }
