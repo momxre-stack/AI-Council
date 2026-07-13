@@ -377,6 +377,41 @@ Stable closeout:
 * No production code changed.
 * No production decision behavior changed.
 
+### Milestone #16.14 — Provider-Independent Reasoning Boundaries
+
+Status:
+
+Completed.
+
+Implemented:
+
+* Added Architecture Decision Record for provider-independent reasoning
+* Documented the architectural evolution of the investigation
+* Recorded verified evidence collected during Milestones #16.6–#16.13
+* Defined permanent architectural boundaries
+* Distinguished deterministic measurement from semantic decision authority
+* Documented the validated evidence-first engineering method
+* Defined future reopening criteria
+* Preserved architectural knowledge as a permanent architectural reference
+
+Notes:
+
+* No production behavior changed.
+* No production decision logic changed.
+* No provider behavior changed.
+* This milestone documents architectural knowledge rather than introducing new functionality.
+* This milestone concludes the provider-independent semantic reasoning investigation under the current architecture.
+* Future work in this area should begin from the Architecture Decision Record rather than restarting the investigation.
+
+Stable closeout:
+
+* 217 passing tests.
+* Working tree clean.
+* All commits pushed.
+* Architecture Decision Record added.
+
+---
+
 ### Provider Expansion
 
 Status:
