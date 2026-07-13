@@ -276,3 +276,7 @@ def test_ask_gemini_uses_rest_helpers(
     assert result == "Gemini answer"
     mock_post.assert_called_once_with("test-key", "Hello")
     mock_parse.assert_called_once_with({"candidates": []})
+
+
+def test_gemini_request_timeout_allows_longer_responses():
+    assert REQUEST_TIMEOUT_SECONDS == 60

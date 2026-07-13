@@ -10,7 +10,7 @@ load_dotenv()
 
 MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 2
-REQUEST_TIMEOUT_SECONDS = 30
+REQUEST_TIMEOUT_SECONDS = 60
 
 
 def _parse_generate_content_response(response_data: dict) -> str:
