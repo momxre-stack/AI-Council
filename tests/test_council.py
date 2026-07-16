@@ -63,7 +63,10 @@ def test_council_with_debate(
     }
 
     mock_debate.return_value = {
-        "debate": "debate result",
+        "gemini_strengths": "Gemini strength",
+        "deepseek_strengths": "DeepSeek strength",
+        "criticisms": "Both missed details",
+        "consensus_answer": "Final answer",
     }
 
     result = ask_council("test")
@@ -393,3 +396,156 @@ def test_council_redacts_api_key_from_provider_error(
     assert result["degraded_reason"] == "provider_failure"
     assert exposed_key not in gemini_error
     assert "?key=[REDACTED]" in gemini_error
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_debate")
+@patch("agent.council.run_dual_judgment")
+def test_council_exposes_authoritative_answer_after_successful_debate(
+    mock_judge,
+    mock_debate,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    mock_judge.return_value = {
+        "gemini_judge": {"agreement_score": 90},
+        "deepseek_judge": {"agreement_score": 80},
+        "independent_judge": {"agreement_score": 10},
+        "final_needs_debate": True,
+        "agreement_rate": 0.1,
+    }
+
+    debate_result = {
+        "gemini_strengths": "Gemini strength",
+        "deepseek_strengths": "DeepSeek strength",
+        "criticisms": "Both missed details",
+        "consensus_answer": "Final consensus answer",
+    }
+    mock_debate.return_value = debate_result
+
+    result = ask_council("test")
+
+    assert result["status"] == "ok"
+    assert result["authoritative_answer"] == {
+        "available": True,
+        "answer": "Final consensus answer",
+        "provenance": "debate.consensus_answer",
+    }
+
+    assert result["responses"] == {
+        "gemini": "Gemini answer",
+        "deepseek": "DeepSeek answer",
+    }
+    assert result["judgment"] == mock_judge.return_value
+    assert result["debate"] == debate_result
+
+    assert result["assessment"]["confidence"] == "low"
+    assert result["semantic_validation"]["is_semantic_candidate"] is True
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_dual_judgment")
+def test_council_no_debate_has_no_authoritative_answer(
+    mock_judge,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    mock_judge.return_value = {
+        "gemini_judge": {"agreement_score": 90},
+        "deepseek_judge": {"agreement_score": 90},
+        "independent_judge": {"agreement_score": 90},
+        "final_needs_debate": False,
+        "agreement_rate": 0.9,
+    }
+
+    result = ask_council("test")
+
+    assert result["status"] == "ok"
+    assert result["debate"] is None
+    assert result["authoritative_answer"] == {
+        "available": False,
+        "answer": None,
+        "provenance": None,
+    }
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+def test_council_provider_failure_has_no_authoritative_answer(
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.side_effect = RuntimeError("Gemini failed")
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "provider_failure"
+    assert result["authoritative_answer"] == {
+        "available": False,
+        "answer": None,
+        "provenance": None,
+    }
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_dual_judgment")
+def test_council_judge_failure_has_no_authoritative_answer(
+    mock_judge,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+    mock_judge.side_effect = RuntimeError("Judge failed")
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "judge_failure"
+    assert result["authoritative_answer"] == {
+        "available": False,
+        "answer": None,
+        "provenance": None,
+    }
+
+
+@patch("agent.council.ask_gemini")
+@patch("agent.council.ask_deepseek")
+@patch("agent.council.run_debate")
+@patch("agent.council.run_dual_judgment")
+def test_council_debate_failure_has_no_authoritative_answer(
+    mock_judge,
+    mock_debate,
+    mock_deepseek,
+    mock_gemini,
+):
+    mock_gemini.return_value = "Gemini answer"
+    mock_deepseek.return_value = "DeepSeek answer"
+
+    mock_judge.return_value = {
+        "gemini_judge": {},
+        "deepseek_judge": {},
+        "final_needs_debate": True,
+    }
+    mock_debate.side_effect = RuntimeError("Debate failed")
+
+    result = ask_council("test")
+
+    assert result["status"] == "degraded"
+    assert result["degraded_reason"] == "debate_failure"
+    assert result["authoritative_answer"] == {
+        "available": False,
+        "answer": None,
+        "provenance": None,
+    }

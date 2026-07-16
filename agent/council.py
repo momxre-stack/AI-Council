@@ -100,6 +100,11 @@ def ask_council(question: str) -> dict:
             "judgment_error": None,
             "debate": None,
             "debate_error": None,
+            "authoritative_answer": {
+                "available": False,
+                "answer": None,
+                "provenance": None,
+            },
         }
 
     try:
@@ -124,6 +129,11 @@ def ask_council(question: str) -> dict:
             "judgment_error": str(error),
             "debate": None,
             "debate_error": None,
+            "authoritative_answer": {
+                "available": False,
+                "answer": None,
+                "provenance": None,
+            },
         }
 
     debate = None
@@ -148,6 +158,19 @@ def ask_council(question: str) -> dict:
         reliability_status="healthy" if status == "ok" else status,
     )
 
+    if debate is not None and debate_error is None:
+        authoritative_answer = {
+            "available": True,
+            "answer": debate["consensus_answer"],
+            "provenance": "debate.consensus_answer",
+        }
+    else:
+        authoritative_answer = {
+            "available": False,
+            "answer": None,
+            "provenance": None,
+        }
+
     result = {
         "question": question,
         "responses": {
@@ -163,6 +186,7 @@ def ask_council(question: str) -> dict:
         "judgment_error": None,
         "debate": debate,
         "debate_error": debate_error,
+        "authoritative_answer": authoritative_answer,
     }
 
     result["semantic_validation"] = build_validation_record(result)
