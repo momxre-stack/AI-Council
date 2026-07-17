@@ -20,7 +20,7 @@ Branch:
 
 Baseline verified before this project-state refresh:
 
-`8f5fe44 — Update roadmap after provider-independent reasoning ADR`
+`143a6bf — Measure authoritative answer availability rate`
 
 ---
 
@@ -29,7 +29,7 @@ Baseline verified before this project-state refresh:
 * Main branch clean
 * Origin synchronized
 * All commits pushed
-* 217 passing tests
+* 225 passing tests
 * GitHub Actions CI
 * Stable production behavior
 
@@ -78,7 +78,11 @@ Debate when justified
 
 ↓
 
-Consensus answer
+Debate consensus when debate succeeds
+
+↓
+
+Conditional Council-owned authoritative answer on the qualified path
 
 ↓
 
@@ -91,6 +95,49 @@ Stress and historical reliability measurements
 In parallel, the provider-only shadow debate decision records what the debate decision would have been without the Independent Judge vote.
 
 The shadow decision is diagnostic only and does not change production behavior.
+
+---
+
+## Current Council Result Contract
+
+The Council preserves its existing multi-artifact result and adds a Council-owned conditional authoritative-answer field:
+
+```python
+"authoritative_answer": {
+    "available": bool,
+    "answer": str | None,
+    "provenance": str | None,
+}
+```
+
+The only currently qualifying path is:
+
+```text
+both providers succeed
+→ judgment succeeds
+→ debate is required
+→ debate succeeds
+→ debate["consensus_answer"] becomes authoritative
+```
+
+All non-qualifying paths explicitly report:
+
+```python
+"authoritative_answer": {
+    "available": False,
+    "answer": None,
+    "provenance": None,
+}
+```
+
+Stress observability now includes:
+
+* `authoritative_answer_available_count`
+* `authoritative_answer_availability_rate`
+
+Availability measures only whether an authoritative answer was explicitly reported.
+
+It does not measure factual correctness, answer quality, consensus strength, debate quality, semantic agreement, or reliability confidence.
 
 ---
 
@@ -201,6 +248,9 @@ Primary architectural and project references:
 * `docs/SEMANTIC_JUDGE_VALIDATION.md`
 * `docs/DISSENT_AUDITOR.md`
 * `docs/PROVIDER_INDEPENDENT_REASONING_BOUNDARIES.md`
+* `docs/MILESTONE_19_COUNCIL_RESULT_CONTRACT.md`
+* `docs/MILESTONE_20_CONSENSUS_ARCHITECTURE.md`
+* `docs/MILESTONE_21_COUNCIL_AUTHORITATIVE_ANSWER_DECISION.md`
 
 ---
 
@@ -208,13 +258,16 @@ Primary architectural and project references:
 
 * Main branch clean
 * Origin synchronized
-* 217 passing tests
+* 225 passing tests
+* Latest verified implementation commit: `143a6bf`
 * Gemini REST provider stable
 * DeepSeek provider stable
 * Provider-only shadow decision implemented
 * Provider error redaction implemented
 * Provider-independent reasoning ADR accepted
-* Milestone #16.14 completed
+* Milestones #17–#24 completed
+* Conditional Council-owned authoritative answer contract implemented
+* Authoritative-answer availability count and rate implemented
 
 ---
 
@@ -228,7 +281,7 @@ Potential directions include:
 
 * further reliability quality improvements;
 * debate quality improvements supported by new evidence;
-* CLI, scheduler, or automation work;
+* scheduler or automation work;
 * operational observability improvements;
 * provider expansion, only if justified by evidence.
 

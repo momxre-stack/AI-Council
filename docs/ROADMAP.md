@@ -49,11 +49,16 @@ Stable baseline:
 * Reliability quality improvements
 * Debate quality improvements
 * Evaluation and benchmark improvements
-* 144 passing tests
+* Council execution-path and result-contract characterization
+* Council authoritative-answer architecture decision
+* Conditional Council-owned authoritative answer contract
+* Authoritative-answer availability count
+* Authoritative-answer availability rate
+* 225 passing tests
 
-Latest stable commit:
+Latest verified implementation commit:
 
-697e856
+143a6bf
 
 ---
 
@@ -409,6 +414,37 @@ Stable closeout:
 * Working tree clean.
 * All commits pushed.
 * Architecture Decision Record added.
+
+---
+
+### Milestones #17–#24 — Council Answer Authority and Availability Observability
+
+Status:
+
+Completed.
+
+Implemented:
+
+* Evaluated the next implementation phase using repository evidence.
+* Characterized the complete Council execution path.
+* Characterized the existing Council result contract.
+* Defined the architectural meaning of consensus.
+* Selected a conditional Council-owned authoritative answer contract.
+* Added the backward-compatible `authoritative_answer` result field.
+* Counted explicit authoritative-answer availability in stress metrics.
+* Added `authoritative_answer_availability_rate`.
+
+Current authority boundary:
+
+* An authoritative answer is available only when both providers succeed, judgment succeeds, debate is required, and debate succeeds.
+* The authoritative source is `debate["consensus_answer"]`.
+* Availability does not claim correctness, answer quality, consensus strength, or reliability confidence.
+
+Stable closeout:
+
+* 225 passing tests.
+* Latest verified implementation commit: `143a6bf`.
+* Main clean and synchronized with `origin/main`.
 
 ---
 
