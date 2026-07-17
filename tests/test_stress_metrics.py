@@ -21,6 +21,7 @@ def test_counts_stress_result_statuses():
         "success_count": 2,
         "degraded_count": 1,
         "failure_count": 1,
+        "authoritative_answer_available_count": 0,
         "debate_count": 1,
         "debate_success_count": 1,
         "debate_failure_count": 0,
@@ -176,6 +177,7 @@ def test_count_statuses_treats_missing_status_as_failure():
         "success_count": 0,
         "degraded_count": 0,
         "failure_count": 1,
+        "authoritative_answer_available_count": 0,
         "debate_count": 0,
         "debate_success_count": 0,
         "debate_failure_count": 0,
@@ -209,6 +211,7 @@ def test_counts_twenty_simulated_requests():
         "success_count": 16,
         "degraded_count": 3,
         "failure_count": 1,
+        "authoritative_answer_available_count": 0,
         "debate_count": 1,
         "debate_success_count": 1,
         "debate_failure_count": 0,
@@ -243,6 +246,7 @@ def test_counts_fifty_simulated_requests():
         "success_count": 41,
         "degraded_count": 7,
         "failure_count": 2,
+        "authoritative_answer_available_count": 0,
         "debate_count": 1,
         "debate_success_count": 1,
         "debate_failure_count": 0,
@@ -375,6 +379,7 @@ def test_builds_stress_report():
         "success_count": 2,
         "degraded_count": 1,
         "failure_count": 1,
+        "authoritative_answer_available_count": 0,
         "debate_count": 1,
         "debate_success_count": 1,
         "debate_failure_count": 0,
@@ -573,3 +578,84 @@ def test_format_stress_report_defaults_missing_reliability_status():
         "Failure rate: 0.0%\n"
         "Debate rate: 0.0%"
     )
+
+
+def test_counts_only_explicit_authoritative_answer_availability():
+    results = [
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "Final answer"},
+            "authoritative_answer": {
+                "available": True,
+                "answer": "Final answer",
+                "provenance": "debate.consensus_answer",
+            },
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "Not authoritative"},
+            "reliability_confidence": {"level": "high"},
+            "semantic_validation": {"candidate": False},
+            "authoritative_answer": {
+                "available": False,
+                "answer": None,
+                "provenance": None,
+            },
+        },
+        {
+            "status": "ok",
+            "debate": {"consensus_answer": "Legacy result"},
+        },
+        {
+            "status": "degraded",
+            "debate": None,
+            "reliability_confidence": {"level": "low"},
+            "semantic_validation": {"candidate": True},
+            "authoritative_answer": {
+                "available": True,
+                "answer": "Explicit contract answer",
+                "provenance": "debate.consensus_answer",
+            },
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["authoritative_answer_available_count"] == 2
+
+
+def test_ignores_invalid_authoritative_answer_availability_values():
+    results = [
+        {
+            "status": "ok",
+            "authoritative_answer": None,
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": "invalid",
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": {},
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": {"available": "true"},
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": {"available": 1},
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": {"available": False},
+        },
+        {
+            "status": "ok",
+            "authoritative_answer": {"available": True},
+        },
+    ]
+
+    metrics = count_statuses(results)
+
+    assert metrics["authoritative_answer_available_count"] == 1

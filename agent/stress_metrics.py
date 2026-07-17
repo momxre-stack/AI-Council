@@ -3,6 +3,7 @@ def count_statuses(results: list[dict]) -> dict:
         "success_count": 0,
         "degraded_count": 0,
         "failure_count": 0,
+        "authoritative_answer_available_count": 0,
         "debate_count": 0,
         "debate_success_count": 0,
         "debate_failure_count": 0,
@@ -21,6 +22,14 @@ def count_statuses(results: list[dict]) -> dict:
             metrics["degraded_count"] += 1
         else:
             metrics["failure_count"] += 1
+
+        authoritative_answer = result.get("authoritative_answer")
+
+        if (
+            isinstance(authoritative_answer, dict)
+            and authoritative_answer.get("available") is True
+        ):
+            metrics["authoritative_answer_available_count"] += 1
 
         if result.get("debate") is not None:
             metrics["debate_count"] += 1
