@@ -35,6 +35,7 @@ def test_summarizes_stress_results():
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
+        "authoritative_answer_availability_rate": 0,
         "debate_rate": 0.25,
         "debate_effectiveness_rate": 1.0,
         "judge_agreement_rate": 0,

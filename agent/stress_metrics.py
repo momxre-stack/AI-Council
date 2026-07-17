@@ -61,6 +61,7 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
             "success_rate": 0,
             "degraded_rate": 0,
             "failure_rate": 0,
+            "authoritative_answer_availability_rate": 0,
             "debate_rate": 0,
             "debate_effectiveness_rate": 0,
         }
@@ -97,6 +98,10 @@ def calculate_rates(metrics: dict, total_count: int) -> dict:
         "success_rate": metrics["success_count"] / total_count,
         "degraded_rate": metrics["degraded_count"] / total_count,
         "failure_rate": metrics["failure_count"] / total_count,
+        "authoritative_answer_availability_rate": (
+            metrics.get("authoritative_answer_available_count", 0)
+            / total_count
+        ),
         "debate_rate": debate_count / total_count,
         "debate_effectiveness_rate": debate_effectiveness_rate,
         "judge_agreement_rate": judge_agreement_rate,

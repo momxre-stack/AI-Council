@@ -271,11 +271,26 @@ def test_calculates_stress_rates():
         "success_rate": 0.8,
         "degraded_rate": 0.15,
         "failure_rate": 0.05,
+        "authoritative_answer_availability_rate": 0,
         "debate_rate": 0.05,
         "debate_effectiveness_rate": 0.0,
         "judge_agreement_rate": 0,
         "judge_disagreement_rate": 0,
     }
+
+
+def test_calculates_authoritative_answer_availability_rate():
+    metrics = {
+        "success_count": 4,
+        "degraded_count": 0,
+        "failure_count": 0,
+        "debate_count": 0,
+        "authoritative_answer_available_count": 2,
+    }
+
+    rates = calculate_rates(metrics, total_count=4)
+
+    assert rates["authoritative_answer_availability_rate"] == 0.5
 
 
 def test_calculates_debate_usage_rate():
@@ -346,6 +361,7 @@ def test_calculates_zero_rates_for_empty_results():
         "success_rate": 0,
         "degraded_rate": 0,
         "failure_rate": 0,
+        "authoritative_answer_availability_rate": 0,
         "debate_rate": 0,
         "debate_effectiveness_rate": 0,
     }
@@ -390,6 +406,7 @@ def test_builds_stress_report():
         "success_rate": 0.5,
         "degraded_rate": 0.25,
         "failure_rate": 0.25,
+        "authoritative_answer_availability_rate": 0,
         "debate_rate": 0.25,
         "debate_effectiveness_rate": 1.0,
         "judge_agreement_rate": 0,
