@@ -8,6 +8,7 @@ TREND_METRICS = [
     "degraded_rate",
     "failure_rate",
     "debate_rate",
+    "authoritative_answer_availability_rate",
     "reliability_score",
 ]
 

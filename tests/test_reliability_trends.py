@@ -39,6 +39,24 @@ def test_compare_reliability_reports_returns_metric_deltas():
     }
 
 
+def test_compares_authoritative_answer_availability_rate():
+    previous_report = {
+        "authoritative_answer_availability_rate": 0.25,
+    }
+    current_report = {
+        "authoritative_answer_availability_rate": 0.50,
+    }
+
+    result = compare_reliability_reports(
+        previous_report,
+        current_report,
+    )
+
+    assert result == {
+        "authoritative_answer_availability_rate_delta": 0.25,
+    }
+
+
 def test_compare_reliability_reports_ignores_missing_metrics():
     previous_report = {
         "success_rate": 0.80,
