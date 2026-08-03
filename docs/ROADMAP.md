@@ -54,11 +54,12 @@ Stable baseline:
 * Conditional Council-owned authoritative answer contract
 * Authoritative-answer availability count
 * Authoritative-answer availability rate
-* 225 passing tests
+* Authoritative-answer availability historical delta
+* 226 passing tests
 
 Latest verified implementation commit:
 
-143a6bf
+4e13096
 
 ---
 
@@ -417,7 +418,7 @@ Stable closeout:
 
 ---
 
-### Milestones #17–#24 — Council Answer Authority and Availability Observability
+### Milestones #17–#25 — Council Answer Authority and Availability Observability
 
 Status:
 
@@ -433,6 +434,7 @@ Implemented:
 * Added the backward-compatible `authoritative_answer` result field.
 * Counted explicit authoritative-answer availability in stress metrics.
 * Added `authoritative_answer_availability_rate`.
+* Added historical trend comparison support for `authoritative_answer_availability_rate_delta`.
 
 Current authority boundary:
 
@@ -442,8 +444,8 @@ Current authority boundary:
 
 Stable closeout:
 
-* 225 passing tests.
-* Latest verified implementation commit: `143a6bf`.
+* 226 passing tests.
+* Latest verified implementation commit: `4e13096`.
 * Main clean and synchronized with `origin/main`.
 
 ---

@@ -20,7 +20,7 @@ Branch:
 
 Baseline verified before this project-state refresh:
 
-`143a6bf — Measure authoritative answer availability rate`
+`4e13096 — Track authoritative answer availability rate deltas`
 
 ---
 
@@ -29,7 +29,7 @@ Baseline verified before this project-state refresh:
 * Main branch clean
 * Origin synchronized
 * All commits pushed
-* 225 passing tests
+* 226 passing tests
 * GitHub Actions CI
 * Stable production behavior
 
@@ -134,6 +134,7 @@ Stress observability now includes:
 
 * `authoritative_answer_available_count`
 * `authoritative_answer_availability_rate`
+* `authoritative_answer_availability_rate_delta`
 
 Availability measures only whether an authoritative answer was explicitly reported.
 
@@ -258,14 +259,14 @@ Primary architectural and project references:
 
 * Main branch clean
 * Origin synchronized
-* 225 passing tests
-* Latest verified implementation commit: `143a6bf`
+* 226 passing tests
+* Latest verified implementation commit: `4e13096`
 * Gemini REST provider stable
 * DeepSeek provider stable
 * Provider-only shadow decision implemented
 * Provider error redaction implemented
 * Provider-independent reasoning ADR accepted
-* Milestones #17–#24 completed
+* Milestones #17–#25 completed
 * Conditional Council-owned authoritative answer contract implemented
 * Authoritative-answer availability count and rate implemented
 
